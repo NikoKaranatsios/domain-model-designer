@@ -2,7 +2,9 @@
 
 The designer is a static site. Its image runs the complete Node test suite and
 checks script-policy integrity before copying the two HTML entry points into
-Caddy. `/model.html` serves the standalone designer. Unknown paths
+Caddy. Runtime files receive explicit read permissions during the build so
+restrictive checkout permissions cannot prevent the non-root server from reading
+its configuration or HTML. `/model.html` serves the standalone designer. Unknown paths
 return 404; `/health` reports the web server's health.
 
 The container runs as UID 1000 on port 8080 with a read-only filesystem, dropped
