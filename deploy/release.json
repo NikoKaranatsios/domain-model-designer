@@ -1,0 +1,20 @@
+{
+  "version": "1.0.1-alpha",
+  "entryPoints": [
+    "/",
+    "/model.html"
+  ],
+  "healthPath": "/health",
+  "runtimeFiles": [
+    {
+      "path": "index.html",
+      "bytes": 1455,
+      "sha256": "3973b80f3c9d60bc796a8a88f2d0ecc7445c7f235b1a544c9cca92bf8e4ba4cc"
+    },
+    {
+      "path": "model.html",
+      "bytes": 181828,
+      "sha256": "17349c6990e98a34c8c3a5465bd130a18574e75752184c78c32708bdf4baca31"
+    }
+  ]
+}
