@@ -23,10 +23,12 @@ record the implementation plan, apply the authorized changes, commit them, run
 registered checks, and publish its draft PR. Use `deployment_plan` and
 `deployment_apply` for the exact verified commit.
 
-The host's Nginx route forwards HTTP certificate challenges to the existing
-Caddy edge and redirects other HTTP requests to HTTPS. Preserve the route when
-releasing new versions; update its challenge upstream if Caddy's private
-network address changes.
+The host's Nginx route in `nginx-http.conf` forwards HTTP certificate challenges
+to the existing Caddy edge and redirects other HTTP requests to HTTPS. It is
+installed as `/etc/nginx/sites-available/domain-model-designer-redirect`.
+Preserve the route when releasing new versions; update its challenge upstream
+if Caddy's private network address changes. `release.json` records the shipped
+HTML hashes and entry points.
 
 For a rollback, deploy an earlier verified commit through a new task and the
 same control-plane workflow. Do not replace unrelated routes or containers.

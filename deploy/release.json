@@ -1,0 +1,23 @@
+{
+  "version": "1.0.0-alpha",
+  "sourceCommit": "f3f791c55d46796e8f8db43a49dc64285c1fe6ba",
+  "hostname": "model-designer.romagnolo.eu",
+  "entryPoints": [
+    "/",
+    "/model.html",
+    "/FCP%20Domain%20Model.html"
+  ],
+  "healthPath": "/health",
+  "runtimeFiles": [
+    {
+      "path": "index.html",
+      "bytes": 1419,
+      "sha256": "ced77300caaac0412bf912b01f7a823a358a79b25aface9697ce384b967cb985"
+    },
+    {
+      "path": "FCP Domain Model.html",
+      "bytes": 204774,
+      "sha256": "5ad6d5c679285635cefa05ad2803bfae081e2cc69698c52e8959134bec5d1744"
+    }
+  ]
+}
