@@ -19,8 +19,9 @@ function inlineSources(source, stack = []) {
 }
 
 function dataConstant(identifier, name) {
-  // JSON is embedded as script data, so a description cannot close its script tag.
-  const value = JSON.stringify(JSON.parse(readSource(name))).replace(/<\//g, '<\\/');
+  // Escape every HTML opener, including script/comment parser-state transitions.
+  // Escaping closing tags alone does not protect a literal <!-- followed by <script>.
+  const value = JSON.stringify(JSON.parse(readSource(name))).replace(/</g, '\\u003c');
   return 'const ' + identifier + '=' + value + ';';
 }
 
