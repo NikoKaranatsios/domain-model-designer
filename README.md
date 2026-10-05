@@ -1,6 +1,6 @@
 # Domain model designer
 
-Version **1.0.0 · alpha**. Open `index.html` or `model.html` in a current browser. The HTML is standalone; it includes a small, fictional task-board example and needs no build or backend.
+Version **1.0.1 · alpha**. Open `index.html` or `model.html` in a current browser. The HTML is standalone; it includes a small, fictional task-board example and needs no build or backend.
 
 - **+ Class** creates a class. Select a card and choose **Edit class** to rename it, change its description or domain area, or edit its attributes. Choose an existing domain area or type a new name; saving creates the area automatically. Types are grouped into primitives, value types, enumerations, and classes. Types and multiplicities have preset choices and a custom option. Custom multiplicities must use valid UML notation, such as `2..5`.
 - Attributes can be added, removed, and reordered, with identifier, unique-key, foreign-key, and description controls. **Delete** is visible beside the class actions and in the edit drawer. Confirmation explains which connections and referring attributes will be removed. Deleting the last class leaves a usable empty model.
@@ -10,6 +10,8 @@ Version **1.0.0 · alpha**. Open `index.html` or `model.html` in a current brows
 - **Undo / Redo** covers saved model edits, view settings, and card arrangement. Keyboard shortcuts are Ctrl/⌘ Z and Ctrl/⌘ Shift Z. History lasts for the current browser session.
 - Save drawer changes with **Save**. **Share design** produces a link containing the model, layout, and current view. The address also updates automatically after saved changes. A `file:` or localhost link needs a shared web address before it can be sent to someone on another computer.
 - Unsaved drawer edits are protected when switching or closing the drawer, undoing, or leaving the page. The in-app confirmation lets you keep editing or discard the draft. Export and Share flag unsaved edits; **Review edits** returns to the drawer so you can save them first.
+
+The included task-board example and test fixtures are fictional. Keep your private models outside the repository; exported designs, model JSON, AI briefs and saved link files are ignored by Git and container builds. A share link contains the complete model and is not encrypted.
 
 ## Export and restore
 
