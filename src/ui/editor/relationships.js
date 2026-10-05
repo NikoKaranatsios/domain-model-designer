@@ -33,7 +33,7 @@ function showRelationshipEditor(id, a, b) {
       r.b
     )}</select></label></div>
     ${editorInput('relationship-name', 'Name', r.l, 'maxlength="200"')}
-    <div id="association-settings"><div class="ed-grid">${choiceEditor('relationship-m1', 'From multiplicity', r.m1 || '1', [['0', '0 · No instances'], ...multiplicities], 'multiplicity')}${choiceEditor('relationship-m2', 'To multiplicity', r.m2 || '0..*', multiplicities, 'multiplicity')}</div>
+    <div id="association-settings"><div class="ed-grid">${choiceEditor('relationship-m1', 'From multiplicity', r.m1, [['', 'Unspecified'], ['0', '0 · No instances'], ...multiplicities], 'multiplicity')}${choiceEditor('relationship-m2', 'To multiplicity', r.m2, [['', 'Unspecified'], ['0', '0 · No instances'], ...multiplicities], 'multiplicity')}</div>
     <div class="ed-grid">${editorInput('relationship-role1', 'From role', r.role1 || '', 'maxlength="80"')}${editorInput('relationship-role2', 'To role', r.role2 || '', 'maxlength="80"')}</div>
     <label id="navigation-settings" class="ed-label">Navigation<select name="relationship-nav">${options(
       [
@@ -58,8 +58,8 @@ function relationshipKindChanged() {
   $('#association-settings')
     .querySelectorAll('input,select')
     .forEach((el) => (el.disabled = !association));
-  $('#navigation-settings').hidden = kind !== 'assoc';
-  $('[name="relationship-nav"]').disabled = kind !== 'assoc';
+  $('#navigation-settings').hidden = !association;
+  $('[name="relationship-nav"]').disabled = !association;
   const owner = $('[name="relationship-m1"]');
   [...owner.options].forEach(
     (option) =>

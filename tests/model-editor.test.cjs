@@ -177,7 +177,7 @@ test('data relationships preserve roles, multiplicities, and UML navigation', as
   );
 });
 
-test('invalid cardinalities, inheritance cycles, and composition cycles are rejected', () => {
+test('invalid cardinalities and inheritance cycles are rejected; recursive composition types are valid', () => {
   assert.throws(() => editor.multiplicity('3..1'), /upper bound/);
   assert.throws(() => editor.multiplicity('many'), /UML multiplicity/);
   let c = addClass(config, 'A');
@@ -188,7 +188,9 @@ test('invalid cardinalities, inheritance cycles, and composition cycles are reje
   assert.throws(() => relation(c, 'A', 'A', 'gen'), /itself/);
   assert.throws(() => relation(c, 'A', 'B', 'comp', { m1: '0..*' }), /at most one/);
   c = relation(c, 'A', 'B', 'comp');
-  assert.throws(() => relation(c, 'B', 'A', 'comp'), /cycle/);
+  c = relation(c, 'B', 'A', 'comp', { m1: '0..1' });
+  c = relation(c, 'A', 'A', 'comp', { m1: '0..1', role1: 'parent', role2: 'children' });
+  assert.equal(c.model.RELS.at(-1).a, c.model.RELS.at(-1).b);
   assert.throws(() => relation(c, 'A', 'B', 'dep'), /data-model/);
 });
 

@@ -28,19 +28,9 @@ function applyHighlight() {
     p.classList.toggle('hi', !!hi);
     p.classList.toggle('dim', !!dim);
     const suffix = hi ? '-h' : '';
-    const association = l.r.k === 'assoc',
-      nav = l.r.nav === undefined ? 'b' : l.r.nav;
-    const end = association
-      ? nav === 'b' || nav === 'both'
-        ? `url(#ma${suffix})`
-        : 'none'
-      : `url(#${mk(l.r.k, suffix)})`;
-    setAttr(p, 'marker-end', end);
-    setAttr(
-      p,
-      'marker-start',
-      association && (nav === 'a' || nav === 'both') ? `url(#ma${suffix})` : 'none'
-    );
+    const markers = UMLNotation.markers(l.r);
+    setAttr(p, 'marker-end', markers.end ? `url(#${markers.end}${suffix})` : 'none');
+    setAttr(p, 'marker-start', markers.start ? `url(#${markers.start}${suffix})` : 'none');
   });
   ENT.forEach((e) => {
     const el = cardEl[e.id];
@@ -78,6 +68,7 @@ function drawLabels(f) {
     return;
   }
   let h = '';
+  const annotations = UMLLabels.create(visibleNodes());
   (S.labels ? new Set(visibleWireIds()) : f.edges).forEach((id) => {
     const l = byId(id),
       p = getPts(id);
@@ -86,10 +77,22 @@ function drawLabels(f) {
       if (!m && !role) return '';
       const ux = Math.sign(b.x - a.x),
         uy = Math.sign(b.y - a.y);
-      const x = a.x + ux * 20 + (uy ? 12 : 0),
-        y = a.y + uy * 20;
-      const anchor = uy ? 'start' : ux > 0 ? 'start' : 'end';
-      return `${role ? `<text class="role" x="${x}" y="${y + (ux ? -17 : uy * 15)}" text-anchor="${anchor}" dominant-baseline="central">${esc(role)}</text>` : ''}${m ? `<text x="${x}" y="${y + (ux ? 16 : 0)}" text-anchor="${anchor}" dominant-baseline="central">${esc(m)}</text>` : ''}`;
+      const offset = (l.r.k === 'comp' || l.r.k === 'agg') && a === p.at(-1) ? 40 : 20;
+      const w = Math.max((role || '').length * 8, (m || '').length * 7) + 8,
+        height = role && m ? 32 : 18;
+      const box = annotations.place(
+        {
+          x: uy ? a.x + 12 : ux > 0 ? a.x + offset : a.x - offset - w,
+          y: uy ? (uy > 0 ? a.y + offset : a.y - offset - height) : a.y - height - 8,
+          w,
+          h: height,
+        },
+        40
+      );
+      if (!box) return '';
+      const x = box.x + 4,
+        y = box.y + 8;
+      return `${role ? `<text class="role" x="${x}" y="${y}" dominant-baseline="central">${esc(role)}</text>` : ''}${m ? `<text x="${x}" y="${y + (role ? 16 : 0)}" dominant-baseline="central">${esc(m)}</text>` : ''}`;
     };
     h += end(p[0], p[1], l.ms, l.rs) + end(p[p.length - 1], p[p.length - 2], l.mt, l.rt);
     let bi = 1,
@@ -106,8 +109,17 @@ function drawLabels(f) {
       horiz = Math.abs(a.y - b.y) < 0.5,
       mx = (a.x + b.x) / 2,
       my = (a.y + b.y) / 2;
-    if (l.r.l && l.r.l !== l.rs && l.r.l !== l.rt)
-      h += `<text class="role" x="${horiz ? mx : mx + 32}" y="${horiz ? my - (l.rs || l.rt ? 36 : 16) : my}" text-anchor="${horiz ? 'middle' : 'start'}" dominant-baseline="central">${esc(l.r.l)}</text>`;
+    if (l.r.l && l.r.l !== l.rs && l.r.l !== l.rt) {
+      const w = l.r.l.length * 8 + 8;
+      const box = annotations.place({
+        x: horiz ? mx - w / 2 : mx + 32,
+        y: horiz ? my - 30 : my - 9,
+        w,
+        h: 18,
+      });
+      if (box)
+        h += `<text class="role" x="${box.x + 4}" y="${box.y + 8}" dominant-baseline="central">${esc(l.r.l)}</text>`;
+    }
   });
   labelsEl.innerHTML = h;
 }

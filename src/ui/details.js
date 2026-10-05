@@ -13,6 +13,7 @@ function select(id) {
   } else {
     panel.hidden = true;
   }
+  if (S.auto) fit(false);
   queueURLUpdate();
   return true;
 }
@@ -67,19 +68,40 @@ function glyph(k, dir) {
         : k === 'dep'
           ? '<path d="M18 2.5L23 6L18 9.5" fill="none" stroke="currentColor"/>'
           : '';
-  return `<svg width="24" height="12" viewBox="0 0 24 12" style="color:var(--muted);${dir === 'in' ? 'transform:scaleX(-1)' : ''}"><path d="M1 6H${k === 'comp' || k === 'agg' ? 14 : k === 'gen' || k === 'real' ? 16 : 22}" stroke="currentColor"${dash}/>${end}</svg>`;
+  const flip = k === 'comp' || k === 'agg' ? dir === 'out' : dir === 'in';
+  return `<svg width="24" height="12" viewBox="0 0 24 12" style="color:var(--muted);${flip ? 'transform:scaleX(-1)' : ''}"><path d="M1 6H${k === 'comp' || k === 'agg' ? 14 : k === 'gen' || k === 'real' ? 16 : 22}" stroke="currentColor"${dash}/>${end}</svg>`;
 }
 function showPanel(id) {
   panelMode = 'details';
   const e = ENTBY[id],
     c = CTXBY[e.ctx];
-  const included = (e.includes || [])
-    .flatMap((name) => TYPES.find((type) => type.n === name).f)
-    .filter((field) => !e.f.some((own) => own.n === field.n));
+  const compiled = ModelExport.readable(designSnapshot()).classes.find((c) => c.id === id);
+  const attributes = [...compiled.attributes, ...compiled.inheritedAttributes].map((a) => ({
+    n: a.name,
+    t: a.type,
+    m: a.multiplicity.notation,
+    k: [
+      a.isIdentifier ? 'PK' : '',
+      a.isUnique ? 'UK' : '',
+      ...a.references.map((target) => 'FK:' + target),
+    ]
+      .filter(Boolean)
+      .join(' '),
+    note: [
+      a.description,
+      a.inheritedFrom
+        ? 'Inherited from ' + a.declaredIn
+        : a.source !== 'declared'
+          ? 'Included from ' + a.source
+          : '',
+    ]
+      .filter(Boolean)
+      .join(' · '),
+  }));
   const interfaces = RELS.filter((r) => r.k === 'real' && r.a === id).map((r) => r.b);
-  const pk = e.f.filter((f) => f.k.split(' ').includes('PK')).map((f) => f.n);
+  const pk = compiled.primaryKey;
   const rels = RELS.filter((r) => r.a === id || r.b === id);
-  const enums = [...new Set(e.f.map((f) => f.t).filter((t) => Object.hasOwn(ENUMS, t)))];
+  const enums = [...new Set(attributes.map((f) => f.t).filter((t) => Object.hasOwn(ENUMS, t)))];
   const keyH = (k) =>
     k
       .split(' ')
@@ -94,8 +116,19 @@ function showPanel(id) {
     const out = r.a === id,
       o = out ? r.b : r.a,
       self = r.a === r.b;
-    const txt = r.l || KTXT[r.k];
-    const m = r.m1 ? (out ? `${r.m1} → ${r.m2}` : `${r.m2} ← ${r.m1}`) : '';
+    const inverse = {
+      gen: 'generalizes',
+      real: 'is realized by',
+      comp: 'is part of',
+      agg: 'is a shared part of',
+      assoc: 'associates with',
+      dep: 'is required by',
+    };
+    const txt = r.l || (out ? KTXT[r.k] : inverse[r.k]);
+    const association = ['assoc', 'agg', 'comp'].includes(r.k);
+    const m = association
+      ? `${r.a}${r.role1 ? '.' + r.role1 : ''} [${r.m1 || 'unspecified'}] · ${r.b}${r.role2 ? '.' + r.role2 : ''} [${r.m2 || 'unspecified'}]`
+      : '';
     return `<li><span class="g">${glyph(r.k, out ? 'out' : 'in')}</span><span>${esc(txt)} ${self ? '<span class="m">itself</span>' : `<button class="lk" data-go="${esc(o)}">${esc(o)}</button>`}</span><span class="m">${esc(m)}</span><button type="button" class="ed-icon" data-edit-relationship="${r.i}" aria-label="Edit relationship ${esc(r.a)} to ${esc(r.b)}" title="Edit relationship">${icons.edit}</button></li>`;
   };
   panel.innerHTML = `<button class="ib x" data-close aria-label="Close"><svg viewBox="0 0 16 16"><path d="M4 4l8 8M12 4l-8 8"/></svg></button>
@@ -103,11 +136,10 @@ function showPanel(id) {
     <h2${e.st === 'abstract' ? ' style="font-style:italic"' : ''}>${esc(e.id)}</h2>
     <div class="ed-actions"><button type="button" class="ed-secondary" data-edit-class>Edit class</button><button type="button" class="ed-secondary" data-start-connection>Connect</button><button type="button" class="ed-secondary danger" data-delete-class="${esc(id)}">Delete</button></div>
     <div id="delete-confirmation"></div>
-    ${e.st || e.ext || interfaces.length ? `<div class="sub">${[e.st === 'interface' ? '«interface»' : e.st === 'abstract' ? 'Abstract class' : '', e.ext ? 'is a kind of ' + esc(e.ext) : '', interfaces.length ? 'implements ' + interfaces.map(esc).join(', ') : ''].filter(Boolean).join(' · ')}</div>` : ''}
+    ${e.st || compiled.superclasses.length || interfaces.length ? `<div class="sub">${[e.st === 'interface' ? '«interface»' : e.st === 'abstract' ? 'Abstract class' : '', compiled.superclasses.length ? 'is a kind of ' + compiled.superclasses.map(esc).join(', ') : '', interfaces.length ? 'implements ' + interfaces.map(esc).join(', ') : ''].filter(Boolean).join(' · ')}</div>` : ''}
     <p class="d">${esc(e.desc)}</p>
     <h3>Attributes<button type="button" class="ed-text-btn" data-add-attribute>+ Add attribute</button></h3>
-    <table class="ft"><tbody>${e.f
-      .concat(included)
+    <table class="ft"><tbody>${attributes
       .map(
         (f) =>
           `<tr><td class="f">${esc(f.n)}${f.note ? `<span class="n">${esc(f.note)}</span>` : ''}</td><td class="t">${esc(f.t)}${f.m !== '1' ? ' [' + esc(f.m) + ']' : ''}</td><td>${keyH(f.k)}</td></tr>`

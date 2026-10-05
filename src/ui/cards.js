@@ -11,8 +11,9 @@ function renderCards() {
   updateCanvasEmpty();
   $('#connect').disabled = !ENT.length;
   ENT.forEach((e) => {
-    const fields = S.attributes === 'all' ? e.f : e.f.filter((f) => f.k),
-      more = e.f.length - fields.length;
+    const declared = ModelEditor.fields(e, MODEL),
+      fields = (S.attributes === 'all' ? declared : declared.filter((f) => f.k)).slice(0, 128),
+      more = declared.length - fields.length;
     const el = document.createElement('div');
     el.className = 'card' + (e.st ? ' st' : '') + (e.st === 'abstract' ? ' abstract' : '');
     el.dataset.id = e.id;

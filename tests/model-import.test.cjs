@@ -14,7 +14,7 @@ const context = vm.createContext({
   btoa,
   atob,
 });
-for (const file of ['design-url', 'model-editor', 'model-export', 'model-import'])
+for (const file of ['design-url', 'model-editor', 'model-analysis', 'model-export', 'model-import'])
   vm.runInContext(readFileSync(`${__dirname}/../src/${file}.js`, 'utf8'), context);
 const { importer, exporter, codec, editor } = vm.runInContext(
   '({importer:ModelImport,exporter:ModelExport,codec:DesignURL,editor:ModelEditor})',
@@ -57,8 +57,8 @@ test('Model JSON import preserves the complete events graph and shared-link roun
   const source = graph(example),
     c = imported(source);
   assert.deepEqual(graph(c), source);
-  assert.equal(c.model.ENT.length, 27);
-  assert.equal(new Set(c.layout.cell).size, 27);
+  assert.equal(c.model.ENT.length, 28);
+  assert.equal(new Set(c.layout.cell).size, 28);
   assert.equal(c.view.camera.fit, true);
   assert.deepEqual(clone(await codec.decode(await codec.encode(c))), c);
 });

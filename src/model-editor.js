@@ -88,21 +88,60 @@ const ModelEditor = (() => {
     }
     return rels.some((r) => r.k === kind && visit(r.a));
   }
-  function height(e, attributes) {
-    const count = attributes === 'all' ? e.f.length : e.f.filter((f) => f.k).length;
-    return Math.min(2400, (e.st ? 46 : 34) + 10 + count * 18 + (count < e.f.length ? 20 : 0));
+  function fields(e, model) {
+    const result = [...e.f],
+      names = new Set(result.map((f) => f.n));
+    for (const name of e.includes || [])
+      for (const f of model?.TYPES.find((t) => t.n === name)?.f || [])
+        if (!names.has(f.n)) {
+          result.push(f);
+          names.add(f.n);
+        }
+    return result;
+  }
+  function height(e, attributes, model) {
+    const attributesList = fields(e, model);
+    const count =
+      attributes === 'all' ? attributesList.length : attributesList.filter((f) => f.k).length;
+    return (
+      (e.st ? 46 : 34) +
+      10 +
+      Math.min(128, count) * 18 +
+      (Math.min(128, count) < attributesList.length ? 20 : 0)
+    );
   }
   function resize(config, width) {
     for (const e of config.model.ENT) {
       const n = config.layout.nodes[e.id],
-        h = height(e, config.view.attributes);
+        h = height(e, config.view.attributes, config.model);
       if (n.h !== h || (width && n.w !== width)) config.layout.routes = {};
       n.h = h;
       if (width) n.w = width;
     }
   }
+  function nextRelationshipId(rels) {
+    const used = new Set(rels.map((r) => r.i));
+    let i = 0;
+    while (used.has(i)) i++;
+    return i;
+  }
+  function normalize(input) {
+    const c = clone(DesignURL.validate(input));
+    for (const e of c.model.ENT)
+      if (e.ext && !c.model.RELS.some((r) => r.k === 'gen' && r.a === e.id && r.b === e.ext))
+        c.model.RELS.push({
+          i: nextRelationshipId(c.model.RELS),
+          a: e.id,
+          b: e.ext,
+          k: 'gen',
+          l: '',
+          m1: '',
+          m2: '',
+        });
+    return DesignURL.validate(c);
+  }
   function apply(input, command) {
-    const c = clone(DesignURL.validate(input)),
+    const c = normalize(input),
       m = c.model,
       l = c.layout,
       v = c.view;
@@ -112,9 +151,8 @@ const ModelEditor = (() => {
       return e;
     };
     if (command.type === 'import-design') {
-      const imported = clone(DesignURL.validate(command.config));
+      const imported = normalize(command.config);
       check(!cycle(imported.model.RELS, 'gen'), 'Inheritance must not form a cycle.');
-      check(!cycle(imported.model.RELS, 'comp'), 'Composition must not form a cycle.');
       return imported;
     } else if (command.type === 'class') {
       const data = command.data,
@@ -227,7 +265,7 @@ const ModelEditor = (() => {
             (Object.keys(l.nodes).length
               ? Math.max(...Object.values(l.nodes).map((n) => n.w))
               : l.cardWidth || 280),
-          h: height(e, v.attributes),
+          h: height(e, v.attributes, m),
         };
         l.routes = {};
       }
@@ -294,7 +332,7 @@ const ModelEditor = (() => {
         'Choose a data-model relationship.'
       );
       const r = {
-        i: old ? old.i : Math.max(-1, ...m.RELS.map((r) => r.i)) + 1,
+        i: old ? old.i : nextRelationshipId(m.RELS),
         a: data.a,
         b: data.b,
         k: data.k,
@@ -303,8 +341,9 @@ const ModelEditor = (() => {
         m2: '',
       };
       if (['assoc', 'agg', 'comp'].includes(r.k)) {
-        r.m1 = r.k === 'comp' ? wholeMultiplicity(data.m1) : multiplicity(data.m1);
-        r.m2 = multiplicity(data.m2);
+        r.m1 =
+          r.k === 'comp' ? wholeMultiplicity(data.m1) : data.m1 === '' ? '' : multiplicity(data.m1);
+        r.m2 = data.m2 === '' ? '' : multiplicity(data.m2);
         r.role1 = String(data.role1 || '').trim();
         r.role2 = String(data.role2 || '').trim();
         r.nav = data.nav || 'none';
@@ -315,12 +354,12 @@ const ModelEditor = (() => {
           ['0', '1', '0..1'].includes(r.m1),
           'A part can have at most one composite owner. Use 1 or 0..1 at the whole end.'
         );
-      if (['gen', 'real', 'comp'].includes(r.k))
-        check(r.a !== r.b, 'Inheritance and composition cannot connect a class to itself.');
+      if (['gen', 'real'].includes(r.k))
+        check(r.a !== r.b, 'Inheritance and realization cannot connect a class to itself.');
       if (r.k === 'gen')
         check(
-          find(r.a).st !== 'interface' && find(r.b).st !== 'interface',
-          'Use class inheritance between classes.'
+          (find(r.a).st === 'interface') === (find(r.b).st === 'interface'),
+          'Generalization must connect classes to classes or interfaces to interfaces.'
         );
       const rels = m.RELS.filter((other) => other !== old);
       check(
@@ -338,7 +377,6 @@ const ModelEditor = (() => {
       );
       rels.push(r);
       check(!cycle(rels, 'gen'), 'Inheritance must not form a cycle.');
-      check(!cycle(rels, 'comp'), 'Composition must not form a cycle.');
       m.RELS = rels;
       for (const id of new Set([r.a, old && old.a].filter(Boolean))) {
         const e = find(id),
@@ -478,5 +516,5 @@ const ModelEditor = (() => {
     } else throw new Error('Unknown editor command.');
     return DesignURL.validate(c);
   }
-  return { apply, multiplicity, wholeMultiplicity, height };
+  return { apply, normalize, multiplicity, wholeMultiplicity, height, fields };
 })();

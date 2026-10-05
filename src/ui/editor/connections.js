@@ -170,8 +170,9 @@ panel.addEventListener('submit', async (ev) => {
       if (!form.isConnected || stamp !== importReadRevision) return;
       importPreview = ModelImport.parse(source);
       const m = importPreview.model;
+      const report = modelReport(importPreview);
       $('#import-preview').innerHTML =
-        `<div class="ed-confirm"><h3>${esc(m.title || 'Domain Model')}</h3><p>${importCount(m.ENT.length, 'class', 'classes')} · ${importCount(m.RELS.length, 'relationship')} · ${importCount(m.CTX.length, 'domain area')}<br>${importCount(Object.keys(m.ENUMS).length, 'enumeration')} · ${importCount(m.TYPES.length, 'value type')}</p><p>Import replaces the current design. Undo restores it.</p><button class="share-btn" type="button" data-apply-import>Import model</button></div>`;
+        `<div class="ed-confirm"><h3>${esc(m.title || 'Domain Model')}</h3><p>${importCount(m.ENT.length, 'class', 'classes')} · ${importCount(m.RELS.length, 'relationship')} · ${importCount(m.CTX.length, 'domain area')}<br>${importCount(Object.keys(m.ENUMS).length, 'enumeration')} · ${importCount(m.TYPES.length, 'value type')}</p><p>${esc(reportSummary(report))}${report.issues.length ? ' Use Check after importing to review the findings.' : ''}</p><p>Import replaces the current design. Undo restores it.</p><button class="share-btn" type="button" data-apply-import>Import model</button></div>`;
       $('[data-apply-import]').focus();
     } catch (error) {
       if (form.isConnected && stamp === importReadRevision) editorError(error);

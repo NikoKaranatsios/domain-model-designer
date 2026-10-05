@@ -33,7 +33,7 @@ test('the shipped fictional example validates and restores independently of test
   const example = JSON.parse(defaults);
   assert.deepEqual(clone(await codec.decode(await codec.encode(example))).model, example.model);
   assert.equal(example.model.title, 'Events platform example');
-  assert.equal(example.model.ENT.length, 27);
+  assert.equal(example.model.ENT.length, 28);
   assert.equal(example.model.CTX.length, 8);
 });
 
@@ -145,21 +145,25 @@ test('shared links reject inheritance cycles including legacy parent fields and 
   await assert.rejects(codec.decode(pack(conflict)), /parent field conflicts/);
 });
 
-test('imports enforce composition ownership, cycles, and realization targets', async () => {
+test('imports enforce object-ownership bounds and realization targets, allowing recursive class types', async () => {
   const owner = clone(config);
   owner.model.RELS.find((r) => r.k === 'comp').m1 = '0..*';
   await assert.rejects(codec.decode(pack(owner)), /at most one/);
   const self = clone(config),
     composition = self.model.RELS.find((r) => r.k === 'comp');
   composition.b = composition.a;
-  await assert.rejects(codec.decode(pack(self)), /itself/);
+  composition.m1 = '0..1';
+  assert.equal(
+    (await codec.decode(pack(self))).model.RELS.find((r) => r.i === composition.i).b,
+    composition.a
+  );
   const cycle = clone(config);
   for (const [i, a, b] of [
     [1000, 'BaseRecord', 'TextRecord'],
     [1001, 'TextRecord', 'BaseRecord'],
   ])
     cycle.model.RELS.push({ i, a, b, k: 'comp', l: '', m1: '1', m2: '*' });
-  await assert.rejects(codec.decode(pack(cycle)), /Composition.*cycle/);
+  assert.equal((await codec.decode(pack(cycle))).model.RELS.length, cycle.model.RELS.length);
   const real = clone(config);
   real.model.RELS.find((r) => r.k === 'real').b = 'FileResource';
   await assert.rejects(codec.decode(pack(real)), /point to an interface/);

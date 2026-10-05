@@ -10,6 +10,7 @@ if (incoming !== null) {
     loadError = error;
   }
 }
+opened = ModelEditor.normalize(opened);
 let MODEL = JSON.parse(JSON.stringify(opened.model)),
   BASE = JSON.parse(JSON.stringify(opened.layout));
 let { CTX, ENT, ENUMS, ENUMNOTES, TYPES, PRIMS, RELS } = MODEL;
@@ -28,19 +29,7 @@ let CTXBY,
 function rebuildIndexes() {
   CTXBY = Object.fromEntries(CTX.map((c) => [c.id, c]));
   ENTBY = Object.fromEntries(ENT.map((e) => [e.id, e]));
-  LINES = RELS.map((r) => {
-    const comp = r.k === 'comp' || r.k === 'agg';
-    return {
-      id: 'e' + r.i,
-      r,
-      src: comp ? r.b : r.a,
-      tgt: comp ? r.a : r.b,
-      ms: comp ? r.m2 : r.m1,
-      mt: comp ? r.m1 : r.m2,
-      rs: comp ? r.role2 : r.role1,
-      rt: comp ? r.role1 : r.role2,
-    };
-  });
+  LINES = RELS.map(UMLNotation.line);
   ROUTED = LINES.filter((l) => l.src !== l.tgt);
   LOOPS = LINES.filter((l) => l.src === l.tgt);
 }

@@ -15,6 +15,7 @@
   /* @source ui/editor/classes.js */
   /* @source ui/editor/relationships.js */
   /* @source ui/editor/settings.js */
+  /* @source ui/editor/review.js */
   /* @source ui/editor/connections.js */
   /* @source ui/editor/events.js */
   /* @source ui/boot.js */

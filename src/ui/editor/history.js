@@ -150,6 +150,7 @@ function drawer(title, kicker = 'Data model') {
   panel.innerHTML = `<button class="ib x" type="button" data-close aria-label="Close drawer">${icons.close}</button><div class="eb">${esc(kicker)}</div><h2>${esc(title)}</h2><div id="editor-body"></div>`;
   panel.hidden = false;
   panel.scrollTop = 0;
+  if (S.auto) fit(false);
   return $('#editor-body');
 }
 function editorError(error) {
@@ -223,6 +224,7 @@ function restoreConfig(config) {
     apply();
   }
   queueURLUpdate();
+  updateModelCheck();
   updateHistory();
 }
 function commit(command, after) {

@@ -46,14 +46,18 @@ test('source changes require rebuilding and script-shaped model descriptions rem
     );
     const path = join(directory, 'src/default-model.json');
     const model = JSON.parse(readFileSync(path));
-    const description = '</script><script>alert(1)</script>';
+    const description = '<!--<script></script><script>alert(1)</script>" & < >';
     model.ENT[0].desc = description;
     writeFileSync(path, JSON.stringify(model));
     execFileSync(process.execPath, [command]);
     execFileSync(process.execPath, [join(directory, 'scripts/security-policy.cjs')]);
     const html = readFileSync(join(directory, 'model.html'), 'utf8');
     assert.equal(defaults(html).model.ENT[0].desc, description);
-    assert.equal([...html.matchAll(/<script\b[^>]*>[\s\S]*?<\/script>/g)].length, 8);
+    const dataScript = [...html.matchAll(/<script[^>]*>([\s\S]*?)<\/script>/g)]
+      .map((match) => match[1])
+      .find((source) => /const\s+DM\s*=/.test(source));
+    assert.doesNotMatch(dataScript, /<!--|<script|<\/script/i);
+    assert.equal([...html.matchAll(/<script\b[^>]*>[\s\S]*?<\/script>/g)].length, 11);
   } finally {
     rmSync(directory, { recursive: true, force: true });
   }

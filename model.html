@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf8" />
     <meta name="referrer" content="no-referrer" />
-    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-tx41shXR1K93W7tuSUE2SUWoGPp3U1l0ZDeWIiPLh3A=' 'sha256-rX5aBgXcI2joJd6sKiK9Ti4wgEslywX9JPtbfK1kuko=' 'sha256-5vnJVrU7waR+SZtwE1mVkf0dfKWaDkb1jveU7jbtNIs=' 'sha256-K3GZBSC5s80HlfMSjEVwjaPGbUfLcEqJ2dYz7sAZ7oY=' 'sha256-cSIIlxcvePkjrfJSXTh1n/mK29uvgAw1FdO/3HOSAcg=' 'sha256-3TJMzhrz61GgnKc8iZEm+omXCQxA2UjuXba+V8xtsyI=' 'sha256-nyLAUeb7DAY6PK1y6lKeuxzGppvPKoYfMW38QnQtDnw=' 'sha256-iuZNJB7fhHbqbX9K1YmM05OphbPoDoZf315aGlCHOJk='; script-src-attr 'none'; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src data:; connect-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-tx41shXR1K93W7tuSUE2SUWoGPp3U1l0ZDeWIiPLh3A=' 'sha256-EezbPVqYUZQM7gWFF0aa4iQ2RpqOtzKhaTRLFHDKgM8=' 'sha256-5vnJVrU7waR+SZtwE1mVkf0dfKWaDkb1jveU7jbtNIs=' 'sha256-Dg7/asqXJGgbT4Iswip6CWb/0yxIZ3Prxtt/W4Qpn5o=' 'sha256-NcaaMKE6dgA48uYOeC45P4UeQ/2ByTg3FH+6Jj8q8V0=' 'sha256-XTmGqhU5N9OzcDLiBtL4qWp5f6C9qwDu2RyVLbuWuKY=' 'sha256-f2A0rgxOHgBDAW289hz9+s1SZzee3SzYVJc3NKOXaXc=' 'sha256-Pbe7CKPJ2Kdt3eb2A6Fc1yOyuj6HQ03QP+pJRGUCSm4=' 'sha256-u+NH0eHLAisMnuiJa6hry1XenLK5d98TNYry9vdFvoA=' 'sha256-7Up9QmVbpQLXZnJxBshphFi4OhVz+IMsjXxu3kGbdwk=' 'sha256-LON+kGYlAmVMLbT8IOjtfIZu4NXL42gyp1dOTpWmjEU='; script-src-attr 'none'; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src data:; connect-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'" />
     <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
     <style>
       :root {
@@ -39,7 +39,7 @@ img {
       href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+PHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNyIgZmlsbD0iI2ZmZiIvPjxnIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzJCNUM2MSIgc3Ryb2tlLXdpZHRoPSIxLjYiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxyZWN0IHg9IjQiIHk9IjUiIHdpZHRoPSIxMCIgaGVpZ2h0PSI5IiByeD0iMiIvPjxyZWN0IHg9IjE4IiB5PSIxOCIgd2lkdGg9IjEwIiBoZWlnaHQ9IjkiIHJ4PSIyIi8+PHBhdGggZD0iTTQgOWgxMG00IDEzaDEwTTkgMTR2OWg5Ii8+PC9nPjwvc3ZnPg=="
     />
     <meta name="application-name" content="Domain Model Designer" />
-    <meta name="application-version" content="1.1.0" />
+    <meta name="application-version" content="1.2.0" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -684,7 +684,7 @@ body:has(#panel:not([hidden])) #share-controls {
 }
 .rl li {
   display: grid;
-  grid-template-columns: 26px minmax(0, 1fr) auto 24px;
+  grid-template-columns: 26px minmax(0, 1fr) 24px;
   gap: 6px;
   align-items: baseline;
   font-size: 13px;
@@ -695,11 +695,23 @@ body:has(#panel:not([hidden])) #share-controls {
   display: flex;
   align-items: center;
   height: 14px;
+  grid-column: 1;
+  grid-row: 1;
 }
 .rl .m {
   font: 11.5px var(--f-mono);
   color: var(--muted);
-  white-space: nowrap;
+  white-space: normal;
+  grid-column: 2;
+  grid-row: 2;
+}
+.rl li > span:not(.g):not(.m) {
+  grid-column: 2;
+  grid-row: 1;
+}
+.rl .ed-icon {
+  grid-column: 3;
+  grid-row: 1;
 }
 .lk {
   background: none;
@@ -1282,7 +1294,7 @@ body:has(#panel:not([hidden])) #zoom {
   }
   #panel {
     top: auto;
-    height: min(78dvh, calc(100dvh - 180px - env(safe-area-inset-top, 0px)));
+    height: min(78dvh, calc(100dvh - var(--aux-top) - 60px));
     width: 100vw;
     border-left: 0;
     border-top: 1px solid var(--line);
@@ -1331,6 +1343,9 @@ body:has(#panel:not([hidden])) #zoom {
     transition: none !important;
   }
 }
+.tool-btn.has-issues {
+  color: var(--danger);
+}
     </style>
   </head>
   <body>
@@ -1370,6 +1385,9 @@ body:has(#panel:not([hidden])) #zoom {
         >Connect
       </button>
       <button id="view-settings" type="button" class="tool-btn">View</button>
+      <button id="check-model" type="button" class="tool-btn" aria-label="Check model">
+        Check
+      </button>
       <button id="import-model" type="button" class="tool-btn" aria-label="Import model">
         <svg viewBox="0 0 16 16" aria-hidden="true">
           <path d="M8 10V2m-3 3 3-3 3 3M3 10v4h10v-4" /></svg
@@ -1961,8 +1979,8 @@ body:has(#panel:not([hidden])) #zoom {
 })(typeof self !== 'undefined' ? self : this);
     </script>
     <script>
-      const DM={"title":"Events platform example","CTX":[{"id":"accounts","name":"Accounts & organisers","desc":"People who sign in, organisations that host events, and their team memberships.","color":"#2B5C61"},{"id":"events","name":"Events","desc":"Reusable event listings, their dated occurrences, and discovery categories.","color":"#5B4FA6"},{"id":"venues","name":"Venues","desc":"Physical venues and their bookable rooms or spaces.","color":"#386C97"},{"id":"programme","name":"Programme","desc":"The sessions and speakers within an event occurrence.","color":"#A2522C"},{"id":"ticketing","name":"Ticketing","desc":"Ticket products, capacity, sales windows, and temporary checkout reservations.","color":"#8A600E"},{"id":"sales","name":"Sales & payments","desc":"Purchases, price snapshots, discounts, payment attempts, and partial refunds.","color":"#963D60"},{"id":"attendance","name":"Attendance","desc":"Ticket holders, issued tickets, transfers, admission records, and waiting lists.","color":"#4C5C6B"},{"id":"communications","name":"Communications","desc":"Event announcements and a record of each email delivery.","color":"#596C3E"}],"ENT":[{"id":"Account","ctx":"accounts","desc":"A sign-in account. A buyer, organiser team member, or attendee may use the same account. Authentication secrets belong in a separate identity system.","f":[{"n":"account_id","t":"UUID","m":"1","k":"PK","note":""},{"n":"email","t":"String","m":"1","k":"UK","note":"Unique after trimming and case-insensitive comparison."},{"n":"display_name","t":"String","m":"1","k":"","note":""},{"n":"status","t":"AccountStatus","m":"1","k":"","note":""},{"n":"created_at","t":"DateTime","m":"1","k":"","note":""}]},{"id":"Organizer","ctx":"accounts","desc":"An organisation or individual that owns event listings and receives their sales proceeds.","f":[{"n":"organizer_id","t":"UUID","m":"1","k":"PK","note":""},{"n":"name","t":"String","m":"1","k":"","note":""},{"n":"slug","t":"String","m":"1","k":"UK","note":""},{"n":"contact_email","t":"String","m":"1","k":"","note":""},{"n":"created_at","t":"DateTime","m":"1","k":"","note":""}],"checks":["At least one active OrganizerMember has the owner role."]},{"id":"OrganizerMember","ctx":"accounts","desc":"Connects an account to an organiser team and records its role. One account can belong to several organisers.","f":[{"n":"membership_id","t":"UUID","m":"1","k":"PK","note":""},{"n":"organizer_id","t":"UUID","m":"1","k":"FK:Organizer","note":""},{"n":"account_id","t":"UUID","m":"1","k":"FK:Account","note":""},{"n":"role","t":"OrganizerRole","m":"1","k":"","note":""},{"n":"joined_at","t":"DateTime","m":"1","k":"","note":""}],"uk":["(organizer_id, account_id)"]},{"id":"Category","ctx":"events","desc":"A reusable discovery category, such as music or workshops. This is a controlled classification, not an event owner.","f":[{"n":"category_id","t":"UUID","m":"1","k":"PK","note":""},{"n":"name","t":"String","m":"1","k":"UK","note":""},{"n":"slug","t":"String","m":"1","k":"UK","note":""}]},{"id":"Event","ctx":"events","desc":"The public listing and shared description of an event. Each dated run is an EventOccurrence; recurring events reuse this listing.","f":[{"n":"event_id","t":"UUID","m":"1","k":"PK","note":""},{"n":"organizer_id","t":"UUID","m":"1","k":"FK:Organizer","note":""},{"n":"title","t":"String","m":"1","k":"","note":""},{"n":"slug","t":"String","m":"1","k":"UK","note":""},{"n":"description","t":"String","m":"1","k":"","note":""},{"n":"status","t":"EventStatus","m":"1","k":"","note":""},{"n":"created_at","t":"DateTime","m":"1","k":"","note":""}]},{"id":"EventCategory","ctx":"events","desc":"An explicit link that allows an event to appear in multiple categories without duplicating event or category data.","f":[{"n":"event_id","t":"UUID","m":"1","k":"PK FK:Event","note":""},{"n":"category_id","t":"UUID","m":"1","k":"PK FK:Category","note":""}]},{"id":"EventOccurrence","ctx":"events","desc":"One dated run of an event. It has its own time, location, capacity, programme, ticket products, and waiting list.","f":[{"n":"occurrence_id","t":"UUID","m":"1","k":"PK","note":""},{"n":"event_id","t":"UUID","m":"1","k":"FK:Event","note":""},{"n":"venue_space_id","t":"UUID","m":"0..1","k":"FK:VenueSpace","note":""},{"n":"online_url","t":"String","m":"0..1","k":"","note":""},{"n":"starts_at","t":"DateTime","m":"1","k":"","note":""},{"n":"ends_at","t":"DateTime","m":"1","k":"","note":""},{"n":"time_zone","t":"String","m":"1","k":"","note":"IANA time-zone name used to display the UTC timestamps."},{"n":"capacity","t":"Integer","m":"1","k":"","note":"Maximum number of issued valid tickets plus active, unexpired reserved places."},{"n":"status","t":"OccurrenceStatus","m":"1","k":"","note":""}],"checks":["ends_at > starts_at; capacity >= 0.","At least one of venue_space_id and online_url is present; both may be set for a hybrid event.","For a physical occurrence, capacity <= its venue space capacity."]},{"id":"Venue","ctx":"venues","desc":"A physical location that can contain one or more event spaces. The address is a value object, not a separate business entity.","f":[{"n":"venue_id","t":"UUID","m":"1","k":"PK","note":""},{"n":"name","t":"String","m":"1","k":"","note":""},{"n":"address","t":"PostalAddress","m":"1","k":"","note":""},{"n":"accessibility_notes","t":"String","m":"0..1","k":"","note":""}]},{"id":"VenueSpace","ctx":"venues","desc":"A room, hall, stage, or other bookable space within a venue. Different event occurrences can reuse the same space.","f":[{"n":"venue_space_id","t":"UUID","m":"1","k":"PK","note":""},{"n":"venue_id","t":"UUID","m":"1","k":"FK:Venue","note":""},{"n":"name","t":"String","m":"1","k":"","note":""},{"n":"capacity","t":"Integer","m":"1","k":"","note":""}],"uk":["(venue_id, name)"],"checks":["capacity > 0."]},{"id":"Session","ctx":"programme","desc":"A talk, performance, workshop, or other scheduled activity within one occurrence. Sessions do not sell separate tickets in this example.","f":[{"n":"session_id","t":"UUID","m":"1","k":"PK","note":""},{"n":"occurrence_id","t":"UUID","m":"1","k":"FK:EventOccurrence","note":""},{"n":"venue_space_id","t":"UUID","m":"0..1","k":"FK:VenueSpace","note":""},{"n":"title","t":"String","m":"1","k":"","note":""},{"n":"description","t":"String","m":"1","k":"","note":""},{"n":"starts_at","t":"DateTime","m":"1","k":"","note":""},{"n":"ends_at","t":"DateTime","m":"1","k":"","note":""}],"checks":["starts_at < ends_at; the session is within its occurrence time range.","When venue_space_id is set, it belongs to the occurrence venue."]},{"id":"Speaker","ctx":"programme","desc":"A reusable public speaker or performer profile. Being a speaker does not require having a sign-in account.","f":[{"n":"speaker_id","t":"UUID","m":"1","k":"PK","note":""},{"n":"name","t":"String","m":"1","k":"","note":""},{"n":"biography","t":"String","m":"1","k":"","note":""},{"n":"website","t":"String","m":"0..1","k":"","note":""}]},{"id":"SessionSpeaker","ctx":"programme","desc":"Connects speakers to sessions. A session can have several speakers, and a speaker can appear in several sessions.","f":[{"n":"session_id","t":"UUID","m":"1","k":"PK FK:Session","note":""},{"n":"speaker_id","t":"UUID","m":"1","k":"PK FK:Speaker","note":""},{"n":"role","t":"String","m":"1","k":"","note":"For example host, speaker, or performer."},{"n":"display_order","t":"Integer","m":"1","k":"","note":""}],"checks":["display_order >= 0."]},{"id":"TicketType","ctx":"ticketing","desc":"A sellable ticket product for one occurrence, such as general admission or a concession. Capacity and sales windows belong to this product.","f":[{"n":"ticket_type_id","t":"UUID","m":"1","k":"PK","note":""},{"n":"occurrence_id","t":"UUID","m":"1","k":"FK:EventOccurrence","note":""},{"n":"name","t":"String","m":"1","k":"","note":""},{"n":"description","t":"String","m":"1","k":"","note":""},{"n":"price","t":"Money","m":"1","k":"","note":""},{"n":"capacity","t":"Integer","m":"1","k":"","note":""},{"n":"max_per_order","t":"Integer","m":"1","k":"","note":""},{"n":"sales_start_at","t":"DateTime","m":"1","k":"","note":""},{"n":"sales_end_at","t":"DateTime","m":"1","k":"","note":""}],"uk":["(occurrence_id, name)"],"checks":["capacity >= 0; max_per_order > 0.","sales_start_at < sales_end_at <= occurrence.starts_at.","Issued non-voided tickets plus active, unexpired reservations do not exceed ticket-type capacity or occurrence capacity."]},{"id":"TicketReservation","ctx":"ticketing","desc":"A temporary hold on a ticket quantity during checkout. Conversion releases the hold as the matching tickets are issued; an expired hold does not consume capacity.","f":[{"n":"reservation_id","t":"UUID","m":"1","k":"PK","note":""},{"n":"order_id","t":"UUID","m":"1","k":"FK:Order","note":""},{"n":"ticket_type_id","t":"UUID","m":"1","k":"FK:TicketType","note":""},{"n":"quantity","t":"Integer","m":"1","k":"","note":""},{"n":"expires_at","t":"DateTime","m":"1","k":"","note":""},{"n":"status","t":"ReservationStatus","m":"1","k":"","note":""},{"n":"created_at","t":"DateTime","m":"1","k":"","note":""}],"uk":["(order_id, ticket_type_id)"],"checks":["quantity > 0 and quantity <= ticket_type.max_per_order.","An active reservation counts only while expires_at is in the future.","A converted reservation matches the quantity of its order item and is replaced by issued tickets."]},{"id":"DiscountCode","ctx":"sales","desc":"An organiser-owned discount, optionally restricted to one event. Its terms are copied into order-item price snapshots at purchase time.","f":[{"n":"discount_code_id","t":"UUID","m":"1","k":"PK","note":""},{"n":"organizer_id","t":"UUID","m":"1","k":"FK:Organizer","note":""},{"n":"event_id","t":"UUID","m":"0..1","k":"FK:Event","note":""},{"n":"code","t":"String","m":"1","k":"","note":""},{"n":"kind","t":"DiscountKind","m":"1","k":"","note":""},{"n":"value","t":"Decimal","m":"1","k":"","note":""},{"n":"currency","t":"String","m":"0..1","k":"","note":"Three-letter currency code; required for a fixed-amount discount."},{"n":"valid_from","t":"DateTime","m":"1","k":"","note":""},{"n":"valid_until","t":"DateTime","m":"1","k":"","note":""},{"n":"max_redemptions","t":"Integer","m":"0..1","k":"","note":""}],"uk":["(organizer_id, code)"],"checks":["valid_from < valid_until; value > 0; max_redemptions is absent or > 0.","Percentage discounts have value <= 100 and no currency; fixed-amount discounts require a currency.","A restricted event belongs to the same organiser; a code applies only to eligible orders."]},{"id":"Order","ctx":"sales","desc":"One checkout with a single organiser and currency. The buyer may purchase tickets for several attendees; guest checkout does not require an account.","f":[{"n":"order_id","t":"UUID","m":"1","k":"PK","note":""},{"n":"organizer_id","t":"UUID","m":"1","k":"FK:Organizer","note":""},{"n":"buyer_account_id","t":"UUID","m":"0..1","k":"FK:Account","note":""},{"n":"discount_code_id","t":"UUID","m":"0..1","k":"FK:DiscountCode","note":""},{"n":"buyer_email","t":"String","m":"1","k":"","note":"Contact snapshot retained with the purchase."},{"n":"status","t":"OrderStatus","m":"1","k":"","note":""},{"n":"total","t":"Money","m":"1","k":"","note":""},{"n":"created_at","t":"DateTime","m":"1","k":"","note":""},{"n":"confirmed_at","t":"DateTime","m":"0..1","k":"","note":""}],"checks":["All order items belong to this organiser and use the order currency.","total.amount equals the sum of order-item totals.","A confirmed order has at least one item; successful payments cover its total. Free orders need no payment.","A discount is redeemed once per confirmed order; confirmed redemptions do not exceed its limit."]},{"id":"OrderItem","ctx":"sales","desc":"A purchased quantity of one ticket type. Price, discount, and tax are immutable snapshots; later ticket-price changes do not change this purchase.","f":[{"n":"order_item_id","t":"UUID","m":"1","k":"PK","note":""},{"n":"order_id","t":"UUID","m":"1","k":"FK:Order","note":""},{"n":"ticket_type_id","t":"UUID","m":"1","k":"FK:TicketType","note":""},{"n":"quantity","t":"Integer","m":"1","k":"","note":""},{"n":"unit_price","t":"Money","m":"1","k":"","note":""},{"n":"discount","t":"Money","m":"1","k":"","note":""},{"n":"tax","t":"Money","m":"1","k":"","note":""},{"n":"total","t":"Money","m":"1","k":"","note":""}],"uk":["(order_id, ticket_type_id)"],"checks":["quantity > 0 and quantity <= ticket_type.max_per_order.","All money values use the order currency; discount <= quantity * unit_price.","total.amount = quantity * unit_price.amount - discount.amount + tax.amount.","A confirmed order item issues exactly quantity tickets; voided tickets remain in its history."]},{"id":"Payment","ctx":"sales","desc":"One payment attempt against an order. Failed attempts are retained and a later attempt has a separate identity. No card numbers or payment secrets are stored.","f":[{"n":"payment_id","t":"UUID","m":"1","k":"PK","note":""},{"n":"order_id","t":"UUID","m":"1","k":"FK:Order","note":""},{"n":"provider","t":"String","m":"1","k":"","note":""},{"n":"provider_reference","t":"String","m":"0..1","k":"","note":""},{"n":"idempotency_key","t":"String","m":"1","k":"UK","note":""},{"n":"amount","t":"Money","m":"1","k":"","note":""},{"n":"status","t":"PaymentStatus","m":"1","k":"","note":""},{"n":"created_at","t":"DateTime","m":"1","k":"","note":""},{"n":"paid_at","t":"DateTime","m":"0..1","k":"","note":""}],"uk":["(provider, provider_reference) when provider_reference is present"],"checks":["amount.amount > 0 and uses the order currency.","The sum of successful payments does not exceed the order total; paid_at is present for succeeded payments."]},{"id":"Refund","ctx":"sales","desc":"One full or partial return of a successful payment. The affected order-item quantities are recorded in RefundItem.","f":[{"n":"refund_id","t":"UUID","m":"1","k":"PK","note":""},{"n":"payment_id","t":"UUID","m":"1","k":"FK:Payment","note":""},{"n":"provider_reference","t":"String","m":"0..1","k":"","note":""},{"n":"idempotency_key","t":"String","m":"1","k":"UK","note":""},{"n":"amount","t":"Money","m":"1","k":"","note":""},{"n":"reason","t":"String","m":"1","k":"","note":""},{"n":"status","t":"RefundStatus","m":"1","k":"","note":""},{"n":"created_at","t":"DateTime","m":"1","k":"","note":""},{"n":"refunded_at","t":"DateTime","m":"0..1","k":"","note":""}],"checks":["The payment succeeded; the refund uses its currency and has a positive amount.","amount.amount equals the sum of refund-item amounts.","Succeeded plus pending refunds do not exceed the payment amount; succeeded refunds have refunded_at."]},{"id":"RefundItem","ctx":"sales","desc":"Allocates a refund to a quantity from one original order item, making partial ticket refunds explicit.","f":[{"n":"refund_item_id","t":"UUID","m":"1","k":"PK","note":""},{"n":"refund_id","t":"UUID","m":"1","k":"FK:Refund","note":""},{"n":"order_item_id","t":"UUID","m":"1","k":"FK:OrderItem","note":""},{"n":"quantity","t":"Integer","m":"1","k":"","note":""},{"n":"amount","t":"Money","m":"1","k":"","note":""}],"uk":["(refund_id, order_item_id)"],"checks":["quantity > 0; amount.amount > 0; the order item belongs to the refunded payment order.","Pending and succeeded refunded quantities and amounts do not exceed the original order item.","A succeeded refund voids exactly quantity tickets linked to this refund item."]},{"id":"Attendee","ctx":"attendance","desc":"A person who can hold tickets or join a waiting list. The attendee may differ from the buyer and may optionally link to a sign-in account.","f":[{"n":"attendee_id","t":"UUID","m":"1","k":"PK","note":""},{"n":"account_id","t":"UUID","m":"0..1","k":"UK FK:Account","note":""},{"n":"name","t":"String","m":"1","k":"","note":""},{"n":"email","t":"String","m":"1","k":"","note":""},{"n":"created_at","t":"DateTime","m":"1","k":"","note":""}]},{"id":"Ticket","ctx":"attendance","desc":"One issued admission for one person, derived from its order item and ticket type. It may be unassigned until claimed; the buyer is not automatically the attendee.","f":[{"n":"ticket_id","t":"UUID","m":"1","k":"PK","note":""},{"n":"order_item_id","t":"UUID","m":"1","k":"FK:OrderItem","note":""},{"n":"attendee_id","t":"UUID","m":"0..1","k":"FK:Attendee","note":""},{"n":"refund_item_id","t":"UUID","m":"0..1","k":"FK:RefundItem","note":""},{"n":"admission_code","t":"String","m":"1","k":"UK","note":"Opaque, unique admission identifier; no personal data is embedded."},{"n":"status","t":"TicketStatus","m":"1","k":"","note":""},{"n":"issued_at","t":"DateTime","m":"1","k":"","note":""}],"checks":["The order is confirmed; its order item identifies the occurrence and ticket type.","checked_in requires a CheckIn; voided tickets cannot be admitted or transferred.","A refund_item_id points to a succeeded refund for the same order item and requires status voided."]},{"id":"TicketTransfer","ctx":"attendance","desc":"An invitation to hand an unused ticket to someone else. Email and sender identity are retained even before the recipient claims the ticket.","f":[{"n":"transfer_id","t":"UUID","m":"1","k":"PK","note":""},{"n":"ticket_id","t":"UUID","m":"1","k":"FK:Ticket","note":""},{"n":"initiated_by_account_id","t":"UUID","m":"1","k":"FK:Account","note":""},{"n":"from_attendee_id","t":"UUID","m":"0..1","k":"FK:Attendee","note":""},{"n":"to_attendee_id","t":"UUID","m":"0..1","k":"FK:Attendee","note":""},{"n":"recipient_email","t":"String","m":"1","k":"","note":""},{"n":"status","t":"TransferStatus","m":"1","k":"","note":""},{"n":"expires_at","t":"DateTime","m":"1","k":"","note":""},{"n":"created_at","t":"DateTime","m":"1","k":"","note":""},{"n":"accepted_at","t":"DateTime","m":"0..1","k":"","note":""}],"checks":["At most one pending transfer per ticket; the ticket is valid and has no CheckIn.","An accepted transfer has to_attendee_id and accepted_at, and assigns the ticket to that attendee."]},{"id":"CheckIn","ctx":"attendance","desc":"The admission record for one ticket. A unique ticket reference prevents a second admission; optional gate information records where it happened.","f":[{"n":"check_in_id","t":"UUID","m":"1","k":"PK","note":""},{"n":"ticket_id","t":"UUID","m":"1","k":"UK FK:Ticket","note":""},{"n":"staff_account_id","t":"UUID","m":"1","k":"FK:Account","note":""},{"n":"checked_in_at","t":"DateTime","m":"1","k":"","note":""},{"n":"gate","t":"String","m":"0..1","k":"","note":""}],"checks":["The ticket is assigned to an attendee and is not voided.","The staff account belongs to the occurrence organiser team."]},{"id":"WaitlistEntry","ctx":"attendance","desc":"A request for places at a sold-out occurrence, optionally for a specific ticket type. Offers can link to a temporary reservation during checkout.","f":[{"n":"waitlist_entry_id","t":"UUID","m":"1","k":"PK","note":""},{"n":"occurrence_id","t":"UUID","m":"1","k":"FK:EventOccurrence","note":""},{"n":"attendee_id","t":"UUID","m":"1","k":"FK:Attendee","note":""},{"n":"ticket_type_id","t":"UUID","m":"0..1","k":"FK:TicketType","note":""},{"n":"reservation_id","t":"UUID","m":"0..1","k":"UK FK:TicketReservation","note":""},{"n":"quantity","t":"Integer","m":"1","k":"","note":""},{"n":"status","t":"WaitlistStatus","m":"1","k":"","note":""},{"n":"created_at","t":"DateTime","m":"1","k":"","note":""},{"n":"offered_at","t":"DateTime","m":"0..1","k":"","note":""},{"n":"offer_expires_at","t":"DateTime","m":"0..1","k":"","note":""}],"uk":["(occurrence_id, attendee_id) while status is waiting or offered"],"checks":["quantity > 0; a selected ticket type belongs to the same occurrence.","An offered entry has offered_at < offer_expires_at; any linked reservation matches the occurrence and quantity.","A converted entry points to a converted reservation."]},{"id":"Announcement","ctx":"communications","desc":"An organiser message for an event, such as a programme update. Drafts become published announcements, with a separate delivery record for each recipient.","f":[{"n":"announcement_id","t":"UUID","m":"1","k":"PK","note":""},{"n":"event_id","t":"UUID","m":"1","k":"FK:Event","note":""},{"n":"subject","t":"String","m":"1","k":"","note":""},{"n":"body","t":"String","m":"1","k":"","note":""},{"n":"status","t":"AnnouncementStatus","m":"1","k":"","note":""},{"n":"created_at","t":"DateTime","m":"1","k":"","note":""},{"n":"published_at","t":"DateTime","m":"0..1","k":"","note":""}],"checks":["A published announcement has published_at."]},{"id":"AnnouncementDelivery","ctx":"communications","desc":"One email delivery of a published announcement to an attendee. The destination address is a snapshot, and failures remain visible for retry.","f":[{"n":"delivery_id","t":"UUID","m":"1","k":"PK","note":""},{"n":"announcement_id","t":"UUID","m":"1","k":"FK:Announcement","note":""},{"n":"attendee_id","t":"UUID","m":"1","k":"FK:Attendee","note":""},{"n":"recipient_email","t":"String","m":"1","k":"","note":""},{"n":"status","t":"DeliveryStatus","m":"1","k":"","note":""},{"n":"attempt_count","t":"Integer","m":"1","k":"","note":""},{"n":"last_attempt_at","t":"DateTime","m":"0..1","k":"","note":""},{"n":"sent_at","t":"DateTime","m":"0..1","k":"","note":""}],"uk":["(announcement_id, attendee_id)"],"checks":["The announcement is published; attempt_count >= 0; sent deliveries have sent_at."]}],"ENUMS":{"AccountStatus":["active","suspended","closed"],"OrganizerRole":["owner","manager","staff"],"EventStatus":["draft","published","cancelled","archived"],"OccurrenceStatus":["scheduled","cancelled","completed"],"ReservationStatus":["active","converted","released","expired"],"DiscountKind":["percentage","fixed_amount"],"OrderStatus":["pending","confirmed","cancelled","expired"],"PaymentStatus":["pending","succeeded","failed","cancelled"],"RefundStatus":["requested","pending","succeeded","failed"],"TicketStatus":["valid","checked_in","voided"],"TransferStatus":["pending","accepted","declined","expired","cancelled"],"WaitlistStatus":["waiting","offered","converted","cancelled","expired"],"AnnouncementStatus":["draft","published"],"DeliveryStatus":["queued","sent","failed"]},"ENUMNOTES":{"AccountStatus":"Whether an account can use the service.","OrganizerRole":"Access role within one organiser team.","EventStatus":"Publication state of the shared event listing.","OccurrenceStatus":"State of one dated run, independently of other runs.","ReservationStatus":"Whether a checkout hold still consumes ticket capacity.","DiscountKind":"Interpretation of the discount value and optional currency.","OrderStatus":"State of one checkout; confirmed orders retain their financial history.","PaymentStatus":"Outcome of one payment attempt.","RefundStatus":"Progress of one payment refund.","TicketStatus":"Admission validity of one issued ticket.","TransferStatus":"Progress of an invitation to reassign a ticket.","WaitlistStatus":"Progress from waiting for availability through an offer to purchase.","AnnouncementStatus":"Whether an event message is ready for recipients.","DeliveryStatus":"Outcome of sending one announcement email."},"TYPES":[{"n":"Money","f":[{"n":"amount","t":"Decimal","m":"1","k":"","note":""},{"n":"currency","t":"String","m":"1","k":"","note":"Three-letter currency code, for example EUR or USD."}],"d":"An exact amount paired with a three-letter currency code. Amounts are nonnegative and use the currency fractional precision; values in different currencies cannot be added."},{"n":"PostalAddress","f":[{"n":"street","t":"String","m":"1","k":"","note":""},{"n":"city","t":"String","m":"1","k":"","note":""},{"n":"postal_code","t":"String","m":"1","k":"","note":""},{"n":"region","t":"String","m":"0..1","k":"","note":""},{"n":"country_code","t":"String","m":"1","k":"","note":"Two-letter country code."}],"d":"A physical address stored as one value object on a venue."}],"PRIMS":[["UUID","Unique identifier."],["String","Text."],["Integer","Whole number."],["Decimal","Exact decimal number."],["Boolean","True or false."],["DateTime","An absolute timestamp stored in UTC."],["Date","Calendar date."]],"RELS":[{"i":0,"a":"Organizer","b":"OrganizerMember","k":"comp","l":"team_members","m1":"1","m2":"0..*","role1":"organizer","role2":"team_members","nav":"none"},{"i":1,"a":"Account","b":"OrganizerMember","k":"assoc","l":"memberships","m1":"1","m2":"0..*","role1":"account","role2":"memberships","nav":"none"},{"i":2,"a":"Organizer","b":"Event","k":"assoc","l":"events","m1":"1","m2":"0..*","role1":"organizer","role2":"events","nav":"none"},{"i":3,"a":"Event","b":"EventOccurrence","k":"comp","l":"occurrences","m1":"1","m2":"0..*","role1":"event","role2":"occurrences","nav":"none"},{"i":4,"a":"Event","b":"EventCategory","k":"comp","l":"category_links","m1":"1","m2":"0..*","role1":"event","role2":"category_links","nav":"none"},{"i":5,"a":"Category","b":"EventCategory","k":"assoc","l":"event_links","m1":"1","m2":"0..*","role1":"category","role2":"event_links","nav":"none"},{"i":6,"a":"Venue","b":"VenueSpace","k":"comp","l":"spaces","m1":"1","m2":"1..*","role1":"venue","role2":"spaces","nav":"none"},{"i":7,"a":"VenueSpace","b":"EventOccurrence","k":"assoc","l":"occurrences","m1":"0..1","m2":"0..*","role1":"venue_space","role2":"occurrences","nav":"none"},{"i":8,"a":"EventOccurrence","b":"Session","k":"comp","l":"sessions","m1":"1","m2":"0..*","role1":"occurrence","role2":"sessions","nav":"none"},{"i":9,"a":"VenueSpace","b":"Session","k":"assoc","l":"sessions","m1":"0..1","m2":"0..*","role1":"venue_space","role2":"sessions","nav":"none"},{"i":10,"a":"Session","b":"SessionSpeaker","k":"comp","l":"speaker_links","m1":"1","m2":"0..*","role1":"session","role2":"speaker_links","nav":"none"},{"i":11,"a":"Speaker","b":"SessionSpeaker","k":"assoc","l":"session_links","m1":"1","m2":"0..*","role1":"speaker","role2":"session_links","nav":"none"},{"i":12,"a":"EventOccurrence","b":"TicketType","k":"comp","l":"ticket_types","m1":"1","m2":"0..*","role1":"occurrence","role2":"ticket_types","nav":"none"},{"i":13,"a":"Order","b":"TicketReservation","k":"comp","l":"reservations","m1":"1","m2":"0..*","role1":"order","role2":"reservations","nav":"none"},{"i":14,"a":"TicketType","b":"TicketReservation","k":"assoc","l":"reservations","m1":"1","m2":"0..*","role1":"ticket_type","role2":"reservations","nav":"none"},{"i":15,"a":"Organizer","b":"DiscountCode","k":"assoc","l":"discount_codes","m1":"1","m2":"0..*","role1":"organizer","role2":"discount_codes","nav":"none"},{"i":16,"a":"Event","b":"DiscountCode","k":"assoc","l":"discount_codes","m1":"0..1","m2":"0..*","role1":"restricted_event","role2":"discount_codes","nav":"none"},{"i":17,"a":"Organizer","b":"Order","k":"assoc","l":"orders","m1":"1","m2":"0..*","role1":"organizer","role2":"orders","nav":"none"},{"i":18,"a":"Account","b":"Order","k":"assoc","l":"purchases","m1":"0..1","m2":"0..*","role1":"buyer_account","role2":"purchases","nav":"none"},{"i":19,"a":"DiscountCode","b":"Order","k":"assoc","l":"orders","m1":"0..1","m2":"0..*","role1":"discount_code","role2":"orders","nav":"none"},{"i":20,"a":"Order","b":"OrderItem","k":"comp","l":"items","m1":"1","m2":"1..*","role1":"order","role2":"items","nav":"none"},{"i":21,"a":"TicketType","b":"OrderItem","k":"assoc","l":"order_items","m1":"1","m2":"0..*","role1":"ticket_type","role2":"order_items","nav":"none"},{"i":22,"a":"Order","b":"Payment","k":"assoc","l":"payment_attempts","m1":"1","m2":"0..*","role1":"order","role2":"payment_attempts","nav":"none"},{"i":23,"a":"Payment","b":"Refund","k":"assoc","l":"refunds","m1":"1","m2":"0..*","role1":"payment","role2":"refunds","nav":"none"},{"i":24,"a":"Refund","b":"RefundItem","k":"comp","l":"items","m1":"1","m2":"1..*","role1":"refund","role2":"items","nav":"none"},{"i":25,"a":"OrderItem","b":"RefundItem","k":"assoc","l":"refund_items","m1":"1","m2":"0..*","role1":"order_item","role2":"refund_items","nav":"none"},{"i":26,"a":"Account","b":"Attendee","k":"assoc","l":"attendee_profile","m1":"0..1","m2":"0..1","role1":"account","role2":"attendee_profile","nav":"none"},{"i":27,"a":"OrderItem","b":"Ticket","k":"assoc","l":"tickets","m1":"1","m2":"0..*","role1":"order_item","role2":"tickets","nav":"none"},{"i":28,"a":"Attendee","b":"Ticket","k":"assoc","l":"tickets","m1":"0..1","m2":"0..*","role1":"holder","role2":"tickets","nav":"none"},{"i":29,"a":"RefundItem","b":"Ticket","k":"assoc","l":"voided_tickets","m1":"0..1","m2":"0..*","role1":"refund_item","role2":"voided_tickets","nav":"none"},{"i":30,"a":"Ticket","b":"TicketTransfer","k":"comp","l":"transfer_history","m1":"1","m2":"0..*","role1":"ticket","role2":"transfer_history","nav":"none"},{"i":31,"a":"Account","b":"TicketTransfer","k":"assoc","l":"initiated_transfers","m1":"1","m2":"0..*","role1":"initiator","role2":"initiated_transfers","nav":"none"},{"i":32,"a":"Attendee","b":"TicketTransfer","k":"assoc","l":"outgoing_transfers","m1":"0..1","m2":"0..*","role1":"from_attendee","role2":"outgoing_transfers","nav":"none"},{"i":33,"a":"Attendee","b":"TicketTransfer","k":"assoc","l":"incoming_transfers","m1":"0..1","m2":"0..*","role1":"to_attendee","role2":"incoming_transfers","nav":"none"},{"i":34,"a":"Ticket","b":"CheckIn","k":"comp","l":"admission","m1":"1","m2":"0..1","role1":"ticket","role2":"admission","nav":"none"},{"i":35,"a":"Account","b":"CheckIn","k":"assoc","l":"check_ins","m1":"1","m2":"0..*","role1":"staff_account","role2":"check_ins","nav":"none"},{"i":36,"a":"EventOccurrence","b":"WaitlistEntry","k":"comp","l":"waitlist","m1":"1","m2":"0..*","role1":"occurrence","role2":"waitlist","nav":"none"},{"i":37,"a":"Attendee","b":"WaitlistEntry","k":"assoc","l":"waitlist_entries","m1":"1","m2":"0..*","role1":"attendee","role2":"waitlist_entries","nav":"none"},{"i":38,"a":"TicketType","b":"WaitlistEntry","k":"assoc","l":"waitlist_entries","m1":"0..1","m2":"0..*","role1":"requested_ticket_type","role2":"waitlist_entries","nav":"none"},{"i":39,"a":"TicketReservation","b":"WaitlistEntry","k":"assoc","l":"waitlist_entry","m1":"0..1","m2":"0..1","role1":"reservation","role2":"waitlist_entry","nav":"none"},{"i":40,"a":"Event","b":"Announcement","k":"comp","l":"announcements","m1":"1","m2":"0..*","role1":"event","role2":"announcements","nav":"none"},{"i":41,"a":"Announcement","b":"AnnouncementDelivery","k":"comp","l":"deliveries","m1":"1","m2":"0..*","role1":"announcement","role2":"deliveries","nav":"none"},{"i":42,"a":"Attendee","b":"AnnouncementDelivery","k":"assoc","l":"announcement_deliveries","m1":"1","m2":"0..*","role1":"recipient","role2":"announcement_deliveries","nav":"none"}]};
-const LAYOUT={"version":"events-example-1","nodes":{"Account":{"w":300,"h":100},"Organizer":{"w":300,"h":100},"OrganizerMember":{"w":300,"h":118},"Category":{"w":300,"h":98},"Event":{"w":300,"h":118},"EventCategory":{"w":300,"h":80},"EventOccurrence":{"w":300,"h":118},"Venue":{"w":300,"h":82},"VenueSpace":{"w":300,"h":100},"Session":{"w":300,"h":118},"Speaker":{"w":300,"h":82},"SessionSpeaker":{"w":300,"h":100},"TicketType":{"w":300,"h":100},"TicketReservation":{"w":300,"h":118},"DiscountCode":{"w":300,"h":118},"Order":{"w":300,"h":136},"OrderItem":{"w":300,"h":118},"Payment":{"w":300,"h":118},"Refund":{"w":300,"h":118},"RefundItem":{"w":300,"h":118},"Attendee":{"w":300,"h":100},"Ticket":{"w":300,"h":154},"TicketTransfer":{"w":300,"h":154},"CheckIn":{"w":300,"h":118},"WaitlistEntry":{"w":300,"h":154},"Announcement":{"w":300,"h":100},"AnnouncementDelivery":{"w":300,"h":118}},"ro":{"grid":10,"pad":18,"cross":260,"bend":26,"near":5,"overlap":700,"port":90,"outside":40,"ring":40},"routes":{"e9":[{"x":1725,"y":189},{"x":1725,"y":303}],"e11":[{"x":2155,"y":180},{"x":2155,"y":312}],"e6":[{"x":1680,"y":115},{"x":1580,"y":115}],"e8":[{"x":1680,"y":325},{"x":1580,"y":325}],"e10":[{"x":2080,"y":335},{"x":1980,"y":335}],"e19":[{"x":380,"y":555},{"x":480,"y":555}],"e21":[{"x":1280,"y":565},{"x":1180,"y":565}],"e23":[{"x":380,"y":805},{"x":480,"y":805}],"e29":[{"x":1180,"y":805},{"x":1280,"y":805}],"e41":[{"x":480,"y":1125},{"x":380,"y":1125}],"e2":[{"x":780,"y":155},{"x":845,"y":155},{"x":845,"y":325},{"x":880,"y":325}],"e7":[{"x":1705,"y":189},{"x":1705,"y":265},{"x":1555,"y":265},{"x":1555,"y":303}],"e32":[{"x":2080,"y":615},{"x":2015,"y":615},{"x":2015,"y":785},{"x":1980,"y":785}],"e33":[{"x":2080,"y":595},{"x":2005,"y":595},{"x":2005,"y":675},{"x":1955,"y":675},{"x":1955,"y":767}],"e1":[{"x":355,"y":89},{"x":355,"y":45},{"x":905,"y":45},{"x":905,"y":80}],"e25":[{"x":925,"y":653},{"x":925,"y":785}],"e27":[{"x":1180,"y":635},{"x":1245,"y":635},{"x":1245,"y":785},{"x":1280,"y":785}],"e12":[{"x":1315,"y":544},{"x":1315,"y":421}],"e0":[{"x":880,"y":105},{"x":780,"y":105}],"e3":[{"x":1280,"y":325},{"x":1180,"y":325}],"e4":[{"x":780,"y":355},{"x":880,"y":355}],"e5":[{"x":380,"y":385},{"x":480,"y":385}],"e14":[{"x":1580,"y":565},{"x":1680,"y":565}],"e20":[{"x":880,"y":555},{"x":780,"y":555}],"e24":[{"x":880,"y":805},{"x":780,"y":805}],"e30":[{"x":1680,"y":785},{"x":1580,"y":785}],"e17":[{"x":780,"y":165},{"x":815,"y":165},{"x":815,"y":475},{"x":745,"y":475},{"x":745,"y":526}],"e37":[{"x":2080,"y":625},{"x":2045,"y":625},{"x":2045,"y":1045},{"x":2080,"y":1045}],"e22":[{"x":505,"y":662},{"x":505,"y":755},{"x":355,"y":755},{"x":355,"y":785}],"e34":[{"x":2105,"y":903},{"x":2105,"y":945},{"x":1615,"y":945},{"x":1615,"y":905},{"x":1580,"y":905}],"e15":[{"x":480,"y":165},{"x":415,"y":165},{"x":415,"y":505},{"x":355,"y":505},{"x":355,"y":535}],"e18":[{"x":380,"y":145},{"x":445,"y":145},{"x":445,"y":545},{"x":480,"y":545}],"e39":[{"x":1980,"y":555},{"x":2055,"y":555},{"x":2055,"y":525},{"x":2415,"y":525},{"x":2415,"y":1045},{"x":2380,"y":1045}],"e16":[{"x":880,"y":405},{"x":835,"y":405},{"x":835,"y":695},{"x":355,"y":695},{"x":355,"y":653}],"e28":[{"x":2105,"y":544},{"x":2105,"y":505},{"x":1615,"y":505},{"x":1615,"y":735},{"x":1555,"y":735},{"x":1555,"y":767}],"e13":[{"x":1680,"y":555},{"x":1635,"y":555},{"x":1635,"y":515},{"x":925,"y":515},{"x":925,"y":495},{"x":755,"y":495},{"x":755,"y":526}],"e38":[{"x":1580,"y":625},{"x":1645,"y":625},{"x":1645,"y":1055},{"x":2080,"y":1055}],"e36":[{"x":2355,"y":1026},{"x":2355,"y":925},{"x":2405,"y":925},{"x":2405,"y":455},{"x":1555,"y":455},{"x":1555,"y":421}],"e40":[{"x":355,"y":1053},{"x":355,"y":925},{"x":845,"y":925},{"x":845,"y":515},{"x":905,"y":515},{"x":905,"y":421}],"e42":[{"x":2105,"y":644},{"x":2105,"y":765},{"x":2025,"y":765},{"x":2025,"y":1075},{"x":780,"y":1075}],"e31":[{"x":80,"y":165},{"x":55,"y":165},{"x":55,"y":965},{"x":1705,"y":965},{"x":1705,"y":921}],"e26":[{"x":380,"y":105},{"x":455,"y":105},{"x":455,"y":65},{"x":845,"y":65},{"x":845,"y":145},{"x":855,"y":145},{"x":855,"y":225},{"x":1245,"y":225},{"x":1245,"y":485},{"x":2125,"y":485},{"x":2125,"y":544}],"e35":[{"x":80,"y":155},{"x":45,"y":155},{"x":45,"y":1185},{"x":2035,"y":1185},{"x":2035,"y":1005},{"x":2125,"y":1005},{"x":2125,"y":903}]},"C":6,"R":5,"cell":[0,1,2,6,8,7,9,3,4,10,5,11,15,16,12,13,14,18,19,20,17,21,22,23,29,24,25],"gx":100,"gy":105};
+      const DM={"title":"Events platform example","CTX":[{"id":"accounts","name":"Accounts & organisers","desc":"People who sign in, organisations that host events, and their team memberships.","color":"#2B5C61"},{"id":"events","name":"Events","desc":"Reusable event listings, their dated occurrences, and discovery categories.","color":"#5B4FA6"},{"id":"venues","name":"Venues","desc":"Physical venues and their bookable rooms or spaces.","color":"#386C97"},{"id":"programme","name":"Programme","desc":"The sessions and speakers within an event occurrence.","color":"#A2522C"},{"id":"ticketing","name":"Ticketing","desc":"Ticket products, capacity, sales windows, and temporary checkout reservations.","color":"#8A600E"},{"id":"sales","name":"Sales & payments","desc":"Purchases, price snapshots, discounts, payment attempts, and partial refunds.","color":"#963D60"},{"id":"attendance","name":"Attendance","desc":"Ticket holders, issued tickets, transfers, admission records, and waiting lists.","color":"#4C5C6B"},{"id":"communications","name":"Communications","desc":"Event announcements and a record of each email delivery.","color":"#596C3E"}],"ENT":[{"id":"Account","ctx":"accounts","desc":"A sign-in account. A buyer, organiser team member, or attendee may use the same account. Authentication secrets belong in a separate identity system.","f":[{"n":"account_id","t":"UUID","m":"1","k":"PK","note":""},{"n":"email","t":"String","m":"1","k":"UK","note":"Unique after trimming and case-insensitive comparison."},{"n":"display_name","t":"String","m":"1","k":"","note":""},{"n":"status","t":"AccountStatus","m":"1","k":"","note":""},{"n":"created_at","t":"DateTime","m":"1","k":"","note":""}]},{"id":"Organizer","ctx":"accounts","desc":"An organisation or individual that owns event listings and receives their sales proceeds.","f":[{"n":"organizer_id","t":"UUID","m":"1","k":"PK","note":""},{"n":"name","t":"String","m":"1","k":"","note":""},{"n":"slug","t":"String","m":"1","k":"UK","note":""},{"n":"contact_email","t":"String","m":"1","k":"","note":""},{"n":"created_at","t":"DateTime","m":"1","k":"","note":""}],"checks":["At least one active OrganizerMember has the owner role.","An active owner membership refers to an active account. Removing or suspending the last active owner is prohibited."]},{"id":"OrganizerMember","ctx":"accounts","desc":"Connects an account to an organiser team and records its role. One account can belong to several organisers.","f":[{"n":"membership_id","t":"UUID","m":"1","k":"PK","note":""},{"n":"organizer_id","t":"UUID","m":"1","k":"FK:Organizer","note":""},{"n":"account_id","t":"UUID","m":"1","k":"FK:Account","note":""},{"n":"role","t":"OrganizerRole","m":"1","k":"","note":""},{"n":"joined_at","t":"DateTime","m":"1","k":"","note":""},{"n":"status","t":"MembershipStatus","k":"","m":"1","note":""},{"n":"removed_at","t":"DateTime","k":"","m":"0..1","note":""}],"uk":["(organizer_id, account_id)"],"checks":["Removed memberships have removed_at; active and suspended memberships do not. Rejoining reactivates the existing membership."]},{"id":"Category","ctx":"events","desc":"A reusable discovery category, such as music or workshops. This is a controlled classification, not an event owner.","f":[{"n":"category_id","t":"UUID","m":"1","k":"PK","note":""},{"n":"name","t":"String","m":"1","k":"UK","note":""},{"n":"slug","t":"String","m":"1","k":"UK","note":""}]},{"id":"Event","ctx":"events","desc":"The public listing and shared description of an event. Each dated run is an EventOccurrence; recurring events reuse this listing.","f":[{"n":"event_id","t":"UUID","m":"1","k":"PK","note":""},{"n":"organizer_id","t":"UUID","m":"1","k":"FK:Organizer","note":""},{"n":"title","t":"String","m":"1","k":"","note":""},{"n":"slug","t":"String","m":"1","k":"UK","note":""},{"n":"description","t":"String","m":"1","k":"","note":""},{"n":"status","t":"EventStatus","m":"1","k":"","note":""},{"n":"created_at","t":"DateTime","m":"1","k":"","note":""}]},{"id":"EventCategory","ctx":"events","desc":"An explicit link that allows an event to appear in multiple categories without duplicating event or category data.","f":[{"n":"event_id","t":"UUID","m":"1","k":"PK FK:Event","note":""},{"n":"category_id","t":"UUID","m":"1","k":"PK FK:Category","note":""}]},{"id":"EventOccurrence","ctx":"events","desc":"One dated run of an event. It has its own time, location, capacity, programme, ticket products, and waiting list.","f":[{"n":"occurrence_id","t":"UUID","m":"1","k":"PK","note":""},{"n":"event_id","t":"UUID","m":"1","k":"FK:Event","note":""},{"n":"venue_space_id","t":"UUID","m":"0..1","k":"FK:VenueSpace","note":""},{"n":"online_url","t":"String","m":"0..1","k":"","note":""},{"n":"starts_at","t":"DateTime","m":"1","k":"","note":""},{"n":"ends_at","t":"DateTime","m":"1","k":"","note":""},{"n":"time_zone","t":"String","m":"1","k":"","note":"IANA time-zone name used to display the UTC timestamps."},{"n":"capacity","t":"Integer","m":"1","k":"","note":"Maximum number of issued valid tickets plus active, unexpired reserved places."},{"n":"status","t":"OccurrenceStatus","m":"1","k":"","note":""}],"checks":["ends_at > starts_at; capacity >= 0.","At least one of venue_space_id and online_url is present; both may be set for a hybrid event.","For a physical occurrence, capacity \u003c= its venue space capacity.","time_zone is an IANA time-zone identifier. Timestamps are absolute UTC instants; ambiguous or nonexistent local input times are resolved before storage.","Overlapping scheduled physical occurrences cannot book the same venue space; cancelled occurrences do not reserve a space.","A scheduled occurrence reserves its main venue space exclusively for its full time range. Sessions of other occurrences cannot use that space during the booking; sessions of this occurrence may use its own booked space."]},{"id":"Venue","ctx":"venues","desc":"A physical location that can contain one or more event spaces. The address is a value object, not a separate business entity.","f":[{"n":"venue_id","t":"UUID","m":"1","k":"PK","note":""},{"n":"name","t":"String","m":"1","k":"","note":""},{"n":"address","t":"PostalAddress","m":"1","k":"","note":"A structured address; postal codes are optional because some countries do not use them."},{"n":"accessibility_notes","t":"String","m":"0..1","k":"","note":""}]},{"id":"VenueSpace","ctx":"venues","desc":"A room, hall, stage, or other bookable space within a venue. Different event occurrences can reuse the same space.","f":[{"n":"venue_space_id","t":"UUID","m":"1","k":"PK","note":""},{"n":"venue_id","t":"UUID","m":"1","k":"FK:Venue","note":""},{"n":"name","t":"String","m":"1","k":"","note":""},{"n":"capacity","t":"Integer","m":"1","k":"","note":""}],"uk":["(venue_id, name)"],"checks":["capacity > 0."]},{"id":"Session","ctx":"programme","desc":"A talk, performance, workshop, or other scheduled activity within one occurrence. Sessions do not sell separate tickets in this example.","f":[{"n":"session_id","t":"UUID","m":"1","k":"PK","note":""},{"n":"occurrence_id","t":"UUID","m":"1","k":"FK:EventOccurrence","note":""},{"n":"venue_space_id","t":"UUID","m":"0..1","k":"FK:VenueSpace","note":""},{"n":"title","t":"String","m":"1","k":"","note":""},{"n":"description","t":"String","m":"1","k":"","note":""},{"n":"starts_at","t":"DateTime","m":"1","k":"","note":""},{"n":"ends_at","t":"DateTime","m":"1","k":"","note":""}],"checks":["starts_at \u003c ends_at; the session is within its occurrence time range.","When venue_space_id is set, it belongs to the occurrence venue.","A physical session uses a space in the occurrence venue; an online-only occurrence has no physical session space. Sessions sharing a space cannot overlap.","Room availability is checked against other sessions and other scheduled occurrences exclusive venue-space bookings in one transaction. A session may overlap its own occurrence booking, but no booking for another occurrence."]},{"id":"Speaker","ctx":"programme","desc":"A reusable public speaker or performer profile. Being a speaker does not require having a sign-in account.","f":[{"n":"speaker_id","t":"UUID","m":"1","k":"PK","note":""},{"n":"name","t":"String","m":"1","k":"","note":""},{"n":"biography","t":"String","m":"1","k":"","note":""},{"n":"website","t":"String","m":"0..1","k":"","note":""}]},{"id":"SessionSpeaker","ctx":"programme","desc":"Connects speakers to sessions. A session can have several speakers, and a speaker can appear in several sessions.","f":[{"n":"session_id","t":"UUID","m":"1","k":"PK FK:Session","note":""},{"n":"speaker_id","t":"UUID","m":"1","k":"PK FK:Speaker","note":""},{"n":"role","t":"String","m":"1","k":"","note":"For example host, speaker, or performer."},{"n":"display_order","t":"Integer","m":"1","k":"","note":""}],"checks":["display_order >= 0."]},{"id":"TicketType","ctx":"ticketing","desc":"A sellable ticket product for one occurrence, such as general admission or a concession. Capacity and sales windows belong to this product.","f":[{"n":"ticket_type_id","t":"UUID","m":"1","k":"PK","note":""},{"n":"occurrence_id","t":"UUID","m":"1","k":"FK:EventOccurrence","note":""},{"n":"name","t":"String","m":"1","k":"","note":""},{"n":"description","t":"String","m":"1","k":"","note":""},{"n":"price","t":"Money","m":"1","k":"","note":""},{"n":"capacity","t":"Integer","m":"1","k":"","note":""},{"n":"max_per_order","t":"Integer","m":"1","k":"","note":""},{"n":"sales_start_at","t":"DateTime","m":"1","k":"","note":""},{"n":"sales_end_at","t":"DateTime","m":"1","k":"","note":""}],"uk":["(occurrence_id, name)"],"checks":["capacity >= 0; max_per_order > 0.","sales_start_at \u003c sales_end_at \u003c= occurrence.starts_at.","Issued non-voided tickets plus active, unexpired reservations do not exceed ticket-type capacity or occurrence capacity.","Sales require a published event and a scheduled occurrence; no reservation is created outside the sales window. Capacity changes cannot reduce limits below existing admissions and live holds."]},{"id":"TicketReservation","ctx":"ticketing","desc":"A temporary quantity hold for one order item. The item identifies the order, ticket type and occurrence. Repeated checkout attempts retain separate reservation history; at most one hold is active per item.","f":[{"n":"reservation_id","t":"UUID","m":"1","k":"PK","note":""},{"n":"order_item_id","t":"UUID","k":"FK:OrderItem","m":"1","note":""},{"n":"quantity","t":"Integer","m":"1","k":"","note":""},{"n":"expires_at","t":"DateTime","m":"1","k":"","note":""},{"n":"status","t":"ReservationStatus","m":"1","k":"","note":""},{"n":"created_at","t":"DateTime","m":"1","k":"","note":""}],"uk":["(order_item_id) while status is active"],"checks":["quantity > 0; expires_at > created_at.","An active or converted reservation matches its order item quantity and does not exceed ticket_type.max_per_order.","An active reservation consumes capacity only while unexpired and its order is pending. A confirmed order has no active reservations.","Conversion and ticket issuance are atomic: the hold is released as exactly quantity tickets are issued. Expiry, release and conversion retain the reservation record."]},{"id":"DiscountCode","ctx":"sales","desc":"An organiser-owned discount, optionally restricted to one event. Its terms are copied into order-item price snapshots at purchase time.","f":[{"n":"discount_code_id","t":"UUID","m":"1","k":"PK","note":""},{"n":"organizer_id","t":"UUID","m":"1","k":"FK:Organizer","note":""},{"n":"event_id","t":"UUID","m":"0..1","k":"FK:Event","note":""},{"n":"code","t":"String","m":"1","k":"","note":""},{"n":"kind","t":"DiscountKind","m":"1","k":"","note":""},{"n":"value","t":"Decimal","m":"1","k":"","note":""},{"n":"currency","t":"String","m":"0..1","k":"","note":"Three-letter currency code; required for a fixed-amount discount."},{"n":"valid_from","t":"DateTime","m":"1","k":"","note":""},{"n":"valid_until","t":"DateTime","m":"1","k":"","note":""},{"n":"max_redemptions","t":"Integer","m":"0..1","k":"","note":""}],"uk":["(organizer_id, code)"],"checks":["valid_from \u003c valid_until; value > 0; max_redemptions is absent or > 0.","Percentage discounts have value \u003c= 100 and no currency; fixed-amount discounts require a currency.","A restricted event belongs to the same organiser; a code applies only to eligible orders.","Percentage and fixed discounts are rounded deterministically to currency minor units and cannot make an eligible item total negative. A redemption hold is a pending eligible order with active, unexpired ticket reservations; these holds and confirmed orders count toward max_redemptions."]},{"id":"Order","ctx":"sales","desc":"One checkout with a single organiser and currency. The buyer may purchase tickets for several attendees; guest checkout does not require an account.","f":[{"n":"order_id","t":"UUID","m":"1","k":"PK","note":""},{"n":"organizer_id","t":"UUID","m":"1","k":"FK:Organizer","note":""},{"n":"buyer_account_id","t":"UUID","m":"0..1","k":"FK:Account","note":""},{"n":"discount_code_id","t":"UUID","m":"0..1","k":"FK:DiscountCode","note":""},{"n":"buyer_email","t":"String","m":"1","k":"","note":"Contact snapshot retained with the purchase."},{"n":"status","t":"OrderStatus","m":"1","k":"","note":""},{"n":"total","t":"Money","m":"1","k":"","note":""},{"n":"created_at","t":"DateTime","m":"1","k":"","note":""},{"n":"confirmed_at","t":"DateTime","m":"0..1","k":"","note":""}],"checks":["All order items belong to this organiser and use the order currency.","total.amount equals the sum of order-item totals.","A confirmed order has at least one item. A paid order has exactly one successful applied payment equal to its total; free orders have no applied payment. Split payments are outside this example.","A discount is redeemed once per confirmed order; confirmed redemptions do not exceed its limit.","Pending orders may have no items. Confirmed orders have confirmed_at and immutable item quantities and price snapshots; cancellation does not delete financial history."]},{"id":"OrderItem","ctx":"sales","desc":"A purchased quantity of one ticket type. Price, discount, and tax are immutable snapshots; later ticket-price changes do not change this purchase.","f":[{"n":"order_item_id","t":"UUID","m":"1","k":"PK","note":""},{"n":"order_id","t":"UUID","m":"1","k":"FK:Order","note":""},{"n":"ticket_type_id","t":"UUID","m":"1","k":"FK:TicketType","note":""},{"n":"quantity","t":"Integer","m":"1","k":"","note":""},{"n":"unit_price","t":"Money","m":"1","k":"","note":""},{"n":"discount","t":"Money","m":"1","k":"","note":""},{"n":"tax","t":"Money","m":"1","k":"","note":""},{"n":"total","t":"Money","m":"1","k":"","note":""}],"uk":["(order_id, ticket_type_id)"],"checks":["quantity > 0 and quantity \u003c= ticket_type.max_per_order.","All money values use the order currency; discount \u003c= quantity * unit_price.","total.amount = quantity * unit_price.amount - discount.amount + tax.amount.","A confirmed order item issues exactly quantity tickets; voided tickets remain in its history.","For a confirmed order, the issued tickets paid_amount values sum exactly to total.amount; nonrefundable or fee-only products are outside this model."]},{"id":"Payment","ctx":"sales","desc":"One payment attempt against an order. Failed attempts are retained and a later attempt has a separate identity. No card numbers or payment secrets are stored.","f":[{"n":"payment_id","t":"UUID","m":"1","k":"PK","note":""},{"n":"order_id","t":"UUID","m":"1","k":"FK:Order","note":""},{"n":"provider","t":"String","m":"1","k":"","note":""},{"n":"provider_reference","t":"String","m":"0..1","k":"","note":""},{"n":"idempotency_key","t":"String","m":"1","k":"UK","note":""},{"n":"amount","t":"Money","m":"1","k":"","note":""},{"n":"status","t":"PaymentStatus","m":"1","k":"","note":""},{"n":"created_at","t":"DateTime","m":"1","k":"","note":""},{"n":"paid_at","t":"DateTime","m":"0..1","k":"","note":""},{"n":"provider_status","t":"String","m":"0..1","k":"","note":"Original provider status, retained separately from the normalised domain state."},{"n":"failure_reason","t":"String","m":"0..1","k":"","note":"Provider failure or reconciliation reason; no payment secrets."},{"n":"is_applied","t":"Boolean","m":"1","k":"","note":"True only for the single successful capture used to confirm this order. It remains true after ticket-return refunds; late or duplicate captures stay unapplied."}],"uk":["(provider, provider_reference) when provider_reference is present"],"checks":["amount.amount > 0 and uses the order currency.","paid_at is present for succeeded payments. Captures exceeding the unpaid order balance are retained and receive unapplied_payment refunds; provider facts are never discarded.","Payment success, order confirmation, reservation conversion and ticket issuance are idempotent and atomic; a late success after expiry requires available capacity or an explicit compensating refund.","Unapplied-payment refunds compensate unapplied captures without issuing tickets; ticket-return refunds preserve the original applied payment and purchase history.","is_applied is true only for a succeeded capture equal to the order total that confirmed the order; at most one payment is applied per order. Other successful captures remain unapplied and are compensated in full."]},{"id":"Refund","ctx":"sales","desc":"One full or partial return of a successful payment. The affected order-item quantities are recorded in RefundItem.","f":[{"n":"refund_id","t":"UUID","m":"1","k":"PK","note":""},{"n":"payment_id","t":"UUID","m":"1","k":"FK:Payment","note":""},{"n":"kind","t":"RefundKind","m":"1","k":"","note":"A ticket return or compensation for an unexpected payment capture."},{"n":"provider_reference","t":"String","m":"0..1","k":"","note":""},{"n":"idempotency_key","t":"String","m":"1","k":"UK","note":""},{"n":"amount","t":"Money","m":"1","k":"","note":""},{"n":"reason","t":"String","m":"1","k":"","note":""},{"n":"status","t":"RefundStatus","m":"1","k":"","note":""},{"n":"created_at","t":"DateTime","m":"1","k":"","note":""},{"n":"refunded_at","t":"DateTime","m":"0..1","k":"","note":""},{"n":"provider_status","t":"String","m":"0..1","k":"","note":"Original provider status, retained separately from the normalised domain state."},{"n":"failure_reason","t":"String","m":"0..1","k":"","note":"Provider failure or reconciliation reason; no payment secrets."}],"checks":["The payment succeeded; the refund uses its currency and has a positive amount.","A ticket_return has at least one RefundItem and amount equals their amount sum. A unapplied_payment has no RefundItems and returns an unapplied capture from a cancelled, expired or excess-paid checkout.","Requested plus pending plus succeeded refunds do not exceed the payment amount; succeeded refunds have refunded_at.","Refund submission, exclusive ticket allocation, success or failure, and capacity release are applied transactionally and idempotently.","A ticket_return references the order applied payment. An unapplied_payment refund references a payment with is_applied false; the full capture is compensated without ticket allocations."],"uk":["(payment.provider, provider_reference) when provider_reference is present"]},{"id":"RefundItem","ctx":"sales","desc":"Allocates a refund to a quantity from one original order item, making partial ticket refunds explicit.","f":[{"n":"refund_item_id","t":"UUID","m":"1","k":"PK","note":""},{"n":"refund_id","t":"UUID","m":"1","k":"FK:Refund","note":""},{"n":"order_item_id","t":"UUID","m":"1","k":"FK:OrderItem","note":""},{"n":"quantity","t":"Integer","m":"1","k":"","note":""},{"n":"amount","t":"Money","m":"1","k":"","note":""}],"uk":["(refund_id, order_item_id)"],"checks":["quantity > 0; amount.amount > 0; the order item belongs to the refunded payment order.","quantity equals the number of RefundTicket allocations; amount equals their tickets paid_amount sum in the order currency.","Requested, pending and succeeded allocations never refund a ticket twice and do not exceed the original order-item total.","This example refunds complete unused tickets. Arbitrary goodwill or fee-only credits require a separate credit model."]},{"id":"RefundTicket","ctx":"sales","desc":"An immutable allocation of one refund item to one specific ticket. Failed refund attempts retain their selected tickets; later attempts use new allocations. This example refunds complete unused tickets, allowing a partial refund of an order.","f":[{"n":"refund_item_id","t":"UUID","k":"PK FK:RefundItem","m":"1","note":""},{"n":"ticket_id","t":"UUID","k":"PK FK:Ticket","m":"1","note":""}],"uk":["(ticket_id) across requested, pending and succeeded refunds"],"checks":["The ticket belongs to the refund item order item, has a positive paid_amount, and has no CheckIn.","A ticket has at most one requested, pending or succeeded refund allocation. Failed or cancelled allocations remain historical and do not prevent a new attempt.","A succeeded allocation refunds exactly the ticket paid_amount in the same currency and voids the ticket."]},{"id":"Attendee","ctx":"attendance","desc":"A person who can hold tickets or join a waiting list. The attendee may differ from the buyer and may optionally link to a sign-in account.","f":[{"n":"attendee_id","t":"UUID","m":"1","k":"PK","note":""},{"n":"account_id","t":"UUID","m":"0..1","k":"UK FK:Account","note":""},{"n":"name","t":"String","m":"1","k":"","note":""},{"n":"email","t":"String","m":"1","k":"","note":""},{"n":"created_at","t":"DateTime","m":"1","k":"","note":""}]},{"id":"Ticket","ctx":"attendance","desc":"One issued admission for one person, derived from its order item and ticket type. It may be unassigned until claimed; the buyer is not automatically the attendee.","f":[{"n":"ticket_id","t":"UUID","m":"1","k":"PK","note":""},{"n":"order_item_id","t":"UUID","m":"1","k":"FK:OrderItem","note":""},{"n":"attendee_id","t":"UUID","m":"0..1","k":"FK:Attendee","note":""},{"n":"admission_code","t":"String","m":"1","k":"UK","note":"Opaque, unique admission identifier; no personal data is embedded."},{"n":"status","t":"TicketStatus","m":"1","k":"","note":""},{"n":"issued_at","t":"DateTime","m":"1","k":"","note":""},{"n":"paid_amount","t":"Money","k":"","m":"1","note":"Immutable per-ticket allocation of the order-item total, including discount and tax."}],"checks":["The order was confirmed when the ticket was issued; its order item identifies the occurrence and ticket type.","paid_amount uses the order currency; the issued tickets of one order item sum exactly to its total, using a deterministic minor-unit allocation.","checked_in is equivalent to having a CheckIn record. A checked-in ticket cannot be refunded or voided in this example.","A ticket with a requested or pending refund allocation has status refund_pending and cannot be admitted or transferred. Failed or cancelled allocations release this hold.","A succeeded refund allocation requires status voided. Other cancellations may also void unused tickets; all ticket records are retained.","A failed or cancelled refund attempt releases refund_pending holds on otherwise valid tickets. A ticket already voided after an earlier refund outcome remains voided; financial retry does not silently restore admission."]},{"id":"TicketTransfer","ctx":"attendance","desc":"An invitation to hand an unused ticket to someone else. Email and sender identity are retained even before the recipient claims the ticket.","f":[{"n":"transfer_id","t":"UUID","m":"1","k":"PK","note":""},{"n":"ticket_id","t":"UUID","m":"1","k":"FK:Ticket","note":""},{"n":"initiated_by_account_id","t":"UUID","m":"1","k":"FK:Account","note":""},{"n":"from_attendee_id","t":"UUID","m":"0..1","k":"FK:Attendee","note":""},{"n":"to_attendee_id","t":"UUID","m":"0..1","k":"FK:Attendee","note":""},{"n":"recipient_email","t":"String","m":"1","k":"","note":""},{"n":"status","t":"TransferStatus","m":"1","k":"","note":""},{"n":"expires_at","t":"DateTime","m":"1","k":"","note":""},{"n":"created_at","t":"DateTime","m":"1","k":"","note":""},{"n":"accepted_at","t":"DateTime","m":"0..1","k":"","note":""}],"checks":["At most one pending transfer per ticket; the ticket is valid, has no CheckIn, and has no active refund allocation.","The initiating account was authorised by the buyer or current holder when the transfer was created. Sending a transfer requires a sign-in account; receiving one does not.","expires_at > created_at; acceptance occurs before expiry. An accepted transfer has to_attendee_id and accepted_at and atomically assigns the ticket to that attendee.","from_attendee_id is a snapshot of the holder at creation. A pending transfer can succeed only if the holder is unchanged; sender and recipient must differ."]},{"id":"CheckIn","ctx":"attendance","desc":"The admission record for one ticket. A unique ticket reference prevents a second admission; optional gate information records where it happened.","f":[{"n":"check_in_id","t":"UUID","m":"1","k":"PK","note":""},{"n":"ticket_id","t":"UUID","m":"1","k":"UK FK:Ticket","note":""},{"n":"staff_account_id","t":"UUID","m":"1","k":"FK:Account","note":""},{"n":"checked_in_at","t":"DateTime","m":"1","k":"","note":""},{"n":"gate","t":"String","m":"0..1","k":"","note":""}],"checks":["The ticket is assigned to an attendee, is valid immediately before admission, and has no active refund allocation.","The staff account was an active member of the occurrence organiser team at checked_in_at. Later membership removal does not invalidate this history.","Creating CheckIn and changing the ticket to checked_in are one atomic operation; the unique ticket reference makes admission idempotent.","The staff account was active at admission time; membership role and status are checked transactionally with admission. Later account suspension preserves the admission record."]},{"id":"WaitlistEntry","ctx":"attendance","desc":"A request for places at a sold-out occurrence, optionally for a specific ticket type. Offers can link to a temporary reservation during checkout.","f":[{"n":"waitlist_entry_id","t":"UUID","m":"1","k":"PK","note":""},{"n":"occurrence_id","t":"UUID","m":"1","k":"FK:EventOccurrence","note":""},{"n":"attendee_id","t":"UUID","m":"1","k":"FK:Attendee","note":""},{"n":"ticket_type_id","t":"UUID","m":"0..1","k":"FK:TicketType","note":""},{"n":"reservation_id","t":"UUID","m":"0..1","k":"UK FK:TicketReservation","note":""},{"n":"quantity","t":"Integer","m":"1","k":"","note":""},{"n":"status","t":"WaitlistStatus","m":"1","k":"","note":""},{"n":"created_at","t":"DateTime","m":"1","k":"","note":""},{"n":"offered_at","t":"DateTime","m":"0..1","k":"","note":""},{"n":"offer_expires_at","t":"DateTime","m":"0..1","k":"","note":""}],"uk":["(occurrence_id, attendee_id) while status is waiting or offered"],"checks":["quantity > 0; a selected ticket type belongs to the same occurrence.","An offered entry has offered_at \u003c offer_expires_at; any linked reservation matches the occurrence and quantity.","A converted entry points to a converted reservation.","A linked reservation identifies an order item for the same occurrence and selected ticket type, and quantity matches. An offer is converted only after that order is confirmed."]},{"id":"Announcement","ctx":"communications","desc":"An organiser message for an event, such as a programme update. Drafts become published announcements, with a separate delivery record for each recipient.","f":[{"n":"announcement_id","t":"UUID","m":"1","k":"PK","note":""},{"n":"event_id","t":"UUID","m":"1","k":"FK:Event","note":""},{"n":"subject","t":"String","m":"1","k":"","note":""},{"n":"body","t":"String","m":"1","k":"","note":""},{"n":"status","t":"AnnouncementStatus","m":"1","k":"","note":""},{"n":"created_at","t":"DateTime","m":"1","k":"","note":""},{"n":"published_at","t":"DateTime","m":"0..1","k":"","note":""}],"checks":["A published announcement has published_at."]},{"id":"AnnouncementDelivery","ctx":"communications","desc":"One email delivery of a published announcement to an attendee. The destination address is a snapshot, and failures remain visible for retry.","f":[{"n":"delivery_id","t":"UUID","m":"1","k":"PK","note":""},{"n":"announcement_id","t":"UUID","m":"1","k":"FK:Announcement","note":""},{"n":"attendee_id","t":"UUID","m":"1","k":"FK:Attendee","note":""},{"n":"recipient_email","t":"String","m":"1","k":"","note":""},{"n":"status","t":"DeliveryStatus","m":"1","k":"","note":""},{"n":"attempt_count","t":"Integer","m":"1","k":"","note":""},{"n":"last_attempt_at","t":"DateTime","m":"0..1","k":"","note":""},{"n":"sent_at","t":"DateTime","m":"0..1","k":"","note":""}],"uk":["(announcement_id, attendee_id)"],"checks":["The announcement is published; attempt_count >= 0; sent deliveries have sent_at.","The attendee has a ticket for an occurrence of the announcement event. Retries update this delivery record; sent_at is present exactly when status is sent."]}],"ENUMS":{"AccountStatus":["active","suspended","closed"],"OrganizerRole":["owner","manager","staff"],"EventStatus":["draft","published","cancelled","archived"],"OccurrenceStatus":["scheduled","cancelled","completed"],"ReservationStatus":["active","converted","released","expired"],"DiscountKind":["percentage","fixed_amount"],"OrderStatus":["pending","confirmed","cancelled","expired"],"PaymentStatus":["pending","succeeded","failed","cancelled"],"RefundStatus":["requested","pending","succeeded","failed","cancelled"],"TicketStatus":["valid","refund_pending","checked_in","voided"],"TransferStatus":["pending","accepted","declined","expired","cancelled"],"WaitlistStatus":["waiting","offered","converted","cancelled","expired"],"AnnouncementStatus":["draft","published"],"DeliveryStatus":["queued","sent","failed"],"MembershipStatus":["active","suspended","removed"],"RefundKind":["ticket_return","unapplied_payment"]},"ENUMNOTES":{"AccountStatus":"Whether an account can use the service.","OrganizerRole":"Access role within one organiser team.","EventStatus":"Publication state of the shared event listing.","OccurrenceStatus":"State of one dated run, independently of other runs.","ReservationStatus":"Whether a checkout hold still consumes ticket capacity.","DiscountKind":"Interpretation of the discount value and optional currency.","OrderStatus":"State of one checkout; confirmed orders retain their financial history.","PaymentStatus":"Outcome of one payment attempt.","RefundStatus":"Progress of one payment refund.","TicketStatus":"Admission validity of one issued ticket.","TransferStatus":"Progress of an invitation to reassign a ticket.","WaitlistStatus":"Progress from waiting for availability through an offer to purchase.","AnnouncementStatus":"Whether an event message is ready for recipients.","DeliveryStatus":"Outcome of sending one announcement email.","MembershipStatus":"Current membership state; removal retains the team relationship and its history.","RefundKind":"Ticket returns allocate specific unused tickets; payment reversals return unapplied captures without pretending tickets were issued."},"TYPES":[{"n":"Money","f":[{"n":"amount","t":"Decimal","m":"1","k":"","note":""},{"n":"currency","t":"String","m":"1","k":"","note":"Supported uppercase ISO 4217 currency code; supported currencies and minor units are configured by the implementing service."}],"d":"A nonnegative exact decimal amount paired with an ISO 4217 currency code. Monetary settlement values use the currency minor-unit precision and an explicit deterministic rounding policy. Different currencies cannot be added."},{"n":"PostalAddress","f":[{"n":"street","t":"String","m":"1","k":"","note":""},{"n":"city","t":"String","m":"1","k":"","note":""},{"n":"postal_code","t":"String","m":"0..1","k":"","note":""},{"n":"region","t":"String","m":"0..1","k":"","note":""},{"n":"country_code","t":"String","m":"1","k":"","note":"Uppercase ISO 3166-1 alpha-2 country code."}],"d":"A physical address stored as one value object on a venue."}],"PRIMS":[["UUID","Unique identifier."],["String","Text."],["Integer","Whole number."],["Decimal","Exact decimal number."],["Boolean","True or false."],["DateTime","An absolute timestamp stored in UTC."],["Date","Calendar date."]],"RELS":[{"i":0,"a":"Organizer","b":"OrganizerMember","k":"comp","l":"team_members","m1":"1","m2":"1..*","role1":"organizer","role2":"team_members","nav":"none"},{"i":1,"a":"Account","b":"OrganizerMember","k":"assoc","l":"memberships","m1":"1","m2":"0..*","role1":"account","role2":"memberships","nav":"none"},{"i":2,"a":"Organizer","b":"Event","k":"assoc","l":"events","m1":"1","m2":"0..*","role1":"organizer","role2":"events","nav":"none"},{"i":3,"a":"Event","b":"EventOccurrence","k":"comp","l":"occurrences","m1":"1","m2":"0..*","role1":"event","role2":"occurrences","nav":"none"},{"i":4,"a":"Event","b":"EventCategory","k":"comp","l":"category_links","m1":"1","m2":"0..*","role1":"event","role2":"category_links","nav":"none"},{"i":5,"a":"Category","b":"EventCategory","k":"assoc","l":"event_links","m1":"1","m2":"0..*","role1":"category","role2":"event_links","nav":"none"},{"i":6,"a":"Venue","b":"VenueSpace","k":"comp","l":"spaces","m1":"1","m2":"1..*","role1":"venue","role2":"spaces","nav":"none"},{"i":7,"a":"VenueSpace","b":"EventOccurrence","k":"assoc","l":"occurrences","m1":"0..1","m2":"0..*","role1":"venue_space","role2":"occurrences","nav":"none"},{"i":8,"a":"EventOccurrence","b":"Session","k":"comp","l":"sessions","m1":"1","m2":"0..*","role1":"occurrence","role2":"sessions","nav":"none"},{"i":9,"a":"VenueSpace","b":"Session","k":"assoc","l":"sessions","m1":"0..1","m2":"0..*","role1":"venue_space","role2":"sessions","nav":"none"},{"i":10,"a":"Session","b":"SessionSpeaker","k":"comp","l":"speaker_links","m1":"1","m2":"0..*","role1":"session","role2":"speaker_links","nav":"none"},{"i":11,"a":"Speaker","b":"SessionSpeaker","k":"assoc","l":"session_links","m1":"1","m2":"0..*","role1":"speaker","role2":"session_links","nav":"none"},{"i":12,"a":"EventOccurrence","b":"TicketType","k":"comp","l":"ticket_types","m1":"1","m2":"0..*","role1":"occurrence","role2":"ticket_types","nav":"none"},{"i":13,"a":"OrderItem","b":"TicketReservation","k":"comp","l":"reservations","m1":"1","m2":"0..*","role1":"order_item","role2":"reservations","nav":"none"},{"i":15,"a":"Organizer","b":"DiscountCode","k":"assoc","l":"discount_codes","m1":"1","m2":"0..*","role1":"organizer","role2":"discount_codes","nav":"none"},{"i":16,"a":"Event","b":"DiscountCode","k":"assoc","l":"discount_codes","m1":"0..1","m2":"0..*","role1":"restricted_event","role2":"discount_codes","nav":"none"},{"i":17,"a":"Organizer","b":"Order","k":"assoc","l":"orders","m1":"1","m2":"0..*","role1":"organizer","role2":"orders","nav":"none"},{"i":18,"a":"Account","b":"Order","k":"assoc","l":"purchases","m1":"0..1","m2":"0..*","role1":"buyer_account","role2":"purchases","nav":"none"},{"i":19,"a":"DiscountCode","b":"Order","k":"assoc","l":"orders","m1":"0..1","m2":"0..*","role1":"discount_code","role2":"orders","nav":"none"},{"i":20,"a":"Order","b":"OrderItem","k":"comp","l":"items","m1":"1","m2":"0..*","role1":"order","role2":"items","nav":"none"},{"i":21,"a":"TicketType","b":"OrderItem","k":"assoc","l":"order_items","m1":"1","m2":"0..*","role1":"ticket_type","role2":"order_items","nav":"none"},{"i":22,"a":"Order","b":"Payment","k":"assoc","l":"payment_attempts","m1":"1","m2":"0..*","role1":"order","role2":"payment_attempts","nav":"none"},{"i":23,"a":"Payment","b":"Refund","k":"assoc","l":"refunds","m1":"1","m2":"0..*","role1":"payment","role2":"refunds","nav":"none"},{"i":24,"a":"Refund","b":"RefundItem","k":"comp","l":"items","m1":"1","m2":"0..*","role1":"refund","role2":"items","nav":"none"},{"i":25,"a":"OrderItem","b":"RefundItem","k":"assoc","l":"refund_items","m1":"1","m2":"0..*","role1":"order_item","role2":"refund_items","nav":"none"},{"i":26,"a":"Account","b":"Attendee","k":"assoc","l":"attendee_profile","m1":"0..1","m2":"0..1","role1":"account","role2":"attendee_profile","nav":"none"},{"i":27,"a":"OrderItem","b":"Ticket","k":"assoc","l":"tickets","m1":"1","m2":"0..*","role1":"order_item","role2":"tickets","nav":"none"},{"i":28,"a":"Attendee","b":"Ticket","k":"assoc","l":"tickets","m1":"0..1","m2":"0..*","role1":"holder","role2":"tickets","nav":"none"},{"i":30,"a":"Ticket","b":"TicketTransfer","k":"comp","l":"transfer_history","m1":"1","m2":"0..*","role1":"ticket","role2":"transfer_history","nav":"none"},{"i":31,"a":"Account","b":"TicketTransfer","k":"assoc","l":"initiated_transfers","m1":"1","m2":"0..*","role1":"initiator","role2":"initiated_transfers","nav":"none"},{"i":32,"a":"Attendee","b":"TicketTransfer","k":"assoc","l":"outgoing_transfers","m1":"0..1","m2":"0..*","role1":"from_attendee","role2":"outgoing_transfers","nav":"none"},{"i":33,"a":"Attendee","b":"TicketTransfer","k":"assoc","l":"incoming_transfers","m1":"0..1","m2":"0..*","role1":"to_attendee","role2":"incoming_transfers","nav":"none"},{"i":34,"a":"Ticket","b":"CheckIn","k":"comp","l":"admission","m1":"1","m2":"0..1","role1":"ticket","role2":"admission","nav":"none"},{"i":35,"a":"Account","b":"CheckIn","k":"assoc","l":"check_ins","m1":"1","m2":"0..*","role1":"staff_account","role2":"check_ins","nav":"none"},{"i":36,"a":"EventOccurrence","b":"WaitlistEntry","k":"comp","l":"waitlist","m1":"1","m2":"0..*","role1":"occurrence","role2":"waitlist","nav":"none"},{"i":37,"a":"Attendee","b":"WaitlistEntry","k":"assoc","l":"waitlist_entries","m1":"1","m2":"0..*","role1":"attendee","role2":"waitlist_entries","nav":"none"},{"i":38,"a":"TicketType","b":"WaitlistEntry","k":"assoc","l":"waitlist_entries","m1":"0..1","m2":"0..*","role1":"requested_ticket_type","role2":"waitlist_entries","nav":"none"},{"i":39,"a":"TicketReservation","b":"WaitlistEntry","k":"assoc","l":"waitlist_entry","m1":"0..1","m2":"0..1","role1":"reservation","role2":"waitlist_entry","nav":"none"},{"i":40,"a":"Event","b":"Announcement","k":"comp","l":"announcements","m1":"1","m2":"0..*","role1":"event","role2":"announcements","nav":"none"},{"i":41,"a":"Announcement","b":"AnnouncementDelivery","k":"comp","l":"deliveries","m1":"1","m2":"0..*","role1":"announcement","role2":"deliveries","nav":"none"},{"i":42,"a":"Attendee","b":"AnnouncementDelivery","k":"assoc","l":"announcement_deliveries","m1":"1","m2":"0..*","role1":"recipient","role2":"announcement_deliveries","nav":"none"},{"i":43,"a":"RefundItem","b":"RefundTicket","k":"comp","l":"","m1":"1","m2":"1..*","role1":"refund_item","role2":"ticket_allocations","nav":"none"},{"i":44,"a":"Ticket","b":"RefundTicket","k":"assoc","l":"","m1":"1","m2":"0..*","role1":"ticket","role2":"refund_history","nav":"none"}]};
+const LAYOUT={"version":"events-example-2","nodes":{"Account":{"w":300,"h":100},"Organizer":{"w":300,"h":100},"OrganizerMember":{"w":300,"h":118},"Category":{"w":300,"h":98},"Event":{"w":300,"h":118},"EventCategory":{"w":300,"h":80},"EventOccurrence":{"w":300,"h":118},"Venue":{"w":300,"h":82},"VenueSpace":{"w":300,"h":100},"Session":{"w":300,"h":118},"Speaker":{"w":300,"h":82},"SessionSpeaker":{"w":300,"h":100},"TicketType":{"w":300,"h":100},"TicketReservation":{"w":300,"h":100},"DiscountCode":{"w":300,"h":118},"Order":{"w":300,"h":136},"OrderItem":{"w":300,"h":118},"Payment":{"w":300,"h":118},"Refund":{"w":300,"h":118},"RefundItem":{"w":300,"h":118},"RefundTicket":{"w":300,"h":80},"Attendee":{"w":300,"h":100},"Ticket":{"w":300,"h":136},"TicketTransfer":{"w":300,"h":154},"CheckIn":{"w":300,"h":118},"WaitlistEntry":{"w":300,"h":154},"Announcement":{"w":300,"h":100},"AnnouncementDelivery":{"w":300,"h":118}},"ro":{"grid":10,"pad":18,"cross":260,"bend":26,"near":5,"overlap":700,"port":90,"outside":40,"ring":40},"routes":{"e9":[{"x":1725,"y":189},{"x":1725,"y":303}],"e11":[{"x":2155,"y":180},{"x":2155,"y":312}],"e25":[{"x":925,"y":653},{"x":925,"y":785}],"e43":[{"x":915,"y":1063},{"x":915,"y":903}],"e6":[{"x":1680,"y":115},{"x":1580,"y":115}],"e8":[{"x":1680,"y":325},{"x":1580,"y":325}],"e19":[{"x":380,"y":555},{"x":480,"y":555}],"e21":[{"x":1280,"y":565},{"x":1180,"y":565}],"e23":[{"x":380,"y":805},{"x":480,"y":805}],"e41":[{"x":480,"y":1125},{"x":380,"y":1125}],"e2":[{"x":780,"y":155},{"x":845,"y":155},{"x":845,"y":325},{"x":880,"y":325}],"e7":[{"x":1705,"y":189},{"x":1705,"y":265},{"x":1555,"y":265},{"x":1555,"y":303}],"e27":[{"x":1180,"y":635},{"x":1245,"y":635},{"x":1245,"y":795},{"x":1280,"y":795}],"e32":[{"x":2080,"y":615},{"x":2015,"y":615},{"x":2015,"y":785},{"x":1980,"y":785}],"e33":[{"x":2080,"y":595},{"x":2005,"y":595},{"x":2005,"y":665},{"x":1955,"y":665},{"x":1955,"y":767}],"e44":[{"x":1305,"y":912},{"x":1305,"y":1085},{"x":1180,"y":1085}],"e12":[{"x":1315,"y":544},{"x":1315,"y":421}],"e0":[{"x":880,"y":105},{"x":780,"y":105}],"e3":[{"x":1280,"y":325},{"x":1180,"y":325}],"e4":[{"x":780,"y":355},{"x":880,"y":355}],"e5":[{"x":380,"y":385},{"x":480,"y":385}],"e10":[{"x":2080,"y":335},{"x":1980,"y":335}],"e20":[{"x":880,"y":555},{"x":780,"y":555}],"e24":[{"x":880,"y":805},{"x":780,"y":805}],"e30":[{"x":1680,"y":805},{"x":1580,"y":805}],"e17":[{"x":780,"y":165},{"x":815,"y":165},{"x":815,"y":545},{"x":780,"y":545}],"e37":[{"x":2080,"y":625},{"x":2045,"y":625},{"x":2045,"y":1045},{"x":2080,"y":1045}],"e22":[{"x":505,"y":662},{"x":505,"y":755},{"x":355,"y":755},{"x":355,"y":785}],"e1":[{"x":355,"y":89},{"x":355,"y":45},{"x":905,"y":45},{"x":905,"y":80}],"e13":[{"x":1705,"y":644},{"x":1705,"y":665},{"x":1255,"y":665},{"x":1255,"y":615},{"x":1180,"y":615}],"e34":[{"x":2105,"y":903},{"x":2105,"y":945},{"x":1555,"y":945},{"x":1555,"y":912}],"e15":[{"x":480,"y":165},{"x":415,"y":165},{"x":415,"y":505},{"x":355,"y":505},{"x":355,"y":535}],"e18":[{"x":380,"y":145},{"x":445,"y":145},{"x":445,"y":545},{"x":480,"y":545}],"e39":[{"x":1955,"y":544},{"x":1955,"y":525},{"x":2415,"y":525},{"x":2415,"y":1045},{"x":2380,"y":1045}],"e16":[{"x":880,"y":405},{"x":835,"y":405},{"x":835,"y":695},{"x":355,"y":695},{"x":355,"y":653}],"e28":[{"x":2105,"y":544},{"x":2105,"y":505},{"x":1615,"y":505},{"x":1615,"y":795},{"x":1580,"y":795}],"e38":[{"x":1580,"y":625},{"x":1645,"y":625},{"x":1645,"y":1055},{"x":2080,"y":1055}],"e36":[{"x":2355,"y":1026},{"x":2355,"y":925},{"x":2405,"y":925},{"x":2405,"y":455},{"x":1555,"y":455},{"x":1555,"y":421}],"e40":[{"x":355,"y":1053},{"x":355,"y":925},{"x":845,"y":925},{"x":845,"y":515},{"x":905,"y":515},{"x":905,"y":421}],"e42":[{"x":2105,"y":644},{"x":2105,"y":765},{"x":2025,"y":765},{"x":2025,"y":1165},{"x":815,"y":1165},{"x":815,"y":1145},{"x":780,"y":1145}],"e31":[{"x":380,"y":135},{"x":455,"y":135},{"x":455,"y":65},{"x":815,"y":65},{"x":815,"y":135},{"x":855,"y":135},{"x":855,"y":225},{"x":1245,"y":225},{"x":1245,"y":485},{"x":1655,"y":485},{"x":1655,"y":685},{"x":1705,"y":685},{"x":1705,"y":767}],"e26":[{"x":380,"y":125},{"x":435,"y":125},{"x":435,"y":55},{"x":2045,"y":55},{"x":2045,"y":485},{"x":2125,"y":485},{"x":2125,"y":544}],"e35":[{"x":80,"y":165},{"x":55,"y":165},{"x":55,"y":1185},{"x":2035,"y":1185},{"x":2035,"y":1005},{"x":2125,"y":1005},{"x":2125,"y":903}]},"C":6,"R":5,"cell":[0,1,2,6,8,7,9,3,4,10,5,11,15,16,12,13,14,18,19,20,26,17,21,22,23,29,24,25],"gx":100,"gy":105,"cardWidth":300};
     </script>
     <script id="wire-preview-geometry">
       /* Keep connection trunks steady while a card follows the pointer. */
@@ -2258,9 +2276,8 @@ const DesignURL = (() => {
           r.m2,
           true
         ), 'Invalid relationship multiplicity. Use a UML multiplicity.');
-      if (['gen', 'real', 'comp'].includes(r.k))
-        require(r.a !==
-          r.b, 'Inheritance, realization, and composition cannot connect a class to itself.');
+      if (['gen', 'real'].includes(r.k))
+        require(r.a !== r.b, 'Inheritance and realization cannot connect a class to itself.');
       if (r.k === 'comp') {
         const parts = r.m1.split('..'),
           upper = parts.at(-1);
@@ -2269,14 +2286,31 @@ const DesignURL = (() => {
           +upper <= 1, 'A part can have at most one composite owner.');
       }
       if (r.k === 'real')
-        require(m.ENT.find((e) => e.id === r.b).st ===
-          'interface', 'Realization must point to an interface.');
+        require(m.ENT.find((e) => e.id === r.a).st !== 'interface' &&
+          m.ENT.find((e) => e.id === r.b).st ===
+            'interface', 'Realization must point to an interface.');
+      if (r.k === 'gen') {
+        require((m.ENT.find((e) => e.id === r.a).st === 'interface') ===
+          (m.ENT.find((e) => e.id === r.b).st ===
+            'interface'), 'Generalization must connect classes to classes or interfaces to interfaces.');
+        require(!m.RELS.some(
+          (other) => other !== r && other.k === 'gen' && other.a === r.a && other.b === r.b
+        ), 'Duplicate generalization.');
+      }
+      if (!['assoc', 'agg', 'comp'].includes(r.k))
+        require(r.m1 === '' &&
+          r.m2 === '' &&
+          !r.role1 &&
+          !r.role2, 'Only associations have endpoint multiplicities and roles.');
     }
     const parents = new Map(
       m.ENT.map((e) => [e.id, m.RELS.filter((r) => r.k === 'gen' && r.a === e.id).map((r) => r.b)])
     );
     for (const e of m.ENT)
       if (e.ext) {
+        require((e.st === 'interface') ===
+          (m.ENT.find((parent) => parent.id === e.ext).st ===
+            'interface'), 'Generalization must connect classes to classes or interfaces to interfaces.');
         require(!parents.get(e.id).length ||
           parents
             .get(e.id)
@@ -2297,15 +2331,8 @@ const DesignURL = (() => {
       for (const id of adjacency.keys()) visit(id);
     }
     acyclic(parents, 'Inheritance');
-    acyclic(
-      new Map(
-        m.ENT.map((e) => [
-          e.id,
-          m.RELS.filter((r) => r.k === 'comp' && r.a === e.id).map((r) => r.b),
-        ])
-      ),
-      'Composition'
-    );
+    // Composition is acyclic between objects, not necessarily between class types.
+    // A Folder may contain Folders; a class diagram cannot validate object links.
     require(text(l.version) && integer(l.C, 1, 32) && integer(l.R, 1, 32), 'Invalid layout grid.');
     require(finite(l.gx, 24, 1000) &&
       finite(l.gy, 24, 1000) &&
@@ -2581,21 +2608,60 @@ const ModelEditor = (() => {
     }
     return rels.some((r) => r.k === kind && visit(r.a));
   }
-  function height(e, attributes) {
-    const count = attributes === 'all' ? e.f.length : e.f.filter((f) => f.k).length;
-    return Math.min(2400, (e.st ? 46 : 34) + 10 + count * 18 + (count < e.f.length ? 20 : 0));
+  function fields(e, model) {
+    const result = [...e.f],
+      names = new Set(result.map((f) => f.n));
+    for (const name of e.includes || [])
+      for (const f of model?.TYPES.find((t) => t.n === name)?.f || [])
+        if (!names.has(f.n)) {
+          result.push(f);
+          names.add(f.n);
+        }
+    return result;
+  }
+  function height(e, attributes, model) {
+    const attributesList = fields(e, model);
+    const count =
+      attributes === 'all' ? attributesList.length : attributesList.filter((f) => f.k).length;
+    return (
+      (e.st ? 46 : 34) +
+      10 +
+      Math.min(128, count) * 18 +
+      (Math.min(128, count) < attributesList.length ? 20 : 0)
+    );
   }
   function resize(config, width) {
     for (const e of config.model.ENT) {
       const n = config.layout.nodes[e.id],
-        h = height(e, config.view.attributes);
+        h = height(e, config.view.attributes, config.model);
       if (n.h !== h || (width && n.w !== width)) config.layout.routes = {};
       n.h = h;
       if (width) n.w = width;
     }
   }
+  function nextRelationshipId(rels) {
+    const used = new Set(rels.map((r) => r.i));
+    let i = 0;
+    while (used.has(i)) i++;
+    return i;
+  }
+  function normalize(input) {
+    const c = clone(DesignURL.validate(input));
+    for (const e of c.model.ENT)
+      if (e.ext && !c.model.RELS.some((r) => r.k === 'gen' && r.a === e.id && r.b === e.ext))
+        c.model.RELS.push({
+          i: nextRelationshipId(c.model.RELS),
+          a: e.id,
+          b: e.ext,
+          k: 'gen',
+          l: '',
+          m1: '',
+          m2: '',
+        });
+    return DesignURL.validate(c);
+  }
   function apply(input, command) {
-    const c = clone(DesignURL.validate(input)),
+    const c = normalize(input),
       m = c.model,
       l = c.layout,
       v = c.view;
@@ -2605,9 +2671,8 @@ const ModelEditor = (() => {
       return e;
     };
     if (command.type === 'import-design') {
-      const imported = clone(DesignURL.validate(command.config));
+      const imported = normalize(command.config);
       check(!cycle(imported.model.RELS, 'gen'), 'Inheritance must not form a cycle.');
-      check(!cycle(imported.model.RELS, 'comp'), 'Composition must not form a cycle.');
       return imported;
     } else if (command.type === 'class') {
       const data = command.data,
@@ -2720,7 +2785,7 @@ const ModelEditor = (() => {
             (Object.keys(l.nodes).length
               ? Math.max(...Object.values(l.nodes).map((n) => n.w))
               : l.cardWidth || 280),
-          h: height(e, v.attributes),
+          h: height(e, v.attributes, m),
         };
         l.routes = {};
       }
@@ -2787,7 +2852,7 @@ const ModelEditor = (() => {
         'Choose a data-model relationship.'
       );
       const r = {
-        i: old ? old.i : Math.max(-1, ...m.RELS.map((r) => r.i)) + 1,
+        i: old ? old.i : nextRelationshipId(m.RELS),
         a: data.a,
         b: data.b,
         k: data.k,
@@ -2796,8 +2861,9 @@ const ModelEditor = (() => {
         m2: '',
       };
       if (['assoc', 'agg', 'comp'].includes(r.k)) {
-        r.m1 = r.k === 'comp' ? wholeMultiplicity(data.m1) : multiplicity(data.m1);
-        r.m2 = multiplicity(data.m2);
+        r.m1 =
+          r.k === 'comp' ? wholeMultiplicity(data.m1) : data.m1 === '' ? '' : multiplicity(data.m1);
+        r.m2 = data.m2 === '' ? '' : multiplicity(data.m2);
         r.role1 = String(data.role1 || '').trim();
         r.role2 = String(data.role2 || '').trim();
         r.nav = data.nav || 'none';
@@ -2808,12 +2874,12 @@ const ModelEditor = (() => {
           ['0', '1', '0..1'].includes(r.m1),
           'A part can have at most one composite owner. Use 1 or 0..1 at the whole end.'
         );
-      if (['gen', 'real', 'comp'].includes(r.k))
-        check(r.a !== r.b, 'Inheritance and composition cannot connect a class to itself.');
+      if (['gen', 'real'].includes(r.k))
+        check(r.a !== r.b, 'Inheritance and realization cannot connect a class to itself.');
       if (r.k === 'gen')
         check(
-          find(r.a).st !== 'interface' && find(r.b).st !== 'interface',
-          'Use class inheritance between classes.'
+          (find(r.a).st === 'interface') === (find(r.b).st === 'interface'),
+          'Generalization must connect classes to classes or interfaces to interfaces.'
         );
       const rels = m.RELS.filter((other) => other !== old);
       check(
@@ -2831,7 +2897,6 @@ const ModelEditor = (() => {
       );
       rels.push(r);
       check(!cycle(rels, 'gen'), 'Inheritance must not form a cycle.');
-      check(!cycle(rels, 'comp'), 'Composition must not form a cycle.');
       m.RELS = rels;
       for (const id of new Set([r.a, old && old.a].filter(Boolean))) {
         const e = find(id),
@@ -2971,7 +3036,332 @@ const ModelEditor = (() => {
     } else throw new Error('Unknown editor command.');
     return DesignURL.validate(c);
   }
-  return { apply, multiplicity, wholeMultiplicity, height };
+  return { apply, normalize, multiplicity, wholeMultiplicity, height, fields };
+})();
+    </script>
+    <script id="model-analysis-core">
+      /* Review a compiled graph. UML rules and relational conventions stay distinct. */
+const ModelAnalysis = (() => {
+  function review(g, model) {
+    const issues = [],
+      byId = new Map(g.classes.map((c) => [c.id, c]));
+    const add = (code, message, classId, severity = 'warning') =>
+      issues.push({ code, severity, ...(classId ? { classId } : {}), message });
+    const all = (c) => [...c.attributes, ...c.inheritedAttributes];
+    const upper = (m) => (m.upperBound === null ? Infinity : m.upperBound);
+    function conforms(actual, expected, seen = new Set()) {
+      if (actual === expected) return true;
+      if (seen.has(actual)) return false;
+      seen.add(actual);
+      const c = byId.get(actual);
+      return !!c && [...c.superclasses, ...c.interfaces].some((id) => conforms(id, expected, seen));
+    }
+    for (const type of g.unresolvedTypes)
+      add(
+        'undefined-type',
+        'Type ' + type + ' has no class, enumeration, value-type or primitive definition.',
+        null,
+        'error'
+      );
+    for (const c of g.classes) {
+      for (const conflict of c.inheritanceConflicts)
+        add(
+          'ambiguous-inheritance',
+          'Inherited attribute ' +
+            conflict.attributeName +
+            ' has distinct definitions in ' +
+            conflict.declaredIn.join(', ') +
+            '.',
+          c.id,
+          'error'
+        );
+      for (const a of c.attributes) {
+        for (const parentId of c.superclasses)
+          for (const inherited of all(byId.get(parentId)).filter((f) => f.name === a.name))
+            if (
+              !conforms(a.type, inherited.type) ||
+              a.multiplicity.lowerBound < inherited.multiplicity.lowerBound ||
+              upper(a.multiplicity) > upper(inherited.multiplicity)
+            )
+              add(
+                'incompatible-redefinition',
+                a.name +
+                  ' cannot redefine ' +
+                  parentId +
+                  '.' +
+                  inherited.name +
+                  ': its type must conform and its multiplicity must narrow the inherited range.',
+                c.id,
+                'error'
+              );
+      }
+      for (const a of all(c)) {
+        if (a.isIdentifier && (a.multiplicity.lowerBound !== 1 || a.multiplicity.upperBound !== 1))
+          add(
+            'relational-identifier',
+            a.name +
+              ' is an identifier with a nonscalar or optional value. UML permits this; a relational primary key requires one non-null value.',
+            c.id
+          );
+        for (const targetId of a.references) {
+          const target = byId.get(targetId),
+            keys = all(target).filter((f) => target.primaryKey.includes(f.name));
+          if (!keys.length)
+            add(
+              'reference-without-key',
+              a.name + ' references ' + targetId + ', which has no declared identifier.',
+              c.id
+            );
+          else if (keys.length > 1)
+            add(
+              'composite-reference',
+              a.name +
+                ' references the composite identifier of ' +
+                targetId +
+                '. Specify the component mapping in constraints; the class reference alone does not define it.',
+              c.id
+            );
+          else if (a.type !== keys[0].type && a.type !== targetId)
+            add(
+              'foreign-key-type',
+              a.name +
+                ' has type ' +
+                a.type +
+                ' but ' +
+                targetId +
+                '.' +
+                keys[0].name +
+                ' has type ' +
+                keys[0].type +
+                '.',
+              c.id,
+              'error'
+            );
+          const links = g.relationships.filter(
+            (r) =>
+              ['association', 'aggregation', 'composition'].includes(r.kind) &&
+              ((r.from.classId === c.id && r.to.classId === targetId) ||
+                (r.to.classId === c.id && r.from.classId === targetId))
+          );
+          if (!links.length && !c.superclasses.includes(targetId))
+            add(
+              'reference-without-association',
+              a.name +
+                ' references ' +
+                targetId +
+                ' without a displayed association. Add the relationship or document the deliberate omission.',
+              c.id
+            );
+          else if (
+            links.length &&
+            !links.some((r) => {
+              const ends = [r.from, r.to].filter((end) => end.classId === targetId);
+              return ends.some(
+                (end) =>
+                  end.multiplicity &&
+                  end.multiplicity.lowerBound === a.multiplicity.lowerBound &&
+                  end.multiplicity.upperBound === a.multiplicity.upperBound
+              );
+            })
+          )
+            add(
+              'reference-multiplicity',
+              a.name +
+                ' and its association to ' +
+                targetId +
+                ' use different or unspecified reference bounds. Review the role-to-field mapping.',
+              c.id
+            );
+        }
+      }
+    }
+    for (const e of model.ENT) {
+      const included = new Map();
+      for (const name of e.includes || [])
+        for (const f of model.TYPES.find((t) => t.n === name).f) {
+          if (included.has(f.n) && !e.f.some((own) => own.n === f.n))
+            add(
+              'included-name-collision',
+              f.n +
+                ' is supplied by both ' +
+                included.get(f.n) +
+                ' and ' +
+                name +
+                '; declare one attribute explicitly to resolve it.',
+              e.id,
+              'error'
+            );
+          included.set(f.n, name);
+        }
+    }
+    for (const r of g.relationships) {
+      if (
+        ['association', 'aggregation', 'composition'].includes(r.kind) &&
+        (!r.from.multiplicity || !r.to.multiplicity)
+      )
+        add(
+          'unspecified-multiplicity',
+          r.id +
+            ' has an unspecified end multiplicity. No cardinality can be inferred from a hidden or unspecified label.',
+          r.from.classId
+        );
+    }
+    const compositions = g.relationships.filter((r) => r.kind === 'composition');
+    for (const c of g.classes) {
+      const owners = compositions.filter((r) => r.partClassId === c.id);
+      if (owners.length > 1)
+        add(
+          'exclusive-composition',
+          'Instances of ' +
+            c.id +
+            ' may have at most one composite owner across all ' +
+            owners.length +
+            ' composition relationships. Enforce exclusive ownership between objects.',
+          c.id
+        );
+      if (owners.some((r) => r.wholeClassId === c.id && r.from.multiplicity?.lowerBound === 1))
+        add(
+          'mandatory-recursive-owner',
+          'Every ' +
+            c.id +
+            ' would require another ' +
+            c.id +
+            ' as its composite owner. A finite nonempty hierarchy needs an optional parent or a different root type.',
+          c.id
+        );
+    }
+    return {
+      standard: 'OMG UML 2.5.1',
+      scope:
+        'Supported binary UML data structures and declared relational conventions. Business constraints are documentation, not executable validation; instance-level composition ownership and acyclicity require enforcement by the implementing service.',
+      status: issues.some((i) => i.severity === 'error')
+        ? 'issues'
+        : issues.length
+          ? 'review'
+          : 'checked',
+      issues,
+    };
+  }
+  return { review };
+})();
+    </script>
+    <script id="uml-notation">
+      /* Binary UML relationships. Routing direction is independent of model direction. */
+const UMLNotation = (() => {
+  function line(r) {
+    const whole = r.k === 'comp' || r.k === 'agg';
+    return {
+      id: 'e' + r.i,
+      r,
+      src: whole ? r.b : r.a,
+      tgt: whole ? r.a : r.b,
+      ms: whole ? r.m2 : r.m1,
+      mt: whole ? r.m1 : r.m2,
+      rs: whole ? r.role2 : r.role1,
+      rt: whole ? r.role1 : r.role2,
+    };
+  }
+  function markers(r) {
+    if (r.k === 'gen' || r.k === 'real') return { start: null, end: 'mt' };
+    if (r.k === 'dep') return { start: null, end: 'ma' };
+    const nav = r.nav ?? (r.k === 'assoc' ? 'b' : 'none');
+    const a = nav === 'a' || nav === 'both',
+      b = nav === 'b' || nav === 'both';
+    if (r.k === 'comp' || r.k === 'agg')
+      return { start: b ? 'ma' : null, end: (r.k === 'comp' ? 'md' : 'mg') + (a ? '-nav' : '') };
+    return { start: a ? 'ma' : null, end: b ? 'ma' : null };
+  }
+  function routeFits(l, points, nodes) {
+    if (!Array.isArray(points) || points.length < 2) return false;
+    const boundary = (p, n) =>
+      !!n &&
+      Number.isFinite(p.x) &&
+      Number.isFinite(p.y) &&
+      p.x >= n.x &&
+      p.x <= n.x + n.w &&
+      p.y >= n.y &&
+      p.y <= n.y + n.h &&
+      (p.x === n.x || p.x === n.x + n.w || p.y === n.y || p.y === n.y + n.h);
+    if (!boundary(points[0], nodes[l.src]) || !boundary(points.at(-1), nodes[l.tgt])) return false;
+    for (let i = 1; i < points.length; i++) {
+      const a = points[i - 1],
+        b = points[i];
+      if (a.x !== b.x && a.y !== b.y) return false;
+      for (const n of Object.values(nodes)) {
+        if (
+          a.y === b.y &&
+          a.y > n.y &&
+          a.y < n.y + n.h &&
+          Math.max(a.x, b.x) > n.x &&
+          Math.min(a.x, b.x) < n.x + n.w
+        )
+          return false;
+        if (
+          a.x === b.x &&
+          a.x > n.x &&
+          a.x < n.x + n.w &&
+          Math.max(a.y, b.y) > n.y &&
+          Math.min(a.y, b.y) < n.y + n.h
+        )
+          return false;
+      }
+    }
+    return true;
+  }
+  return { line, markers, routeFits };
+})();
+    </script>
+    <script id="uml-labels">
+      /* Place relationship annotations outside cards and previously placed labels. */
+const UMLLabels = (() => {
+  function create(nodes) {
+    const grid = new Map(),
+      unit = 80;
+    const cells = (b) => {
+      const keys = [];
+      for (let y = Math.floor(b.y / unit); y <= Math.floor((b.y + b.h) / unit); y++)
+        for (let x = Math.floor(b.x / unit); x <= Math.floor((b.x + b.w) / unit); x++)
+          keys.push(x + ':' + y);
+      return keys;
+    };
+    function add(b) {
+      for (const key of cells(b)) {
+        if (!grid.has(key)) grid.set(key, new Set());
+        grid.get(key).add(b);
+      }
+    }
+    const overlaps = (a, b) =>
+      a.x < b.x + b.w + 4 && a.x + a.w + 4 > b.x && a.y < b.y + b.h + 4 && a.y + a.h + 4 > b.y;
+    const offsets = [0, 20, -20, 40, -40, 80, -80, 160, -160];
+    const shifts = offsets
+      .flatMap((x) => offsets.map((y) => ({ x, y })))
+      .sort((a, b) => a.x * a.x + a.y * a.y - (b.x * b.x + b.y * b.y));
+    for (const node of Object.values(nodes)) add(node);
+    return {
+      place(b, maxShift = 160) {
+        for (const shift of shifts) {
+          if (Math.hypot(shift.x, shift.y) > maxShift) continue;
+          const candidate = { ...b, x: b.x + shift.x, y: b.y + shift.y };
+          const neighbours = new Set(
+            cells({
+              ...candidate,
+              x: candidate.x - 4,
+              y: candidate.y - 4,
+              w: candidate.w + 8,
+              h: candidate.h + 8,
+            }).flatMap((key) => [...(grid.get(key) || [])])
+          );
+          if (![...neighbours].some((other) => overlaps(candidate, other))) {
+            add(candidate);
+            return candidate;
+          }
+        }
+        // Label suppression is an explicit presentation choice; data stays in details/exports.
+        return null;
+      },
+    };
+  }
+  return { create };
 })();
     </script>
     <script id="model-export-core">
@@ -3010,7 +3400,7 @@ const ModelExport = (() => {
     };
   }
   function readable(config) {
-    const { model: m } = DesignURL.validate(config);
+    const { model: m } = ModelEditor.normalize(config);
     const classes = m.ENT.map((e) => {
       const attributes = e.f.map((f) => attribute(f, 'declared', e.id));
       const seen = new Set(e.f.map((f) => f.n));
@@ -3132,7 +3522,7 @@ const ModelExport = (() => {
         ].filter((type) => !definedTypes.has(type))
       ),
     ].sort();
-    return {
+    const graph = {
       format: 'uml-data-model',
       formatVersion: '1.0.0',
       name: m.title || 'Domain Model',
@@ -3171,6 +3561,8 @@ const ModelExport = (() => {
       })),
       primitiveTypes: m.PRIMS.map(([name, description]) => ({ name, description })),
     };
+    graph.validation = ModelAnalysis.review(graph, m);
+    return graph;
   }
   function json(config, format = 'readable') {
     if (!['readable', 'design'].includes(format)) throw new Error('Choose an export format.');
@@ -3216,6 +3608,17 @@ const ModelExport = (() => {
           a.id +
           '`)' +
           (a.description ? ' — ' + inline(a.description) : '')
+      );
+    lines.push('', '## Model checks', '', g.validation.scope, '');
+    if (!g.validation.issues.length)
+      lines.push('No issues found by the supported schema checks.', '');
+    for (const issue of g.validation.issues)
+      lines.push(
+        '- ' +
+          issue.severity +
+          (issue.classId ? ' in ' + issue.classId : '') +
+          ': ' +
+          inline(issue.message)
       );
     function fields(attributes) {
       if (!attributes.length) {
@@ -3402,11 +3805,34 @@ const ModelImport = (() => {
     );
     return notation;
   }
-  function attributes(value, primaryKey = []) {
+  function attributes(value, primaryKey = [], explicitKey = false) {
     return list(value, 'Attributes').map((a) => {
       check(record(a), 'Each attribute must be an object.');
+      for (const property of [
+        'isOrdered',
+        'isCollectionUnique',
+        'isReadOnly',
+        'isDerived',
+        'isStatic',
+        'defaultValue',
+        'visibility',
+        'aggregation',
+        'redefines',
+        'subsettedProperties',
+      ])
+        check(
+          a[property] === undefined,
+          'Attribute property ' +
+            property +
+            ' is not supported by this Model JSON format; it cannot be silently discarded.'
+        );
       for (const key of ['isIdentifier', 'isUnique'])
         check(a[key] === undefined || typeof a[key] === 'boolean', key + ' must be true or false.');
+      check(
+        !(a.isIdentifier === false && primaryKey.includes(a.name)) &&
+          !(explicitKey && a.isIdentifier === true && !primaryKey.includes(a.name)),
+        'primaryKey conflicts with an attribute isIdentifier flag.'
+      );
       return {
         n: text(a.name),
         t: text(a.type),
@@ -3457,7 +3883,7 @@ const ModelImport = (() => {
         cardWidth: 320,
         cell: model.ENT.map((e) => order.indexOf(e.id)),
         nodes: Object.fromEntries(
-          model.ENT.map((e) => [e.id, { w: 320, h: ModelEditor.height(e, attributes) }])
+          model.ENT.map((e) => [e.id, { w: 320, h: ModelEditor.height(e, attributes, model) }])
         ),
         routes: {},
         ro: { grid: model.ENT.length > 64 ? 20 : 10 },
@@ -3478,8 +3904,8 @@ const ModelImport = (() => {
       new TextEncoder().encode(JSON.stringify(value)).length <= DesignURL.limits.maxBytes,
       'The JSON is too large (maximum 2 MB).'
     );
-    if (value.model && value.layout) return DesignURL.validate(value);
-    if (value.ENT || value.model?.ENT) return DesignURL.validate(arrange(value.model || value));
+    if (value.model && value.layout) return ModelEditor.normalize(value);
+    if (value.ENT || value.model?.ENT) return ModelEditor.normalize(arrange(value.model || value));
     check(
       value.format === undefined || value.format === 'uml-data-model',
       'Unsupported model JSON format.'
@@ -3535,7 +3961,8 @@ const ModelImport = (() => {
         desc: text(c.description),
         f: attributes(
           fields.filter((a) => a.source === undefined || a.source === 'declared'),
-          list(c.primaryKey, 'Primary key')
+          list(c.primaryKey, 'Primary key'),
+          c.primaryKey !== undefined
         ),
         uk: list(c.uniqueConstraints, 'Unique constraints'),
         checks: list(c.constraints, 'Constraints'),
@@ -3585,6 +4012,20 @@ const ModelImport = (() => {
         record(r) && Object.hasOwn(kinds, r.kind) && record(r.from) && record(r.to),
         'Each relationship needs a supported kind and from/to classId endpoints.'
       );
+      for (const end of [r.from, r.to])
+        for (const property of [
+          'qualifiers',
+          'isOrdered',
+          'isUnique',
+          'isNavigable',
+          'visibility',
+          'redefines',
+          'subsettedProperties',
+        ])
+          check(
+            end[property] === undefined,
+            'Relationship-end property ' + property + ' is not supported by this Model JSON format.'
+          );
       let i = 0;
       if (r.id !== undefined) {
         check(
@@ -3597,6 +4038,16 @@ const ModelImport = (() => {
       used.add(i);
       const kind = kinds[r.kind],
         association = ['assoc', 'agg', 'comp'].includes(kind);
+      if (!association)
+        check(
+          [r.from.multiplicity, r.to.multiplicity].every(
+            (m) => m === undefined || m === null || m === ''
+          ) &&
+            !r.from.role &&
+            !r.to.role &&
+            (r.navigability === undefined || r.navigability === 'unspecified'),
+          'Only associations have endpoint multiplicities, roles, and navigation.'
+        );
       if (r.navigability !== undefined)
         check(Object.hasOwn(navigation, r.navigability), 'Invalid relationship navigability.');
       for (const [key, expected] of [
@@ -3617,8 +4068,8 @@ const ModelImport = (() => {
         b: r.to.classId,
         k: kind,
         l: text(r.name),
-        m1: association ? multiplicity(r.from.multiplicity, '1') : '',
-        m2: association ? multiplicity(r.to.multiplicity, '0..*') : '',
+        m1: association ? multiplicity(r.from.multiplicity, '') : '',
+        m2: association ? multiplicity(r.to.multiplicity, '') : '',
         role1: text(r.from.role),
         role2: text(r.to.role),
         nav: r.navigability === undefined ? 'none' : navigation[r.navigability],
@@ -3656,9 +4107,11 @@ const ModelImport = (() => {
           [...resolved.attributes, ...resolved.inheritedAttributes].map((a) => a.name)
         );
       check(
-        list(c.primaryKey, 'Primary key').every(
-          (name) => typeof name === 'string' && names.has(name)
-        ),
+        new Set(list(c.primaryKey, 'Primary key')).size ===
+          list(c.primaryKey, 'Primary key').length &&
+          list(c.primaryKey, 'Primary key').every(
+            (name) => typeof name === 'string' && names.has(name)
+          ),
         'A primaryKey names an attribute that does not exist.'
       );
     }
@@ -3695,6 +4148,7 @@ if (incoming !== null) {
     loadError = error;
   }
 }
+opened = ModelEditor.normalize(opened);
 let MODEL = JSON.parse(JSON.stringify(opened.model)),
   BASE = JSON.parse(JSON.stringify(opened.layout));
 let { CTX, ENT, ENUMS, ENUMNOTES, TYPES, PRIMS, RELS } = MODEL;
@@ -3713,19 +4167,7 @@ let CTXBY,
 function rebuildIndexes() {
   CTXBY = Object.fromEntries(CTX.map((c) => [c.id, c]));
   ENTBY = Object.fromEntries(ENT.map((e) => [e.id, e]));
-  LINES = RELS.map((r) => {
-    const comp = r.k === 'comp' || r.k === 'agg';
-    return {
-      id: 'e' + r.i,
-      r,
-      src: comp ? r.b : r.a,
-      tgt: comp ? r.a : r.b,
-      ms: comp ? r.m2 : r.m1,
-      mt: comp ? r.m1 : r.m2,
-      rs: comp ? r.role2 : r.role1,
-      rt: comp ? r.role1 : r.role2,
-    };
-  });
+  LINES = RELS.map(UMLNotation.line);
   ROUTED = LINES.filter((l) => l.src !== l.tgt);
   LOOPS = LINES.filter((l) => l.src === l.tgt);
 }
@@ -3988,6 +4430,7 @@ function refreshExport() {
     exportDocument = ModelExport.document(exportSnapshot, format);
     exportPreview.value = exportDocument.contents;
     const summary = exportDocument.summary;
+    const report = modelReport(exportSnapshot);
     $('#export-summary').innerHTML =
       `<div class="export-model-name">${esc(exportSnapshot.model.title || 'Domain Model')}</div><div class="export-stats">${[
         ['classes', summary.classes],
@@ -3997,7 +4440,7 @@ function refreshExport() {
         .map(([label, n]) => `<div><strong>${n}</strong><span>${label}</span></div>`)
         .join(
           ''
-        )}</div><p>${summary.domainAreas} domain areas · ${summary.enumerations} enumerations · ${summary.valueTypes} value types</p>`;
+        )}</div><p>${summary.domainAreas} domain areas · ${summary.enumerations} enumerations · ${summary.valueTypes} value types</p><p>${esc(reportSummary(report))} JSON and AI brief include the model-check findings.</p>`;
     const size = new TextEncoder().encode(exportDocument.contents).length;
     $('#export-file-info').textContent =
       exportDocument.filename +
@@ -4091,8 +4534,9 @@ function renderCards() {
   updateCanvasEmpty();
   $('#connect').disabled = !ENT.length;
   ENT.forEach((e) => {
-    const fields = S.attributes === 'all' ? e.f : e.f.filter((f) => f.k),
-      more = e.f.length - fields.length;
+    const declared = ModelEditor.fields(e, MODEL),
+      fields = (S.attributes === 'all' ? declared : declared.filter((f) => f.k)).slice(0, 128),
+      more = declared.length - fields.length;
     const el = document.createElement('div');
     el.className = 'card' + (e.st ? ' st' : '') + (e.st === 'abstract' ? ' abstract' : '');
     el.dataset.id = e.id;
@@ -4168,8 +4612,8 @@ const shown = (l) => !S.off.has(ENTBY[l.src].ctx) && !S.off.has(ENTBY[l.tgt].ctx
 const isDefault = () =>
   GR.C === BASE.C && GR.R === BASE.R && ENT.every((e, i) => GR.cell[e.id] === BASE.cell[i]);
 function routeAll() {
-  if (isDefault() && ROUTED.every((l) => BASE.routes[l.id])) {
-    routes = Object.assign({}, BASE.routes);
+  if (isDefault() && ROUTED.every((l) => UMLNotation.routeFits(l, BASE.routes[l.id], nodes))) {
+    routes = Object.fromEntries(ROUTED.map((l) => [l.id, BASE.routes[l.id]]));
     return null;
   }
   const R = new OrthoRouter.Router(nodes, RO);
@@ -4193,17 +4637,10 @@ const DEFS = `<defs>${[
   <marker id="ma${s}" class="${c}" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="12" markerHeight="12" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path class="mk-open" d="M2 2L11 6L2 10"/></marker>
   <marker id="mt${s}" class="${c}" viewBox="0 0 14 14" refX="13" refY="7" markerWidth="15" markerHeight="15" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path class="mk-hollow" d="M1.5 1.5L13 7L1.5 12.5Z"/></marker>
   <marker id="md${s}" class="${c}" viewBox="0 0 18 10" refX="17" refY="5" markerWidth="18" markerHeight="10" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path class="mk-fill" d="M1 5L9 1L17 5L9 9Z"/></marker>
-  <marker id="mg${s}" class="${c}" viewBox="0 0 18 10" refX="17" refY="5" markerWidth="18" markerHeight="10" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path class="mk-hollow" d="M1 5L9 1L17 5L9 9Z"/></marker>`
+  <marker id="mg${s}" class="${c}" viewBox="0 0 18 10" refX="17" refY="5" markerWidth="18" markerHeight="10" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path class="mk-hollow" d="M1 5L9 1L17 5L9 9Z"/></marker>
+  ${['md', 'mg'].map((id) => `<marker id="${id}-nav${s}" class="${c}" viewBox="0 0 32 14" refX="31" refY="7" markerWidth="32" markerHeight="14" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path class="${id === 'md' ? 'mk-fill' : 'mk-hollow'}" d="M1 7L9 3L17 7L9 11Z"/><path class="mk-open" d="M17 7H31M22 3L31 7L22 11"/></marker>`).join('')}`
   )
   .join('')}</defs>`;
-const mk = (k, s) =>
-  k === 'gen' || k === 'real'
-    ? `mt${s}`
-    : k === 'comp'
-      ? `md${s}`
-      : k === 'agg'
-        ? `mg${s}`
-        : `ma${s}`;
 function hopsFor(allIds) {
   const segs = {};
   allIds.forEach((id) => {
@@ -4363,19 +4800,9 @@ function applyHighlight() {
     p.classList.toggle('hi', !!hi);
     p.classList.toggle('dim', !!dim);
     const suffix = hi ? '-h' : '';
-    const association = l.r.k === 'assoc',
-      nav = l.r.nav === undefined ? 'b' : l.r.nav;
-    const end = association
-      ? nav === 'b' || nav === 'both'
-        ? `url(#ma${suffix})`
-        : 'none'
-      : `url(#${mk(l.r.k, suffix)})`;
-    setAttr(p, 'marker-end', end);
-    setAttr(
-      p,
-      'marker-start',
-      association && (nav === 'a' || nav === 'both') ? `url(#ma${suffix})` : 'none'
-    );
+    const markers = UMLNotation.markers(l.r);
+    setAttr(p, 'marker-end', markers.end ? `url(#${markers.end}${suffix})` : 'none');
+    setAttr(p, 'marker-start', markers.start ? `url(#${markers.start}${suffix})` : 'none');
   });
   ENT.forEach((e) => {
     const el = cardEl[e.id];
@@ -4413,6 +4840,7 @@ function drawLabels(f) {
     return;
   }
   let h = '';
+  const annotations = UMLLabels.create(visibleNodes());
   (S.labels ? new Set(visibleWireIds()) : f.edges).forEach((id) => {
     const l = byId(id),
       p = getPts(id);
@@ -4421,10 +4849,22 @@ function drawLabels(f) {
       if (!m && !role) return '';
       const ux = Math.sign(b.x - a.x),
         uy = Math.sign(b.y - a.y);
-      const x = a.x + ux * 20 + (uy ? 12 : 0),
-        y = a.y + uy * 20;
-      const anchor = uy ? 'start' : ux > 0 ? 'start' : 'end';
-      return `${role ? `<text class="role" x="${x}" y="${y + (ux ? -17 : uy * 15)}" text-anchor="${anchor}" dominant-baseline="central">${esc(role)}</text>` : ''}${m ? `<text x="${x}" y="${y + (ux ? 16 : 0)}" text-anchor="${anchor}" dominant-baseline="central">${esc(m)}</text>` : ''}`;
+      const offset = (l.r.k === 'comp' || l.r.k === 'agg') && a === p.at(-1) ? 40 : 20;
+      const w = Math.max((role || '').length * 8, (m || '').length * 7) + 8,
+        height = role && m ? 32 : 18;
+      const box = annotations.place(
+        {
+          x: uy ? a.x + 12 : ux > 0 ? a.x + offset : a.x - offset - w,
+          y: uy ? (uy > 0 ? a.y + offset : a.y - offset - height) : a.y - height - 8,
+          w,
+          h: height,
+        },
+        40
+      );
+      if (!box) return '';
+      const x = box.x + 4,
+        y = box.y + 8;
+      return `${role ? `<text class="role" x="${x}" y="${y}" dominant-baseline="central">${esc(role)}</text>` : ''}${m ? `<text x="${x}" y="${y + (role ? 16 : 0)}" dominant-baseline="central">${esc(m)}</text>` : ''}`;
     };
     h += end(p[0], p[1], l.ms, l.rs) + end(p[p.length - 1], p[p.length - 2], l.mt, l.rt);
     let bi = 1,
@@ -4441,8 +4881,17 @@ function drawLabels(f) {
       horiz = Math.abs(a.y - b.y) < 0.5,
       mx = (a.x + b.x) / 2,
       my = (a.y + b.y) / 2;
-    if (l.r.l && l.r.l !== l.rs && l.r.l !== l.rt)
-      h += `<text class="role" x="${horiz ? mx : mx + 32}" y="${horiz ? my - (l.rs || l.rt ? 36 : 16) : my}" text-anchor="${horiz ? 'middle' : 'start'}" dominant-baseline="central">${esc(l.r.l)}</text>`;
+    if (l.r.l && l.r.l !== l.rs && l.r.l !== l.rt) {
+      const w = l.r.l.length * 8 + 8;
+      const box = annotations.place({
+        x: horiz ? mx - w / 2 : mx + 32,
+        y: horiz ? my - 30 : my - 9,
+        w,
+        h: 18,
+      });
+      if (box)
+        h += `<text class="role" x="${box.x + 4}" y="${box.y + 8}" dominant-baseline="central">${esc(l.r.l)}</text>`;
+    }
   });
   labelsEl.innerHTML = h;
 }
@@ -4478,7 +4927,13 @@ function fit(animate) {
   if (!b) return;
   const vw = stage.clientWidth - (!panel.hidden && stage.clientWidth > 820 ? panel.offsetWidth : 0),
     vh = stage.clientHeight,
-    top = Math.max(70, $('#edit-tools').getBoundingClientRect().bottom + 16),
+    top = Math.max(
+      70,
+      $('#edit-tools').getBoundingClientRect().bottom + 16,
+      stage.clientWidth > 820 && !panel.hidden
+        ? $('#share-controls').getBoundingClientRect().bottom + 16
+        : 0
+    ),
     bot = 64;
   const z = Math.min(
     1.4,
@@ -4854,6 +5309,7 @@ function select(id) {
   } else {
     panel.hidden = true;
   }
+  if (S.auto) fit(false);
   queueURLUpdate();
   return true;
 }
@@ -4908,19 +5364,40 @@ function glyph(k, dir) {
         : k === 'dep'
           ? '<path d="M18 2.5L23 6L18 9.5" fill="none" stroke="currentColor"/>'
           : '';
-  return `<svg width="24" height="12" viewBox="0 0 24 12" style="color:var(--muted);${dir === 'in' ? 'transform:scaleX(-1)' : ''}"><path d="M1 6H${k === 'comp' || k === 'agg' ? 14 : k === 'gen' || k === 'real' ? 16 : 22}" stroke="currentColor"${dash}/>${end}</svg>`;
+  const flip = k === 'comp' || k === 'agg' ? dir === 'out' : dir === 'in';
+  return `<svg width="24" height="12" viewBox="0 0 24 12" style="color:var(--muted);${flip ? 'transform:scaleX(-1)' : ''}"><path d="M1 6H${k === 'comp' || k === 'agg' ? 14 : k === 'gen' || k === 'real' ? 16 : 22}" stroke="currentColor"${dash}/>${end}</svg>`;
 }
 function showPanel(id) {
   panelMode = 'details';
   const e = ENTBY[id],
     c = CTXBY[e.ctx];
-  const included = (e.includes || [])
-    .flatMap((name) => TYPES.find((type) => type.n === name).f)
-    .filter((field) => !e.f.some((own) => own.n === field.n));
+  const compiled = ModelExport.readable(designSnapshot()).classes.find((c) => c.id === id);
+  const attributes = [...compiled.attributes, ...compiled.inheritedAttributes].map((a) => ({
+    n: a.name,
+    t: a.type,
+    m: a.multiplicity.notation,
+    k: [
+      a.isIdentifier ? 'PK' : '',
+      a.isUnique ? 'UK' : '',
+      ...a.references.map((target) => 'FK:' + target),
+    ]
+      .filter(Boolean)
+      .join(' '),
+    note: [
+      a.description,
+      a.inheritedFrom
+        ? 'Inherited from ' + a.declaredIn
+        : a.source !== 'declared'
+          ? 'Included from ' + a.source
+          : '',
+    ]
+      .filter(Boolean)
+      .join(' · '),
+  }));
   const interfaces = RELS.filter((r) => r.k === 'real' && r.a === id).map((r) => r.b);
-  const pk = e.f.filter((f) => f.k.split(' ').includes('PK')).map((f) => f.n);
+  const pk = compiled.primaryKey;
   const rels = RELS.filter((r) => r.a === id || r.b === id);
-  const enums = [...new Set(e.f.map((f) => f.t).filter((t) => Object.hasOwn(ENUMS, t)))];
+  const enums = [...new Set(attributes.map((f) => f.t).filter((t) => Object.hasOwn(ENUMS, t)))];
   const keyH = (k) =>
     k
       .split(' ')
@@ -4935,8 +5412,19 @@ function showPanel(id) {
     const out = r.a === id,
       o = out ? r.b : r.a,
       self = r.a === r.b;
-    const txt = r.l || KTXT[r.k];
-    const m = r.m1 ? (out ? `${r.m1} → ${r.m2}` : `${r.m2} ← ${r.m1}`) : '';
+    const inverse = {
+      gen: 'generalizes',
+      real: 'is realized by',
+      comp: 'is part of',
+      agg: 'is a shared part of',
+      assoc: 'associates with',
+      dep: 'is required by',
+    };
+    const txt = r.l || (out ? KTXT[r.k] : inverse[r.k]);
+    const association = ['assoc', 'agg', 'comp'].includes(r.k);
+    const m = association
+      ? `${r.a}${r.role1 ? '.' + r.role1 : ''} [${r.m1 || 'unspecified'}] · ${r.b}${r.role2 ? '.' + r.role2 : ''} [${r.m2 || 'unspecified'}]`
+      : '';
     return `<li><span class="g">${glyph(r.k, out ? 'out' : 'in')}</span><span>${esc(txt)} ${self ? '<span class="m">itself</span>' : `<button class="lk" data-go="${esc(o)}">${esc(o)}</button>`}</span><span class="m">${esc(m)}</span><button type="button" class="ed-icon" data-edit-relationship="${r.i}" aria-label="Edit relationship ${esc(r.a)} to ${esc(r.b)}" title="Edit relationship">${icons.edit}</button></li>`;
   };
   panel.innerHTML = `<button class="ib x" data-close aria-label="Close"><svg viewBox="0 0 16 16"><path d="M4 4l8 8M12 4l-8 8"/></svg></button>
@@ -4944,11 +5432,10 @@ function showPanel(id) {
     <h2${e.st === 'abstract' ? ' style="font-style:italic"' : ''}>${esc(e.id)}</h2>
     <div class="ed-actions"><button type="button" class="ed-secondary" data-edit-class>Edit class</button><button type="button" class="ed-secondary" data-start-connection>Connect</button><button type="button" class="ed-secondary danger" data-delete-class="${esc(id)}">Delete</button></div>
     <div id="delete-confirmation"></div>
-    ${e.st || e.ext || interfaces.length ? `<div class="sub">${[e.st === 'interface' ? '«interface»' : e.st === 'abstract' ? 'Abstract class' : '', e.ext ? 'is a kind of ' + esc(e.ext) : '', interfaces.length ? 'implements ' + interfaces.map(esc).join(', ') : ''].filter(Boolean).join(' · ')}</div>` : ''}
+    ${e.st || compiled.superclasses.length || interfaces.length ? `<div class="sub">${[e.st === 'interface' ? '«interface»' : e.st === 'abstract' ? 'Abstract class' : '', compiled.superclasses.length ? 'is a kind of ' + compiled.superclasses.map(esc).join(', ') : '', interfaces.length ? 'implements ' + interfaces.map(esc).join(', ') : ''].filter(Boolean).join(' · ')}</div>` : ''}
     <p class="d">${esc(e.desc)}</p>
     <h3>Attributes<button type="button" class="ed-text-btn" data-add-attribute>+ Add attribute</button></h3>
-    <table class="ft"><tbody>${e.f
-      .concat(included)
+    <table class="ft"><tbody>${attributes
       .map(
         (f) =>
           `<tr><td class="f">${esc(f.n)}${f.note ? `<span class="n">${esc(f.note)}</span>` : ''}</td><td class="t">${esc(f.t)}${f.m !== '1' ? ' [' + esc(f.m) + ']' : ''}</td><td>${keyH(f.k)}</td></tr>`
@@ -5215,6 +5702,7 @@ function drawer(title, kicker = 'Data model') {
   panel.innerHTML = `<button class="ib x" type="button" data-close aria-label="Close drawer">${icons.close}</button><div class="eb">${esc(kicker)}</div><h2>${esc(title)}</h2><div id="editor-body"></div>`;
   panel.hidden = false;
   panel.scrollTop = 0;
+  if (S.auto) fit(false);
   return $('#editor-body');
 }
 function editorError(error) {
@@ -5288,6 +5776,7 @@ function restoreConfig(config) {
     apply();
   }
   queueURLUpdate();
+  updateModelCheck();
   updateHistory();
 }
 function commit(command, after) {
@@ -5421,7 +5910,7 @@ function showClassEditor(id, add = false) {
       r.b
     )}</select></label></div>
     ${editorInput('relationship-name', 'Name', r.l, 'maxlength="200"')}
-    <div id="association-settings"><div class="ed-grid">${choiceEditor('relationship-m1', 'From multiplicity', r.m1 || '1', [['0', '0 · No instances'], ...multiplicities], 'multiplicity')}${choiceEditor('relationship-m2', 'To multiplicity', r.m2 || '0..*', multiplicities, 'multiplicity')}</div>
+    <div id="association-settings"><div class="ed-grid">${choiceEditor('relationship-m1', 'From multiplicity', r.m1, [['', 'Unspecified'], ['0', '0 · No instances'], ...multiplicities], 'multiplicity')}${choiceEditor('relationship-m2', 'To multiplicity', r.m2, [['', 'Unspecified'], ['0', '0 · No instances'], ...multiplicities], 'multiplicity')}</div>
     <div class="ed-grid">${editorInput('relationship-role1', 'From role', r.role1 || '', 'maxlength="80"')}${editorInput('relationship-role2', 'To role', r.role2 || '', 'maxlength="80"')}</div>
     <label id="navigation-settings" class="ed-label">Navigation<select name="relationship-nav">${options(
       [
@@ -5446,8 +5935,8 @@ function relationshipKindChanged() {
   $('#association-settings')
     .querySelectorAll('input,select')
     .forEach((el) => (el.disabled = !association));
-  $('#navigation-settings').hidden = kind !== 'assoc';
-  $('[name="relationship-nav"]').disabled = kind !== 'assoc';
+  $('#navigation-settings').hidden = !association;
+  $('[name="relationship-nav"]').disabled = !association;
   const owner = $('[name="relationship-m1"]');
   [...owner.options].forEach(
     (option) =>
@@ -5557,6 +6046,39 @@ function showImportEditor() {
   invalidateImportPreview();
   trackEditor();
 }
+  /* Model checks always refer to saved data, including hidden classes. */
+function modelReport(config = designSnapshot()) {
+  return ModelExport.readable(config).validation;
+}
+function updateModelCheck() {
+  const report = modelReport(),
+    button = $('#check-model');
+  button.textContent = report.issues.length ? 'Check · ' + report.issues.length : 'Check';
+  button.classList.toggle('has-issues', report.status === 'issues');
+  button.setAttribute(
+    'aria-label',
+    'Check model' + (report.issues.length ? ' · ' + report.issues.length + ' findings' : '')
+  );
+}
+function reportSummary(report) {
+  const errors = report.issues.filter((i) => i.severity === 'error').length;
+  const warnings = report.issues.length - errors;
+  return report.issues.length
+    ? errors +
+        (errors === 1 ? ' error · ' : ' errors · ') +
+        warnings +
+        (warnings === 1 ? ' review warning' : ' review warnings')
+    : 'No issues found by the supported schema checks.';
+}
+function showModelReview() {
+  if (!canLeaveEditor(showModelReview)) return;
+  cancelConnection();
+  panelMode = 'review';
+  const report = modelReport(),
+    body = drawer('Model checks');
+  body.innerHTML = `<p class="ed-help">${esc(reportSummary(report))}</p><p class="ed-help">Checks cover the supported UML data structures, type definitions, inherited attributes and declared key conventions. Textual business rules are documented, not executed. Hidden association labels do not imply a cardinality or navigation direction.</p>${report.issues.map((i) => `<div class="ed-confirm"><strong>${i.severity === 'error' ? 'Error' : 'Review'}${i.classId ? ' · ' + esc(i.classId) : ''}</strong><p>${esc(i.message)}</p>${i.classId ? `<button class="ed-secondary" type="button" data-go="${esc(i.classId)}">Open class</button>` : ''}</div>`).join('')}<p class="ed-help">Composition requires exclusive ownership and an acyclic graph of objects. Recursive class definitions are allowed. The designer has no object records to verify.</p><p class="ed-help">PK and FK are data-model conventions. Primitive types such as UUID, Decimal and DateTime are declared extensions. This is a UML data-structure subset, not a complete UML metamodel or an XMI exchange tool.</p><a class="ed-text-btn" href="https://www.omg.org/spec/UML/2.5.1" target="_blank" rel="noopener noreferrer">OMG UML 2.5.1 reference</a>`;
+}
+$('#check-model').onclick = showModelReview;
   function cancelConnection() {
   const active = !!connection;
   connection = null;
@@ -5729,8 +6251,9 @@ panel.addEventListener('submit', async (ev) => {
       if (!form.isConnected || stamp !== importReadRevision) return;
       importPreview = ModelImport.parse(source);
       const m = importPreview.model;
+      const report = modelReport(importPreview);
       $('#import-preview').innerHTML =
-        `<div class="ed-confirm"><h3>${esc(m.title || 'Domain Model')}</h3><p>${importCount(m.ENT.length, 'class', 'classes')} · ${importCount(m.RELS.length, 'relationship')} · ${importCount(m.CTX.length, 'domain area')}<br>${importCount(Object.keys(m.ENUMS).length, 'enumeration')} · ${importCount(m.TYPES.length, 'value type')}</p><p>Import replaces the current design. Undo restores it.</p><button class="share-btn" type="button" data-apply-import>Import model</button></div>`;
+        `<div class="ed-confirm"><h3>${esc(m.title || 'Domain Model')}</h3><p>${importCount(m.ENT.length, 'class', 'classes')} · ${importCount(m.RELS.length, 'relationship')} · ${importCount(m.CTX.length, 'domain area')}<br>${importCount(Object.keys(m.ENUMS).length, 'enumeration')} · ${importCount(m.TYPES.length, 'value type')}</p><p>${esc(reportSummary(report))}${report.issues.length ? ' Use Check after importing to review the findings.' : ''}</p><p>Import replaces the current design. Undo restores it.</p><button class="share-btn" type="button" data-apply-import>Import model</button></div>`;
       $('[data-apply-import]').focus();
     } catch (error) {
       if (form.isConnected && stamp === importReadRevision) editorError(error);
@@ -5889,6 +6412,14 @@ routeAll();
 ENT.forEach((e) => cardEl[e.id].classList.toggle('off', S.off.has(e.ctx)));
 $('#q').value = S.q;
 drawWires();
+updateModelCheck();
+// Wrapped toolbars must leave room for share, zoom and mobile drawers.
+function sizeControls() {
+  const bottom = $('#edit-tools').getBoundingClientRect().bottom;
+  document.documentElement.style.setProperty('--aux-top', Math.ceil(bottom + 10) + 'px');
+}
+new ResizeObserver(sizeControls).observe($('#edit-tools'));
+sizeControls();
 if (S.sel) showPanel(S.sel);
 if (S.auto) fit(false);
 else {
