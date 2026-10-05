@@ -1,0 +1,143 @@
+{
+  "title": "Task board example",
+  "CTX": [
+    {
+      "id": "work",
+      "name": "Work",
+      "desc": "Fictional tasks and their board.",
+      "color": "#2B5C61"
+    },
+    {
+      "id": "labels",
+      "name": "Labels",
+      "desc": "Labels used to organise tasks.",
+      "color": "#80674D"
+    }
+  ],
+  "ENT": [
+    {
+      "id": "Board",
+      "ctx": "work",
+      "desc": "A fictional board containing tasks.",
+      "f": [
+        {
+          "n": "board_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "PK",
+          "note": ""
+        },
+        {
+          "n": "name",
+          "t": "String",
+          "m": "1",
+          "k": "",
+          "note": ""
+        }
+      ]
+    },
+    {
+      "id": "Task",
+      "ctx": "work",
+      "desc": "A task on a board.",
+      "f": [
+        {
+          "n": "task_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "PK",
+          "note": ""
+        },
+        {
+          "n": "board_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "FK:Board",
+          "note": ""
+        },
+        {
+          "n": "title",
+          "t": "String",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "status",
+          "t": "TaskStatus",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "due_at",
+          "t": "DateTime",
+          "m": "0..1",
+          "k": "",
+          "note": ""
+        }
+      ]
+    },
+    {
+      "id": "Label",
+      "ctx": "labels",
+      "desc": "A reusable label for tasks.",
+      "f": [
+        {
+          "n": "label_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "PK",
+          "note": ""
+        },
+        {
+          "n": "name",
+          "t": "String",
+          "m": "1",
+          "k": "UK",
+          "note": ""
+        }
+      ]
+    }
+  ],
+  "ENUMS": {
+    "TaskStatus": ["planned", "in_progress", "done"]
+  },
+  "ENUMNOTES": {
+    "TaskStatus": "The current state of a task."
+  },
+  "TYPES": [],
+  "PRIMS": [
+    ["UUID", "A universally unique identifier."],
+    ["String", "Text."],
+    ["Integer", "A whole number."],
+    ["Decimal", "A decimal number."],
+    ["Boolean", "True or false."],
+    ["DateTime", "A date and time."],
+    ["Date", "A calendar date."]
+  ],
+  "RELS": [
+    {
+      "i": 0,
+      "a": "Board",
+      "b": "Task",
+      "k": "comp",
+      "l": "tasks",
+      "m1": "1",
+      "m2": "0..*",
+      "nav": "none",
+      "role1": "board",
+      "role2": "tasks"
+    },
+    {
+      "i": 1,
+      "a": "Task",
+      "b": "Label",
+      "k": "assoc",
+      "l": "labels",
+      "m1": "0..*",
+      "m2": "0..*",
+      "nav": "none"
+    }
+  ]
+}

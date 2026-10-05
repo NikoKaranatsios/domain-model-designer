@@ -1,0 +1,9 @@
+.git
+designs/
+*.design.json
+*.model.json
+*.ai.md
+*.share-link.txt
+.DS_Store
+README.md
+SECURITY.md

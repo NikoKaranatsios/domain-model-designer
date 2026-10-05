@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf8" />
+    <meta name="referrer" content="no-referrer" />
+    <meta http-equiv="Content-Security-Policy" content="@security-policy" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+    <style>
+      /* @source styles/base.css */
+    </style>
+    <title>Domain Model</title>
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+PHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNyIgZmlsbD0iI2ZmZiIvPjxnIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzJCNUM2MSIgc3Ryb2tlLXdpZHRoPSIxLjYiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxyZWN0IHg9IjQiIHk9IjUiIHdpZHRoPSIxMCIgaGVpZ2h0PSI5IiByeD0iMiIvPjxyZWN0IHg9IjE4IiB5PSIxOCIgd2lkdGg9IjEwIiBoZWlnaHQ9IjkiIHJ4PSIyIi8+PHBhdGggZD0iTTQgOWgxMG00IDEzaDEwTTkgMTR2OWg5Ii8+PC9nPjwvc3ZnPg=="
+    />
+    <meta name="application-name" content="Domain Model Designer" />
+    <meta name="application-version" content="1.0.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Schibsted+Grotesk:wght@500;600;700&display=swap"
+    />
+    <style>
+      /* @source styles/canvas.css */
+      /* @source styles/editor.css */
+    </style>
+  </head>
+  <body>
+    <div id="stage" aria-label="Domain model canvas">
+      <div id="world">
+        <svg id="zones" xmlns="http://www.w3.org/2000/svg"></svg>
+        <svg id="wires" xmlns="http://www.w3.org/2000/svg"></svg>
+        <div id="cards"></div>
+        <svg id="labels" xmlns="http://www.w3.org/2000/svg"></svg>
+        <svg id="connection-preview" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"></svg>
+      </div>
+    </div>
+    <div id="top" class="ui glass">
+      <h1>Domain Model</h1>
+      <input
+        id="q"
+        type="search"
+        placeholder="Search"
+        aria-label="Search entities and fields"
+        autocomplete="off"
+        maxlength="500"
+      />
+    </div>
+    <div id="edit-tools" class="ui glass" role="toolbar" aria-label="Edit data model">
+      <button id="add-class" type="button" class="tool-btn">+ Class</button>
+      <button
+        id="connect"
+        type="button"
+        class="tool-btn"
+        aria-label="Connect classes"
+        aria-pressed="false"
+      >
+        <svg viewBox="0 0 16 16" aria-hidden="true">
+          <path d="M4 11V8h8V5" />
+          <circle cx="4" cy="13" r="1.5" />
+          <circle cx="12" cy="3" r="1.5" /></svg
+        >Connect
+      </button>
+      <button id="view-settings" type="button" class="tool-btn">View</button>
+      <button id="export-model" type="button" class="tool-btn" aria-label="Export model">
+        <svg viewBox="0 0 16 16" aria-hidden="true">
+          <path d="M8 2v8m-3-3 3 3 3-3M3 10v4h10v-4" /></svg
+        >Export
+      </button>
+      <span class="tool-divider" aria-hidden="true"></span>
+      <button
+        id="undo"
+        type="button"
+        class="tool-btn"
+        disabled
+        aria-label="Undo"
+        title="Undo (⌘/Ctrl Z)"
+      >
+        <svg viewBox="0 0 16 16" aria-hidden="true">
+          <path d="m6 3-3 3 3 3M3 6h6a4 4 0 0 1 0 8" />
+        </svg>
+      </button>
+      <button
+        id="redo"
+        type="button"
+        class="tool-btn"
+        disabled
+        aria-label="Redo"
+        title="Redo (⌘/Ctrl Shift Z)"
+      >
+        <svg viewBox="0 0 16 16" aria-hidden="true">
+          <path d="m10 3 3 3-3 3m3-3H7a4 4 0 0 0 0 8" />
+        </svg>
+      </button>
+    </div>
+    <div id="connection-hint" class="glass" role="status" hidden>
+      <span id="connection-hint-text"></span
+      ><button id="cancel-connection" class="ed-text-btn" type="button">Cancel</button>
+    </div>
+    <div id="empty-model" class="glass" hidden>
+      <h2>Your model is empty</h2>
+      <p>Add a class to start designing.</p>
+      <button id="empty-add-class" class="share-btn" type="button">+ Add class</button>
+    </div>
+    <div id="filtered-model" class="glass" hidden>
+      <h2>All classes are hidden</h2>
+      <p>Change the visible domain areas in View, or show all areas.</p>
+      <button id="show-all-areas" class="share-btn" type="button">Show all areas</button>
+    </div>
+    <div id="areas" class="ui"></div>
+    <div id="legend" class="ui glass"></div>
+    <div id="share-controls" class="ui glass">
+      <button id="share" class="share-btn" type="button">
+        <svg viewBox="0 0 16 16" aria-hidden="true">
+          <path
+            d="M6 10l4-4M5.5 6.5l-2 2a2.8 2.8 0 0 0 4 4l2-2M6.5 5.5l2-2a2.8 2.8 0 0 1 4 4l-2 2"
+          /></svg
+        >Share design
+      </button>
+    </div>
+    <div id="notice" role="alert" hidden>
+      <span id="notice-text"></span
+      ><button id="use-default" class="lk" type="button" hidden>Use default model</button>
+    </div>
+    <dialog id="share-dialog" aria-labelledby="share-title" aria-describedby="share-description">
+      <div class="dialog-heading">
+        <button id="share-close" class="ib x" type="button" aria-label="Close share dialog">
+          <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" /></svg>
+        </button>
+        <h2 id="share-title">Share this design</h2>
+      </div>
+      <p id="share-description">
+        This link includes the full model, descriptions, layout, and current view.
+      </p>
+      <p id="share-draft-note" class="ed-inline-note" hidden>
+        Unsaved drawer edits are excluded. Save them before sharing.
+      </p>
+      <label for="share-link">Design link</label>
+      <input
+        id="share-link"
+        type="text"
+        readonly
+        spellcheck="false"
+        aria-describedby="share-feedback"
+      />
+      <div class="actions">
+        <button id="copy-link" class="share-btn" type="button" disabled>Copy link</button
+        ><span id="share-feedback" role="status" aria-live="polite"></span>
+      </div>
+      <p id="local-link-note" hidden>
+        This address works on this computer. To share with others, open this page from a shared web
+        address.
+      </p>
+    </dialog>
+    <dialog id="export-dialog" aria-labelledby="export-title" aria-describedby="export-description">
+      <div class="dialog-heading">
+        <button id="export-close" class="ib x" type="button" aria-label="Close export">
+          <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" /></svg>
+        </button>
+        <h2 id="export-title">Export model</h2>
+      </div>
+      <p id="export-description">
+        The complete saved model, including hidden areas and attributes.
+      </p>
+      <div id="export-summary" aria-label="Model summary"></div>
+      <label class="ed-label"
+        >Format<select id="export-format" aria-describedby="export-format-help">
+          <option value="readable">Model JSON · for AI and other tools</option>
+          <option value="brief">AI brief · Markdown</option>
+          <option value="design">Design backup · JSON</option>
+        </select></label
+      >
+      <p id="export-format-help" class="ed-hint"></p>
+      <div id="export-draft-note" class="ed-inline-note" hidden>
+        <span>Unsaved drawer edits are excluded.</span
+        ><button id="export-return-to-edit" class="ed-text-btn" type="button">Review edits</button>
+      </div>
+      <p id="export-file-info" class="ed-file-info"></p>
+      <details class="ed-details">
+        <summary>Preview export</summary>
+        <textarea
+          id="export-preview"
+          readonly
+          spellcheck="false"
+          aria-label="Export preview"
+        ></textarea>
+      </details>
+      <div class="export-footer">
+        <div class="ed-save">
+          <button id="export-download" class="share-btn" type="button">
+            <svg viewBox="0 0 16 16" aria-hidden="true">
+              <path d="M8 2v8m-3-3 3 3 3-3M3 10v4h10v-4" /></svg
+            >Download</button
+          ><button id="export-copy" class="ed-secondary" type="button">Copy JSON</button>
+        </div>
+        <p id="export-feedback" role="status" aria-live="polite"></p>
+      </div>
+    </dialog>
+    <dialog
+      id="discard-dialog"
+      aria-labelledby="discard-title"
+      aria-describedby="discard-description"
+    >
+      <h2 id="discard-title">Unsaved changes</h2>
+      <p id="discard-description">
+        Keep editing to save your changes, or discard them to continue.
+      </p>
+      <form method="dialog" class="dialog-actions">
+        <button class="ed-secondary" value="keep" autofocus>Keep editing</button
+        ><button class="share-btn danger-fill" value="discard">Discard changes</button>
+      </form>
+    </dialog>
+    <div id="zoom" class="ui glass">
+      <button class="ib" id="zo" aria-label="Zoom out">
+        <svg viewBox="0 0 16 16"><path d="M3 8h10" /></svg>
+      </button>
+      <span id="pct">100%</span>
+      <button class="ib" id="zi" aria-label="Zoom in">
+        <svg viewBox="0 0 16 16"><path d="M3 8h10M8 3v10" /></svg>
+      </button>
+      <button class="ib" id="zf" aria-label="Fit to screen">
+        <svg viewBox="0 0 16 16"><path d="M2 6V2h4M10 2h4v4M14 10v4h-4M6 14H2v-4" /></svg>
+      </button>
+      <button class="ib" id="zr" aria-label="Restore layout">
+        <svg viewBox="0 0 16 16">
+          <path d="M3 8a5 5 0 1 0 1.6-3.7" />
+          <path d="M3 2.5v3h3" />
+        </svg>
+      </button>
+    </div>
+    <aside id="panel" hidden aria-live="polite"></aside>
+
+    <script>
+      /* @source orthogonal-router.js */
+    </script>
+    <script>
+      /* @defaults */
+    </script>
+    <script id="wire-preview-geometry">
+      /* @source wire-preview.js */
+    </script>
+    <script id="design-url-codec">
+      /* @source design-url.js */
+    </script>
+    <script id="model-editor-core">
+      /* @source model-editor.js */
+    </script>
+    <script id="model-export-core">
+      /* @source model-export.js */
+    </script>
+    <script>
+      /* @source app.js */
+    </script>
+  </body>
+</html>
