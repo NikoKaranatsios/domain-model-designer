@@ -1,5 +1,5 @@
 {
-  "version": "1.0.1-alpha",
+  "version": "1.1.0-alpha",
   "entryPoints": [
     "/",
     "/model.html"
@@ -13,8 +13,8 @@
     },
     {
       "path": "model.html",
-      "bytes": 181828,
-      "sha256": "17349c6990e98a34c8c3a5465bd130a18574e75752184c78c32708bdf4baca31"
+      "bytes": 232863,
+      "sha256": "4dd573d5b8a58be46e2c081df2a998bba064b581648caa4ca32643db727515eb"
     }
   ]
 }

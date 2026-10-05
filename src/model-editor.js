@@ -433,16 +433,27 @@ const ModelEditor = (() => {
       );
       m.ENUMS[command.name] = values;
       m.ENUMNOTES[command.name] = String(command.note || '').trim();
-    } else if (command.type === 'new-model') {
+    } else if (command.type === 'new-model' || command.type === 'clear-model') {
+      const empty = command.type === 'clear-model';
       c.model = {
-        title: 'Domain model',
+        title: empty ? 'Untitled model' : 'Domain model',
         CTX: [{ id: 'model', name: 'Domain model', desc: '' }],
-        ENT: [{ id: 'NewClass', ctx: 'model', desc: '', f: [] }],
+        ENT: empty ? [] : [{ id: 'NewClass', ctx: 'model', desc: '', f: [] }],
         RELS: [],
         ENUMS: {},
         ENUMNOTES: {},
         TYPES: [],
-        PRIMS: clone(m.PRIMS),
+        PRIMS: empty
+          ? [
+              ['UUID', 'Unique identifier.'],
+              ['String', 'Text.'],
+              ['Integer', 'Whole number.'],
+              ['Decimal', 'Exact decimal number.'],
+              ['Boolean', 'True or false.'],
+              ['DateTime', 'Timestamp.'],
+              ['Date', 'Calendar date.'],
+            ]
+          : clone(m.PRIMS),
       };
       c.layout = {
         version: 'editor',
@@ -450,14 +461,15 @@ const ModelEditor = (() => {
         R: 2,
         gx: 100,
         gy: 80,
-        cell: [0],
-        nodes: { NewClass: { w: 280, h: 44 } },
+        cell: empty ? [] : [0],
+        nodes: empty ? {} : { NewClass: { w: 280, h: 44 } },
+        cardWidth: 280,
         routes: {},
-        ro: clone(l.ro),
+        ro: empty ? {} : clone(l.ro),
       };
       c.view = {
         hidden: [],
-        selected: 'NewClass',
+        selected: empty ? null : 'NewClass',
         search: '',
         camera: { fit: true },
         attributes: 'all',

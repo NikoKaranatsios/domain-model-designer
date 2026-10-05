@@ -262,6 +262,38 @@ test('a full grid expands and an empty model can be shared and populated again',
   assert.equal(c.layout.nodes.First.w, 280);
 });
 
+test('delete everything clears the full design atomically and can be repopulated or restored', async () => {
+  const input = clone(config);
+  input.model.PRIMS.push(['PrivatePrimitive', 'Custom type to remove.']);
+  input.view.selected = 'BaseRecord';
+  input.view.search = 'Record';
+  input.view.hidden = ['files'];
+  const before = JSON.stringify(input),
+    cleared = apply(input, { type: 'clear-model' });
+  assert.equal(JSON.stringify(input), before, 'the undo snapshot stays intact');
+  assert.deepEqual(cleared.model.ENT, []);
+  assert.deepEqual(cleared.model.RELS, []);
+  assert.deepEqual(cleared.model.ENUMS, {});
+  assert.deepEqual(cleared.model.ENUMNOTES, {});
+  assert.deepEqual(cleared.model.TYPES, []);
+  assert.deepEqual(cleared.model.CTX, [{ id: 'model', name: 'Domain model', desc: '' }]);
+  assert.equal(
+    cleared.model.PRIMS.some(([name]) => name === 'PrivatePrimitive'),
+    false
+  );
+  assert.deepEqual(cleared.layout.nodes, {});
+  assert.deepEqual(cleared.layout.routes, {});
+  assert.deepEqual(cleared.layout.cell, []);
+  assert.equal(cleared.view.selected, null);
+  assert.equal(cleared.view.search, '');
+  assert.deepEqual(cleared.view.hidden, []);
+  assert.deepEqual(clone(await codec.decode(await codec.encode(cleared))), cleared);
+  const populated = addClass(cleared, 'FirstClass', [field('id', 'PK')]);
+  assert.equal(populated.model.ENT.length, 1);
+  assert.deepEqual(populated.layout.cell, [0]);
+  assert.deepEqual(clone(editor.apply(cleared, { type: 'import-design', config: input })), input);
+});
+
 test('typing a domain area creates it once and reuses it regardless of case', async () => {
   let c = apply(config, {
     type: 'class',

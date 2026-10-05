@@ -6,7 +6,13 @@ let panelMode = 'details',
   dragSnapshot = null;
 let editorBaseline = null,
   editorPickerBaseline = [];
-const formFingerprint = (form) => JSON.stringify([...new FormData(form)]);
+const formFingerprint = (form) =>
+  JSON.stringify(
+    [...new FormData(form)].map(([name, value]) => [
+      name,
+      value instanceof File ? [value.name, value.size, value.lastModified] : value,
+    ])
+  );
 function trackEditor() {
   const form = panel.querySelector('form');
   editorBaseline = form ? formFingerprint(form) : null;
@@ -166,6 +172,7 @@ function updateHistory() {
   $('#redo').disabled = !redoStack.length;
 }
 function restoreConfig(config) {
+  if (!urlBlocked) $('#notice').hidden = true;
   cancelCardDrag();
   pointers.clear();
   gesture = null;

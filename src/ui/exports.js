@@ -1,7 +1,7 @@
 /* ---------- model export ---------- */
 const exportFormats = {
   readable: {
-    help: 'Explicit classes, types, keys, and relationships. Inherited attributes include their origin.',
+    help: 'Explicit classes, types, keys, and relationships. Edit this JSON with an AI or another tool, then open Import to display it.',
     copy: 'Copy JSON',
   },
   brief: {
@@ -9,7 +9,7 @@ const exportFormats = {
     copy: 'Copy brief',
   },
   design: {
-    help: 'An exact backup of the model, layout, and view. Restore it with View → Import design.',
+    help: 'An exact backup of the model, layout, and view. Restore it with Import.',
     copy: 'Copy JSON',
   },
 };

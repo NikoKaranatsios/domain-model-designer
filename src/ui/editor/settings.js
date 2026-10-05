@@ -17,7 +17,7 @@ function showViewEditor() {
     <label class="ed-checkbox"><input name="view-labels" type="checkbox"${S.labels ? ' checked' : ''}>Show relationship names and multiplicities</label>
     <fieldset class="ed-area-options"><legend>Visible domain areas</legend><div>${CTX.map((area) => `<label><input type="checkbox" name="view-area" value="${esc(area.id)}"${S.off.has(area.id) ? '' : ' checked'}>${esc(area.name)}</label>`).join('')}</div></fieldset>
     ${errorHTML}<div class="ed-save"><button class="share-btn" type="submit">Save view</button><button class="ed-secondary" type="button" data-cancel-edit>Cancel</button></div>
-    <h3>Data model</h3><div class="ed-actions"><button type="button" class="ed-secondary" data-edit-area>Domain areas</button><button type="button" class="ed-secondary" data-edit-enum>Enumerations</button></div><button type="button" class="ed-secondary" data-import-design>Import design</button><button type="button" class="ed-text-btn ed-delete" data-new-model>Start a new model…</button></form>`;
+    <h3>Data model</h3><div class="ed-actions"><button type="button" class="ed-secondary" data-edit-area>Domain areas</button><button type="button" class="ed-secondary" data-edit-enum>Enumerations</button><button type="button" class="ed-secondary" data-import-design>Import JSON</button></div><div class="ed-actions ed-reset-actions"><button type="button" class="ed-secondary" data-new-model>Start a new model…</button><button type="button" class="ed-secondary danger" data-clear-model>Delete everything…</button></div><div id="reset-confirmation" aria-live="polite"></div></form>`;
   trackEditor();
 }
 function showAreaEditor(id = '') {
@@ -62,11 +62,35 @@ function showEnumEditor(name = '') {
     ${errorHTML}<div class="ed-save"><button class="share-btn" type="submit">Save enumeration</button><button class="ed-secondary" type="button" data-open-view>Back</button></div></form>`;
   trackEditor();
 }
+let importPreview = null,
+  importReadRevision = 0;
+const importCount = (n, singular, plural = singular + 's') =>
+  n + ' ' + (n === 1 ? singular : plural);
+function invalidateImportPreview() {
+  importReadRevision++;
+  importPreview = null;
+  $('#import-preview')?.replaceChildren();
+  const button = $('#import-form [type="submit"]');
+  if (button) button.disabled = false;
+  const error = $('#editor-error');
+  if (error) error.hidden = true;
+}
+function syncImportSource() {
+  invalidateImportPreview();
+  const paste = $('[name="import-source"]').value === 'paste';
+  $('#import-file-label').hidden = paste;
+  $('[name="design-file"]').disabled = paste;
+  $('[name="design-file"]').required = !paste;
+  $('#import-json-label').hidden = !paste;
+  $('[name="import-json"]').disabled = !paste;
+  $('[name="import-json"]').required = paste;
+}
 function showImportEditor() {
   if (!canLeaveEditor(showImportEditor)) return;
   cancelConnection();
   panelMode = 'import';
-  drawer('Import design').innerHTML =
-    `<form id="import-form"><p class="ed-help">Restore a Design backup JSON export, including its model, layout, and view. This replaces the current design. Undo restores it.</p><label class="ed-label">Design backup JSON<input type="file" name="design-file" accept=".json,application/json" required></label>${errorHTML}<div class="ed-save"><button class="share-btn" type="submit">Import design</button><button class="ed-secondary" type="button" data-open-view>Back</button></div></form>`;
+  drawer('Import model').innerHTML =
+    `<form id="import-form"><p class="ed-help">Import Model JSON describing classes and relationships, or a Design backup. Model JSON gets a fresh layout; backups keep their saved view. For AI edits, start with Export → Model JSON. Files stay in your browser. Maximum 2 MB.</p><label class="ed-label">Source<select name="import-source"><option value="file">Upload JSON file</option><option value="paste">Paste JSON</option></select></label><label id="import-file-label" class="ed-label">JSON file<input type="file" name="design-file" accept=".json,application/json" required></label><label id="import-json-label" class="ed-label" hidden>Model JSON<textarea name="import-json" rows="10" maxlength="2097152" spellcheck="false" placeholder='{"format":"uml-data-model","formatVersion":"1.0.0","name":"My model","classes":[]}' disabled></textarea></label>${errorHTML}<div class="ed-save"><button class="ed-secondary" type="submit">Preview model</button><button class="ed-secondary" type="button" data-open-view>Back</button></div><div id="import-preview" aria-live="polite"></div></form>`;
+  invalidateImportPreview();
   trackEditor();
 }

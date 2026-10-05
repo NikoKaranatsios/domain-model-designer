@@ -155,31 +155,34 @@ panel.addEventListener('submit', async (ev) => {
     );
   else if (form.id === 'import-form') {
     const button = form.querySelector('[type="submit"]');
+    invalidateImportPreview();
+    const stamp = importReadRevision;
     button.disabled = true;
     try {
-      const file = form.querySelector('[name="design-file"]').files[0];
-      if (!file || file.size > DesignURL.limits.maxBytes)
-        throw new Error('Choose a JSON design file up to 2 MB.');
-      let config;
-      try {
-        config = JSON.parse(await file.text());
-      } catch {
-        throw new Error('This file is not valid JSON.');
+      let source;
+      if (get('import-source') === 'paste') source = get('import-json');
+      else {
+        const file = form.querySelector('[name="design-file"]').files[0];
+        if (!file || file.size > DesignURL.limits.maxBytes)
+          throw new Error('Choose a JSON file up to 2 MB.');
+        source = await file.text();
       }
-      if (!form.isConnected) return;
-      if (config?.format === 'uml-data-model')
-        throw new Error(
-          'Choose a Design backup JSON export. Model JSON exports are for AI and other tools.'
-        );
-      commit({ type: 'import-design', config });
+      if (!form.isConnected || stamp !== importReadRevision) return;
+      importPreview = ModelImport.parse(source);
+      const m = importPreview.model;
+      $('#import-preview').innerHTML =
+        `<div class="ed-confirm"><h3>${esc(m.title || 'Domain Model')}</h3><p>${importCount(m.ENT.length, 'class', 'classes')} · ${importCount(m.RELS.length, 'relationship')} · ${importCount(m.CTX.length, 'domain area')}<br>${importCount(Object.keys(m.ENUMS).length, 'enumeration')} · ${importCount(m.TYPES.length, 'value type')}</p><p>Import replaces the current design. Undo restores it.</p><button class="share-btn" type="button" data-apply-import>Import model</button></div>`;
+      $('[data-apply-import]').focus();
     } catch (error) {
-      if (form.isConnected) editorError(error);
+      if (form.isConnected && stamp === importReadRevision) editorError(error);
     } finally {
-      if (form.isConnected) button.disabled = false;
+      if (form.isConnected && stamp === importReadRevision) button.disabled = false;
     }
   }
 });
 panel.addEventListener('change', (ev) => {
+  if (ev.target.name === 'import-source') syncImportSource();
+  else if (ev.target.closest('#import-form')) invalidateImportPreview();
   if (ev.target.name === 'relationship-kind') relationshipKindChanged();
   if (ev.target.id === 'enum-picker') showEnumEditor(ev.target.value);
   if (ev.target.id === 'area-picker') showAreaEditor(ev.target.value);
@@ -191,6 +194,7 @@ panel.addEventListener('change', (ev) => {
   }
 });
 panel.addEventListener('input', (ev) => {
+  if (ev.target.closest('#import-form')) invalidateImportPreview();
   const choice = ev.target.closest('[data-choice]');
   if (choice) syncChoice(choice);
 });
