@@ -32,10 +32,9 @@ const baseView = { hidden: [], selected: null, search: '', camera: { fit: true }
 test('the shipped fictional example validates and restores independently of test fixtures', async () => {
   const example = JSON.parse(defaults);
   assert.deepEqual(clone(await codec.decode(await codec.encode(example))).model, example.model);
-  assert.deepEqual(
-    example.model.ENT.map((e) => e.id),
-    ['Board', 'Task', 'Label']
-  );
+  assert.equal(example.model.title, 'Events platform example');
+  assert.equal(example.model.ENT.length, 27);
+  assert.equal(example.model.CTX.length, 8);
 });
 
 test('included value types must exist and cannot be listed twice', () => {

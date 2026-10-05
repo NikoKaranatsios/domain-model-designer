@@ -1,3 +1,4 @@
+$('#import-model').onclick = showImportEditor;
 function cancelEdit() {
   if (!canLeaveEditor(cancelEdit)) return;
   panelMode = 'details';
@@ -28,6 +29,14 @@ panel.addEventListener('click', (ev) => {
   if (target.hasAttribute('data-edit-enum')) showEnumEditor();
   if (target.hasAttribute('data-edit-area')) showAreaEditor();
   if (target.hasAttribute('data-import-design')) showImportEditor();
+  if (target.hasAttribute('data-apply-import') && importPreview)
+    commit({ type: 'import-design', config: importPreview }, () => {
+      importPreview = null;
+      notice(
+        `Imported ${importCount(ENT.length, 'class', 'classes')} and ${importCount(RELS.length, 'relationship')}. Undo restores the previous design.`
+      );
+      $('#import-model').focus();
+    });
   if (target.hasAttribute('data-delete-area'))
     commit(
       {
@@ -56,15 +65,34 @@ panel.addEventListener('click', (ev) => {
   if (target.hasAttribute('data-cancel-delete')) $('#delete-confirmation').replaceChildren();
   if (target.hasAttribute('data-confirm-delete'))
     commit({ type: 'delete-class', id: target.dataset.confirmDelete, removeReferences: true });
-  if (target.hasAttribute('data-new-model')) {
+  if (target.hasAttribute('data-new-model') || target.hasAttribute('data-clear-model')) {
+    const empty = target.hasAttribute('data-clear-model');
     const show = () => {
-      target.outerHTML =
-        '<div class="ed-confirm"><p>Start with one empty class? You can undo this to return to the current model.</p><button class="ed-secondary" type="button" data-confirm-new>Start new model</button></div>';
+      $('#reset-confirmation').innerHTML =
+        `<div class="ed-confirm"><p>${empty ? 'Delete all classes, attributes, connections, domain areas, enumerations, and value types? This leaves an empty canvas with one default area and standard primitive types.' : 'Start with one empty class?'} Undo restores the complete design. Downloaded exports and shared links are kept.</p><button class="ed-secondary${empty ? ' danger' : ''}" type="button" ${empty ? 'data-confirm-clear' : 'data-confirm-new'}>${empty ? 'Delete everything' : 'Start new model'}</button><button class="ed-secondary" type="button" data-cancel-reset>Cancel</button></div>`;
+      $('#reset-confirmation').scrollIntoView({ block: 'nearest' });
+      $('[data-cancel-reset]').focus();
     };
-    if (canLeaveEditor(show)) show();
+    if (
+      canLeaveEditor(() => {
+        showViewEditor();
+        show();
+      })
+    )
+      show();
+  }
+  if (target.hasAttribute('data-cancel-reset')) {
+    const empty = !!$('[data-confirm-clear]');
+    $('#reset-confirmation').replaceChildren();
+    $(empty ? '[data-clear-model]' : '[data-new-model]').focus();
   }
   if (target.hasAttribute('data-confirm-new'))
     commit({ type: 'new-model' }, () => showClassEditor(S.sel));
+  if (target.hasAttribute('data-confirm-clear'))
+    commit({ type: 'clear-model' }, () => {
+      notice('Everything deleted. Undo restores the complete design.');
+      $('#add-class').focus();
+    });
 });
 document.addEventListener('keydown', (ev) => {
   if (shareDialog.open || exportDialog.open || discardDialog.open) return;

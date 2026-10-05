@@ -170,6 +170,8 @@ const ModelExport = (() => {
         inheritance:
           'attributes contains own and included value-type fields. inheritedAttributes resolves superclass fields, excluding overridden names. declaredIn identifies the original class or value type; inheritedFrom is the immediate superclass. inheritanceConflicts lists ambiguous names from multiple parents.',
         keys: 'primaryKey lists the attributes of the composite identifier. isUnique identifies a single-attribute unique key; uniqueConstraints and constraints preserve model rules as text.',
+        import:
+          'Import accepts this format and generates a new layout. Edit declared attributes and type definitions; expanded and inherited fields are derived. Keep superclass/interface lists and relationship direction metadata consistent with relationship endpoints.',
       },
       domainAreas: m.CTX.map((c) => ({
         id: c.id,

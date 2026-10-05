@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf8" />
     <meta name="referrer" content="no-referrer" />
-    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-tx41shXR1K93W7tuSUE2SUWoGPp3U1l0ZDeWIiPLh3A=' 'sha256-T6g6dgJeadNfwB8u3KuJ72brSUiPdfC/kxWiltMsMw4=' 'sha256-5vnJVrU7waR+SZtwE1mVkf0dfKWaDkb1jveU7jbtNIs=' 'sha256-K3GZBSC5s80HlfMSjEVwjaPGbUfLcEqJ2dYz7sAZ7oY=' 'sha256-z99VekhKuU90/FuO0ITMEokHFCYQ8f5DI7KikoIwRl4=' 'sha256-mmB0/DiDHi4EAbyvk1t2Pmwh3UZjj/jpdffGxHKCTcg=' 'sha256-9taxwukjVdy3MAmj3xl/cKB3gr399viI8JtEo63Pfp4='; script-src-attr 'none'; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src data:; connect-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-tx41shXR1K93W7tuSUE2SUWoGPp3U1l0ZDeWIiPLh3A=' 'sha256-rX5aBgXcI2joJd6sKiK9Ti4wgEslywX9JPtbfK1kuko=' 'sha256-5vnJVrU7waR+SZtwE1mVkf0dfKWaDkb1jveU7jbtNIs=' 'sha256-K3GZBSC5s80HlfMSjEVwjaPGbUfLcEqJ2dYz7sAZ7oY=' 'sha256-cSIIlxcvePkjrfJSXTh1n/mK29uvgAw1FdO/3HOSAcg=' 'sha256-3TJMzhrz61GgnKc8iZEm+omXCQxA2UjuXba+V8xtsyI=' 'sha256-nyLAUeb7DAY6PK1y6lKeuxzGppvPKoYfMW38QnQtDnw=' 'sha256-iuZNJB7fhHbqbX9K1YmM05OphbPoDoZf315aGlCHOJk='; script-src-attr 'none'; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src data:; connect-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'" />
     <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
     <style>
       :root {
@@ -39,7 +39,7 @@ img {
       href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+PHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNyIgZmlsbD0iI2ZmZiIvPjxnIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzJCNUM2MSIgc3Ryb2tlLXdpZHRoPSIxLjYiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxyZWN0IHg9IjQiIHk9IjUiIHdpZHRoPSIxMCIgaGVpZ2h0PSI5IiByeD0iMiIvPjxyZWN0IHg9IjE4IiB5PSIxOCIgd2lkdGg9IjEwIiBoZWlnaHQ9IjkiIHJ4PSIyIi8+PHBhdGggZD0iTTQgOWgxMG00IDEzaDEwTTkgMTR2OWg5Ii8+PC9nPjwvc3ZnPg=="
     />
     <meta name="application-name" content="Domain Model Designer" />
-    <meta name="application-version" content="1.0.1" />
+    <meta name="application-version" content="1.1.0" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -1108,6 +1108,9 @@ input[type='checkbox'] {
   padding: 12px;
   font-size: 12.5px;
 }
+.ed-reset-actions {
+  margin-top: 18px;
+}
 .ed-confirm p {
   margin: 0 0 10px;
 }
@@ -1367,6 +1370,11 @@ body:has(#panel:not([hidden])) #zoom {
         >Connect
       </button>
       <button id="view-settings" type="button" class="tool-btn">View</button>
+      <button id="import-model" type="button" class="tool-btn" aria-label="Import model">
+        <svg viewBox="0 0 16 16" aria-hidden="true">
+          <path d="M8 10V2m-3 3 3-3 3 3M3 10v4h10v-4" /></svg
+        >Import
+      </button>
       <button id="export-model" type="button" class="tool-btn" aria-label="Export model">
         <svg viewBox="0 0 16 16" aria-hidden="true">
           <path d="M8 2v8m-3-3 3 3 3-3M3 10v4h10v-4" /></svg
@@ -1953,8 +1961,8 @@ body:has(#panel:not([hidden])) #zoom {
 })(typeof self !== 'undefined' ? self : this);
     </script>
     <script>
-      const DM={"title":"Task board example","CTX":[{"id":"work","name":"Work","desc":"Fictional tasks and their board.","color":"#2B5C61"},{"id":"labels","name":"Labels","desc":"Labels used to organise tasks.","color":"#80674D"}],"ENT":[{"id":"Board","ctx":"work","desc":"A fictional board containing tasks.","f":[{"n":"board_id","t":"UUID","m":"1","k":"PK","note":""},{"n":"name","t":"String","m":"1","k":"","note":""}]},{"id":"Task","ctx":"work","desc":"A task on a board.","f":[{"n":"task_id","t":"UUID","m":"1","k":"PK","note":""},{"n":"board_id","t":"UUID","m":"1","k":"FK:Board","note":""},{"n":"title","t":"String","m":"1","k":"","note":""},{"n":"status","t":"TaskStatus","m":"1","k":"","note":""},{"n":"due_at","t":"DateTime","m":"0..1","k":"","note":""}]},{"id":"Label","ctx":"labels","desc":"A reusable label for tasks.","f":[{"n":"label_id","t":"UUID","m":"1","k":"PK","note":""},{"n":"name","t":"String","m":"1","k":"UK","note":""}]}],"ENUMS":{"TaskStatus":["planned","in_progress","done"]},"ENUMNOTES":{"TaskStatus":"The current state of a task."},"TYPES":[],"PRIMS":[["UUID","A universally unique identifier."],["String","Text."],["Integer","A whole number."],["Decimal","A decimal number."],["Boolean","True or false."],["DateTime","A date and time."],["Date","A calendar date."]],"RELS":[{"i":0,"a":"Board","b":"Task","k":"comp","l":"tasks","m1":"1","m2":"0..*","nav":"none","role1":"board","role2":"tasks"},{"i":1,"a":"Task","b":"Label","k":"assoc","l":"labels","m1":"0..*","m2":"0..*","nav":"none"}]};
-const LAYOUT={"nodes":{"Board":{"w":280,"h":148},"Task":{"w":280,"h":220},"Label":{"w":280,"h":148}},"ro":{"grid":10,"pad":18,"cross":260,"bend":26,"near":5,"overlap":700,"port":90,"outside":40,"ring":40},"routes":{},"C":3,"R":1,"cell":[0,1,2],"gx":130,"gy":110,"version":"1"};
+      const DM={"title":"Events platform example","CTX":[{"id":"accounts","name":"Accounts & organisers","desc":"People who sign in, organisations that host events, and their team memberships.","color":"#2B5C61"},{"id":"events","name":"Events","desc":"Reusable event listings, their dated occurrences, and discovery categories.","color":"#5B4FA6"},{"id":"venues","name":"Venues","desc":"Physical venues and their bookable rooms or spaces.","color":"#386C97"},{"id":"programme","name":"Programme","desc":"The sessions and speakers within an event occurrence.","color":"#A2522C"},{"id":"ticketing","name":"Ticketing","desc":"Ticket products, capacity, sales windows, and temporary checkout reservations.","color":"#8A600E"},{"id":"sales","name":"Sales & payments","desc":"Purchases, price snapshots, discounts, payment attempts, and partial refunds.","color":"#963D60"},{"id":"attendance","name":"Attendance","desc":"Ticket holders, issued tickets, transfers, admission records, and waiting lists.","color":"#4C5C6B"},{"id":"communications","name":"Communications","desc":"Event announcements and a record of each email delivery.","color":"#596C3E"}],"ENT":[{"id":"Account","ctx":"accounts","desc":"A sign-in account. A buyer, organiser team member, or attendee may use the same account. Authentication secrets belong in a separate identity system.","f":[{"n":"account_id","t":"UUID","m":"1","k":"PK","note":""},{"n":"email","t":"String","m":"1","k":"UK","note":"Unique after trimming and case-insensitive comparison."},{"n":"display_name","t":"String","m":"1","k":"","note":""},{"n":"status","t":"AccountStatus","m":"1","k":"","note":""},{"n":"created_at","t":"DateTime","m":"1","k":"","note":""}]},{"id":"Organizer","ctx":"accounts","desc":"An organisation or individual that owns event listings and receives their sales proceeds.","f":[{"n":"organizer_id","t":"UUID","m":"1","k":"PK","note":""},{"n":"name","t":"String","m":"1","k":"","note":""},{"n":"slug","t":"String","m":"1","k":"UK","note":""},{"n":"contact_email","t":"String","m":"1","k":"","note":""},{"n":"created_at","t":"DateTime","m":"1","k":"","note":""}],"checks":["At least one active OrganizerMember has the owner role."]},{"id":"OrganizerMember","ctx":"accounts","desc":"Connects an account to an organiser team and records its role. One account can belong to several organisers.","f":[{"n":"membership_id","t":"UUID","m":"1","k":"PK","note":""},{"n":"organizer_id","t":"UUID","m":"1","k":"FK:Organizer","note":""},{"n":"account_id","t":"UUID","m":"1","k":"FK:Account","note":""},{"n":"role","t":"OrganizerRole","m":"1","k":"","note":""},{"n":"joined_at","t":"DateTime","m":"1","k":"","note":""}],"uk":["(organizer_id, account_id)"]},{"id":"Category","ctx":"events","desc":"A reusable discovery category, such as music or workshops. This is a controlled classification, not an event owner.","f":[{"n":"category_id","t":"UUID","m":"1","k":"PK","note":""},{"n":"name","t":"String","m":"1","k":"UK","note":""},{"n":"slug","t":"String","m":"1","k":"UK","note":""}]},{"id":"Event","ctx":"events","desc":"The public listing and shared description of an event. Each dated run is an EventOccurrence; recurring events reuse this listing.","f":[{"n":"event_id","t":"UUID","m":"1","k":"PK","note":""},{"n":"organizer_id","t":"UUID","m":"1","k":"FK:Organizer","note":""},{"n":"title","t":"String","m":"1","k":"","note":""},{"n":"slug","t":"String","m":"1","k":"UK","note":""},{"n":"description","t":"String","m":"1","k":"","note":""},{"n":"status","t":"EventStatus","m":"1","k":"","note":""},{"n":"created_at","t":"DateTime","m":"1","k":"","note":""}]},{"id":"EventCategory","ctx":"events","desc":"An explicit link that allows an event to appear in multiple categories without duplicating event or category data.","f":[{"n":"event_id","t":"UUID","m":"1","k":"PK FK:Event","note":""},{"n":"category_id","t":"UUID","m":"1","k":"PK FK:Category","note":""}]},{"id":"EventOccurrence","ctx":"events","desc":"One dated run of an event. It has its own time, location, capacity, programme, ticket products, and waiting list.","f":[{"n":"occurrence_id","t":"UUID","m":"1","k":"PK","note":""},{"n":"event_id","t":"UUID","m":"1","k":"FK:Event","note":""},{"n":"venue_space_id","t":"UUID","m":"0..1","k":"FK:VenueSpace","note":""},{"n":"online_url","t":"String","m":"0..1","k":"","note":""},{"n":"starts_at","t":"DateTime","m":"1","k":"","note":""},{"n":"ends_at","t":"DateTime","m":"1","k":"","note":""},{"n":"time_zone","t":"String","m":"1","k":"","note":"IANA time-zone name used to display the UTC timestamps."},{"n":"capacity","t":"Integer","m":"1","k":"","note":"Maximum number of issued valid tickets plus active, unexpired reserved places."},{"n":"status","t":"OccurrenceStatus","m":"1","k":"","note":""}],"checks":["ends_at > starts_at; capacity >= 0.","At least one of venue_space_id and online_url is present; both may be set for a hybrid event.","For a physical occurrence, capacity <= its venue space capacity."]},{"id":"Venue","ctx":"venues","desc":"A physical location that can contain one or more event spaces. The address is a value object, not a separate business entity.","f":[{"n":"venue_id","t":"UUID","m":"1","k":"PK","note":""},{"n":"name","t":"String","m":"1","k":"","note":""},{"n":"address","t":"PostalAddress","m":"1","k":"","note":""},{"n":"accessibility_notes","t":"String","m":"0..1","k":"","note":""}]},{"id":"VenueSpace","ctx":"venues","desc":"A room, hall, stage, or other bookable space within a venue. Different event occurrences can reuse the same space.","f":[{"n":"venue_space_id","t":"UUID","m":"1","k":"PK","note":""},{"n":"venue_id","t":"UUID","m":"1","k":"FK:Venue","note":""},{"n":"name","t":"String","m":"1","k":"","note":""},{"n":"capacity","t":"Integer","m":"1","k":"","note":""}],"uk":["(venue_id, name)"],"checks":["capacity > 0."]},{"id":"Session","ctx":"programme","desc":"A talk, performance, workshop, or other scheduled activity within one occurrence. Sessions do not sell separate tickets in this example.","f":[{"n":"session_id","t":"UUID","m":"1","k":"PK","note":""},{"n":"occurrence_id","t":"UUID","m":"1","k":"FK:EventOccurrence","note":""},{"n":"venue_space_id","t":"UUID","m":"0..1","k":"FK:VenueSpace","note":""},{"n":"title","t":"String","m":"1","k":"","note":""},{"n":"description","t":"String","m":"1","k":"","note":""},{"n":"starts_at","t":"DateTime","m":"1","k":"","note":""},{"n":"ends_at","t":"DateTime","m":"1","k":"","note":""}],"checks":["starts_at < ends_at; the session is within its occurrence time range.","When venue_space_id is set, it belongs to the occurrence venue."]},{"id":"Speaker","ctx":"programme","desc":"A reusable public speaker or performer profile. Being a speaker does not require having a sign-in account.","f":[{"n":"speaker_id","t":"UUID","m":"1","k":"PK","note":""},{"n":"name","t":"String","m":"1","k":"","note":""},{"n":"biography","t":"String","m":"1","k":"","note":""},{"n":"website","t":"String","m":"0..1","k":"","note":""}]},{"id":"SessionSpeaker","ctx":"programme","desc":"Connects speakers to sessions. A session can have several speakers, and a speaker can appear in several sessions.","f":[{"n":"session_id","t":"UUID","m":"1","k":"PK FK:Session","note":""},{"n":"speaker_id","t":"UUID","m":"1","k":"PK FK:Speaker","note":""},{"n":"role","t":"String","m":"1","k":"","note":"For example host, speaker, or performer."},{"n":"display_order","t":"Integer","m":"1","k":"","note":""}],"checks":["display_order >= 0."]},{"id":"TicketType","ctx":"ticketing","desc":"A sellable ticket product for one occurrence, such as general admission or a concession. Capacity and sales windows belong to this product.","f":[{"n":"ticket_type_id","t":"UUID","m":"1","k":"PK","note":""},{"n":"occurrence_id","t":"UUID","m":"1","k":"FK:EventOccurrence","note":""},{"n":"name","t":"String","m":"1","k":"","note":""},{"n":"description","t":"String","m":"1","k":"","note":""},{"n":"price","t":"Money","m":"1","k":"","note":""},{"n":"capacity","t":"Integer","m":"1","k":"","note":""},{"n":"max_per_order","t":"Integer","m":"1","k":"","note":""},{"n":"sales_start_at","t":"DateTime","m":"1","k":"","note":""},{"n":"sales_end_at","t":"DateTime","m":"1","k":"","note":""}],"uk":["(occurrence_id, name)"],"checks":["capacity >= 0; max_per_order > 0.","sales_start_at < sales_end_at <= occurrence.starts_at.","Issued non-voided tickets plus active, unexpired reservations do not exceed ticket-type capacity or occurrence capacity."]},{"id":"TicketReservation","ctx":"ticketing","desc":"A temporary hold on a ticket quantity during checkout. Conversion releases the hold as the matching tickets are issued; an expired hold does not consume capacity.","f":[{"n":"reservation_id","t":"UUID","m":"1","k":"PK","note":""},{"n":"order_id","t":"UUID","m":"1","k":"FK:Order","note":""},{"n":"ticket_type_id","t":"UUID","m":"1","k":"FK:TicketType","note":""},{"n":"quantity","t":"Integer","m":"1","k":"","note":""},{"n":"expires_at","t":"DateTime","m":"1","k":"","note":""},{"n":"status","t":"ReservationStatus","m":"1","k":"","note":""},{"n":"created_at","t":"DateTime","m":"1","k":"","note":""}],"uk":["(order_id, ticket_type_id)"],"checks":["quantity > 0 and quantity <= ticket_type.max_per_order.","An active reservation counts only while expires_at is in the future.","A converted reservation matches the quantity of its order item and is replaced by issued tickets."]},{"id":"DiscountCode","ctx":"sales","desc":"An organiser-owned discount, optionally restricted to one event. Its terms are copied into order-item price snapshots at purchase time.","f":[{"n":"discount_code_id","t":"UUID","m":"1","k":"PK","note":""},{"n":"organizer_id","t":"UUID","m":"1","k":"FK:Organizer","note":""},{"n":"event_id","t":"UUID","m":"0..1","k":"FK:Event","note":""},{"n":"code","t":"String","m":"1","k":"","note":""},{"n":"kind","t":"DiscountKind","m":"1","k":"","note":""},{"n":"value","t":"Decimal","m":"1","k":"","note":""},{"n":"currency","t":"String","m":"0..1","k":"","note":"Three-letter currency code; required for a fixed-amount discount."},{"n":"valid_from","t":"DateTime","m":"1","k":"","note":""},{"n":"valid_until","t":"DateTime","m":"1","k":"","note":""},{"n":"max_redemptions","t":"Integer","m":"0..1","k":"","note":""}],"uk":["(organizer_id, code)"],"checks":["valid_from < valid_until; value > 0; max_redemptions is absent or > 0.","Percentage discounts have value <= 100 and no currency; fixed-amount discounts require a currency.","A restricted event belongs to the same organiser; a code applies only to eligible orders."]},{"id":"Order","ctx":"sales","desc":"One checkout with a single organiser and currency. The buyer may purchase tickets for several attendees; guest checkout does not require an account.","f":[{"n":"order_id","t":"UUID","m":"1","k":"PK","note":""},{"n":"organizer_id","t":"UUID","m":"1","k":"FK:Organizer","note":""},{"n":"buyer_account_id","t":"UUID","m":"0..1","k":"FK:Account","note":""},{"n":"discount_code_id","t":"UUID","m":"0..1","k":"FK:DiscountCode","note":""},{"n":"buyer_email","t":"String","m":"1","k":"","note":"Contact snapshot retained with the purchase."},{"n":"status","t":"OrderStatus","m":"1","k":"","note":""},{"n":"total","t":"Money","m":"1","k":"","note":""},{"n":"created_at","t":"DateTime","m":"1","k":"","note":""},{"n":"confirmed_at","t":"DateTime","m":"0..1","k":"","note":""}],"checks":["All order items belong to this organiser and use the order currency.","total.amount equals the sum of order-item totals.","A confirmed order has at least one item; successful payments cover its total. Free orders need no payment.","A discount is redeemed once per confirmed order; confirmed redemptions do not exceed its limit."]},{"id":"OrderItem","ctx":"sales","desc":"A purchased quantity of one ticket type. Price, discount, and tax are immutable snapshots; later ticket-price changes do not change this purchase.","f":[{"n":"order_item_id","t":"UUID","m":"1","k":"PK","note":""},{"n":"order_id","t":"UUID","m":"1","k":"FK:Order","note":""},{"n":"ticket_type_id","t":"UUID","m":"1","k":"FK:TicketType","note":""},{"n":"quantity","t":"Integer","m":"1","k":"","note":""},{"n":"unit_price","t":"Money","m":"1","k":"","note":""},{"n":"discount","t":"Money","m":"1","k":"","note":""},{"n":"tax","t":"Money","m":"1","k":"","note":""},{"n":"total","t":"Money","m":"1","k":"","note":""}],"uk":["(order_id, ticket_type_id)"],"checks":["quantity > 0 and quantity <= ticket_type.max_per_order.","All money values use the order currency; discount <= quantity * unit_price.","total.amount = quantity * unit_price.amount - discount.amount + tax.amount.","A confirmed order item issues exactly quantity tickets; voided tickets remain in its history."]},{"id":"Payment","ctx":"sales","desc":"One payment attempt against an order. Failed attempts are retained and a later attempt has a separate identity. No card numbers or payment secrets are stored.","f":[{"n":"payment_id","t":"UUID","m":"1","k":"PK","note":""},{"n":"order_id","t":"UUID","m":"1","k":"FK:Order","note":""},{"n":"provider","t":"String","m":"1","k":"","note":""},{"n":"provider_reference","t":"String","m":"0..1","k":"","note":""},{"n":"idempotency_key","t":"String","m":"1","k":"UK","note":""},{"n":"amount","t":"Money","m":"1","k":"","note":""},{"n":"status","t":"PaymentStatus","m":"1","k":"","note":""},{"n":"created_at","t":"DateTime","m":"1","k":"","note":""},{"n":"paid_at","t":"DateTime","m":"0..1","k":"","note":""}],"uk":["(provider, provider_reference) when provider_reference is present"],"checks":["amount.amount > 0 and uses the order currency.","The sum of successful payments does not exceed the order total; paid_at is present for succeeded payments."]},{"id":"Refund","ctx":"sales","desc":"One full or partial return of a successful payment. The affected order-item quantities are recorded in RefundItem.","f":[{"n":"refund_id","t":"UUID","m":"1","k":"PK","note":""},{"n":"payment_id","t":"UUID","m":"1","k":"FK:Payment","note":""},{"n":"provider_reference","t":"String","m":"0..1","k":"","note":""},{"n":"idempotency_key","t":"String","m":"1","k":"UK","note":""},{"n":"amount","t":"Money","m":"1","k":"","note":""},{"n":"reason","t":"String","m":"1","k":"","note":""},{"n":"status","t":"RefundStatus","m":"1","k":"","note":""},{"n":"created_at","t":"DateTime","m":"1","k":"","note":""},{"n":"refunded_at","t":"DateTime","m":"0..1","k":"","note":""}],"checks":["The payment succeeded; the refund uses its currency and has a positive amount.","amount.amount equals the sum of refund-item amounts.","Succeeded plus pending refunds do not exceed the payment amount; succeeded refunds have refunded_at."]},{"id":"RefundItem","ctx":"sales","desc":"Allocates a refund to a quantity from one original order item, making partial ticket refunds explicit.","f":[{"n":"refund_item_id","t":"UUID","m":"1","k":"PK","note":""},{"n":"refund_id","t":"UUID","m":"1","k":"FK:Refund","note":""},{"n":"order_item_id","t":"UUID","m":"1","k":"FK:OrderItem","note":""},{"n":"quantity","t":"Integer","m":"1","k":"","note":""},{"n":"amount","t":"Money","m":"1","k":"","note":""}],"uk":["(refund_id, order_item_id)"],"checks":["quantity > 0; amount.amount > 0; the order item belongs to the refunded payment order.","Pending and succeeded refunded quantities and amounts do not exceed the original order item.","A succeeded refund voids exactly quantity tickets linked to this refund item."]},{"id":"Attendee","ctx":"attendance","desc":"A person who can hold tickets or join a waiting list. The attendee may differ from the buyer and may optionally link to a sign-in account.","f":[{"n":"attendee_id","t":"UUID","m":"1","k":"PK","note":""},{"n":"account_id","t":"UUID","m":"0..1","k":"UK FK:Account","note":""},{"n":"name","t":"String","m":"1","k":"","note":""},{"n":"email","t":"String","m":"1","k":"","note":""},{"n":"created_at","t":"DateTime","m":"1","k":"","note":""}]},{"id":"Ticket","ctx":"attendance","desc":"One issued admission for one person, derived from its order item and ticket type. It may be unassigned until claimed; the buyer is not automatically the attendee.","f":[{"n":"ticket_id","t":"UUID","m":"1","k":"PK","note":""},{"n":"order_item_id","t":"UUID","m":"1","k":"FK:OrderItem","note":""},{"n":"attendee_id","t":"UUID","m":"0..1","k":"FK:Attendee","note":""},{"n":"refund_item_id","t":"UUID","m":"0..1","k":"FK:RefundItem","note":""},{"n":"admission_code","t":"String","m":"1","k":"UK","note":"Opaque, unique admission identifier; no personal data is embedded."},{"n":"status","t":"TicketStatus","m":"1","k":"","note":""},{"n":"issued_at","t":"DateTime","m":"1","k":"","note":""}],"checks":["The order is confirmed; its order item identifies the occurrence and ticket type.","checked_in requires a CheckIn; voided tickets cannot be admitted or transferred.","A refund_item_id points to a succeeded refund for the same order item and requires status voided."]},{"id":"TicketTransfer","ctx":"attendance","desc":"An invitation to hand an unused ticket to someone else. Email and sender identity are retained even before the recipient claims the ticket.","f":[{"n":"transfer_id","t":"UUID","m":"1","k":"PK","note":""},{"n":"ticket_id","t":"UUID","m":"1","k":"FK:Ticket","note":""},{"n":"initiated_by_account_id","t":"UUID","m":"1","k":"FK:Account","note":""},{"n":"from_attendee_id","t":"UUID","m":"0..1","k":"FK:Attendee","note":""},{"n":"to_attendee_id","t":"UUID","m":"0..1","k":"FK:Attendee","note":""},{"n":"recipient_email","t":"String","m":"1","k":"","note":""},{"n":"status","t":"TransferStatus","m":"1","k":"","note":""},{"n":"expires_at","t":"DateTime","m":"1","k":"","note":""},{"n":"created_at","t":"DateTime","m":"1","k":"","note":""},{"n":"accepted_at","t":"DateTime","m":"0..1","k":"","note":""}],"checks":["At most one pending transfer per ticket; the ticket is valid and has no CheckIn.","An accepted transfer has to_attendee_id and accepted_at, and assigns the ticket to that attendee."]},{"id":"CheckIn","ctx":"attendance","desc":"The admission record for one ticket. A unique ticket reference prevents a second admission; optional gate information records where it happened.","f":[{"n":"check_in_id","t":"UUID","m":"1","k":"PK","note":""},{"n":"ticket_id","t":"UUID","m":"1","k":"UK FK:Ticket","note":""},{"n":"staff_account_id","t":"UUID","m":"1","k":"FK:Account","note":""},{"n":"checked_in_at","t":"DateTime","m":"1","k":"","note":""},{"n":"gate","t":"String","m":"0..1","k":"","note":""}],"checks":["The ticket is assigned to an attendee and is not voided.","The staff account belongs to the occurrence organiser team."]},{"id":"WaitlistEntry","ctx":"attendance","desc":"A request for places at a sold-out occurrence, optionally for a specific ticket type. Offers can link to a temporary reservation during checkout.","f":[{"n":"waitlist_entry_id","t":"UUID","m":"1","k":"PK","note":""},{"n":"occurrence_id","t":"UUID","m":"1","k":"FK:EventOccurrence","note":""},{"n":"attendee_id","t":"UUID","m":"1","k":"FK:Attendee","note":""},{"n":"ticket_type_id","t":"UUID","m":"0..1","k":"FK:TicketType","note":""},{"n":"reservation_id","t":"UUID","m":"0..1","k":"UK FK:TicketReservation","note":""},{"n":"quantity","t":"Integer","m":"1","k":"","note":""},{"n":"status","t":"WaitlistStatus","m":"1","k":"","note":""},{"n":"created_at","t":"DateTime","m":"1","k":"","note":""},{"n":"offered_at","t":"DateTime","m":"0..1","k":"","note":""},{"n":"offer_expires_at","t":"DateTime","m":"0..1","k":"","note":""}],"uk":["(occurrence_id, attendee_id) while status is waiting or offered"],"checks":["quantity > 0; a selected ticket type belongs to the same occurrence.","An offered entry has offered_at < offer_expires_at; any linked reservation matches the occurrence and quantity.","A converted entry points to a converted reservation."]},{"id":"Announcement","ctx":"communications","desc":"An organiser message for an event, such as a programme update. Drafts become published announcements, with a separate delivery record for each recipient.","f":[{"n":"announcement_id","t":"UUID","m":"1","k":"PK","note":""},{"n":"event_id","t":"UUID","m":"1","k":"FK:Event","note":""},{"n":"subject","t":"String","m":"1","k":"","note":""},{"n":"body","t":"String","m":"1","k":"","note":""},{"n":"status","t":"AnnouncementStatus","m":"1","k":"","note":""},{"n":"created_at","t":"DateTime","m":"1","k":"","note":""},{"n":"published_at","t":"DateTime","m":"0..1","k":"","note":""}],"checks":["A published announcement has published_at."]},{"id":"AnnouncementDelivery","ctx":"communications","desc":"One email delivery of a published announcement to an attendee. The destination address is a snapshot, and failures remain visible for retry.","f":[{"n":"delivery_id","t":"UUID","m":"1","k":"PK","note":""},{"n":"announcement_id","t":"UUID","m":"1","k":"FK:Announcement","note":""},{"n":"attendee_id","t":"UUID","m":"1","k":"FK:Attendee","note":""},{"n":"recipient_email","t":"String","m":"1","k":"","note":""},{"n":"status","t":"DeliveryStatus","m":"1","k":"","note":""},{"n":"attempt_count","t":"Integer","m":"1","k":"","note":""},{"n":"last_attempt_at","t":"DateTime","m":"0..1","k":"","note":""},{"n":"sent_at","t":"DateTime","m":"0..1","k":"","note":""}],"uk":["(announcement_id, attendee_id)"],"checks":["The announcement is published; attempt_count >= 0; sent deliveries have sent_at."]}],"ENUMS":{"AccountStatus":["active","suspended","closed"],"OrganizerRole":["owner","manager","staff"],"EventStatus":["draft","published","cancelled","archived"],"OccurrenceStatus":["scheduled","cancelled","completed"],"ReservationStatus":["active","converted","released","expired"],"DiscountKind":["percentage","fixed_amount"],"OrderStatus":["pending","confirmed","cancelled","expired"],"PaymentStatus":["pending","succeeded","failed","cancelled"],"RefundStatus":["requested","pending","succeeded","failed"],"TicketStatus":["valid","checked_in","voided"],"TransferStatus":["pending","accepted","declined","expired","cancelled"],"WaitlistStatus":["waiting","offered","converted","cancelled","expired"],"AnnouncementStatus":["draft","published"],"DeliveryStatus":["queued","sent","failed"]},"ENUMNOTES":{"AccountStatus":"Whether an account can use the service.","OrganizerRole":"Access role within one organiser team.","EventStatus":"Publication state of the shared event listing.","OccurrenceStatus":"State of one dated run, independently of other runs.","ReservationStatus":"Whether a checkout hold still consumes ticket capacity.","DiscountKind":"Interpretation of the discount value and optional currency.","OrderStatus":"State of one checkout; confirmed orders retain their financial history.","PaymentStatus":"Outcome of one payment attempt.","RefundStatus":"Progress of one payment refund.","TicketStatus":"Admission validity of one issued ticket.","TransferStatus":"Progress of an invitation to reassign a ticket.","WaitlistStatus":"Progress from waiting for availability through an offer to purchase.","AnnouncementStatus":"Whether an event message is ready for recipients.","DeliveryStatus":"Outcome of sending one announcement email."},"TYPES":[{"n":"Money","f":[{"n":"amount","t":"Decimal","m":"1","k":"","note":""},{"n":"currency","t":"String","m":"1","k":"","note":"Three-letter currency code, for example EUR or USD."}],"d":"An exact amount paired with a three-letter currency code. Amounts are nonnegative and use the currency fractional precision; values in different currencies cannot be added."},{"n":"PostalAddress","f":[{"n":"street","t":"String","m":"1","k":"","note":""},{"n":"city","t":"String","m":"1","k":"","note":""},{"n":"postal_code","t":"String","m":"1","k":"","note":""},{"n":"region","t":"String","m":"0..1","k":"","note":""},{"n":"country_code","t":"String","m":"1","k":"","note":"Two-letter country code."}],"d":"A physical address stored as one value object on a venue."}],"PRIMS":[["UUID","Unique identifier."],["String","Text."],["Integer","Whole number."],["Decimal","Exact decimal number."],["Boolean","True or false."],["DateTime","An absolute timestamp stored in UTC."],["Date","Calendar date."]],"RELS":[{"i":0,"a":"Organizer","b":"OrganizerMember","k":"comp","l":"team_members","m1":"1","m2":"0..*","role1":"organizer","role2":"team_members","nav":"none"},{"i":1,"a":"Account","b":"OrganizerMember","k":"assoc","l":"memberships","m1":"1","m2":"0..*","role1":"account","role2":"memberships","nav":"none"},{"i":2,"a":"Organizer","b":"Event","k":"assoc","l":"events","m1":"1","m2":"0..*","role1":"organizer","role2":"events","nav":"none"},{"i":3,"a":"Event","b":"EventOccurrence","k":"comp","l":"occurrences","m1":"1","m2":"0..*","role1":"event","role2":"occurrences","nav":"none"},{"i":4,"a":"Event","b":"EventCategory","k":"comp","l":"category_links","m1":"1","m2":"0..*","role1":"event","role2":"category_links","nav":"none"},{"i":5,"a":"Category","b":"EventCategory","k":"assoc","l":"event_links","m1":"1","m2":"0..*","role1":"category","role2":"event_links","nav":"none"},{"i":6,"a":"Venue","b":"VenueSpace","k":"comp","l":"spaces","m1":"1","m2":"1..*","role1":"venue","role2":"spaces","nav":"none"},{"i":7,"a":"VenueSpace","b":"EventOccurrence","k":"assoc","l":"occurrences","m1":"0..1","m2":"0..*","role1":"venue_space","role2":"occurrences","nav":"none"},{"i":8,"a":"EventOccurrence","b":"Session","k":"comp","l":"sessions","m1":"1","m2":"0..*","role1":"occurrence","role2":"sessions","nav":"none"},{"i":9,"a":"VenueSpace","b":"Session","k":"assoc","l":"sessions","m1":"0..1","m2":"0..*","role1":"venue_space","role2":"sessions","nav":"none"},{"i":10,"a":"Session","b":"SessionSpeaker","k":"comp","l":"speaker_links","m1":"1","m2":"0..*","role1":"session","role2":"speaker_links","nav":"none"},{"i":11,"a":"Speaker","b":"SessionSpeaker","k":"assoc","l":"session_links","m1":"1","m2":"0..*","role1":"speaker","role2":"session_links","nav":"none"},{"i":12,"a":"EventOccurrence","b":"TicketType","k":"comp","l":"ticket_types","m1":"1","m2":"0..*","role1":"occurrence","role2":"ticket_types","nav":"none"},{"i":13,"a":"Order","b":"TicketReservation","k":"comp","l":"reservations","m1":"1","m2":"0..*","role1":"order","role2":"reservations","nav":"none"},{"i":14,"a":"TicketType","b":"TicketReservation","k":"assoc","l":"reservations","m1":"1","m2":"0..*","role1":"ticket_type","role2":"reservations","nav":"none"},{"i":15,"a":"Organizer","b":"DiscountCode","k":"assoc","l":"discount_codes","m1":"1","m2":"0..*","role1":"organizer","role2":"discount_codes","nav":"none"},{"i":16,"a":"Event","b":"DiscountCode","k":"assoc","l":"discount_codes","m1":"0..1","m2":"0..*","role1":"restricted_event","role2":"discount_codes","nav":"none"},{"i":17,"a":"Organizer","b":"Order","k":"assoc","l":"orders","m1":"1","m2":"0..*","role1":"organizer","role2":"orders","nav":"none"},{"i":18,"a":"Account","b":"Order","k":"assoc","l":"purchases","m1":"0..1","m2":"0..*","role1":"buyer_account","role2":"purchases","nav":"none"},{"i":19,"a":"DiscountCode","b":"Order","k":"assoc","l":"orders","m1":"0..1","m2":"0..*","role1":"discount_code","role2":"orders","nav":"none"},{"i":20,"a":"Order","b":"OrderItem","k":"comp","l":"items","m1":"1","m2":"1..*","role1":"order","role2":"items","nav":"none"},{"i":21,"a":"TicketType","b":"OrderItem","k":"assoc","l":"order_items","m1":"1","m2":"0..*","role1":"ticket_type","role2":"order_items","nav":"none"},{"i":22,"a":"Order","b":"Payment","k":"assoc","l":"payment_attempts","m1":"1","m2":"0..*","role1":"order","role2":"payment_attempts","nav":"none"},{"i":23,"a":"Payment","b":"Refund","k":"assoc","l":"refunds","m1":"1","m2":"0..*","role1":"payment","role2":"refunds","nav":"none"},{"i":24,"a":"Refund","b":"RefundItem","k":"comp","l":"items","m1":"1","m2":"1..*","role1":"refund","role2":"items","nav":"none"},{"i":25,"a":"OrderItem","b":"RefundItem","k":"assoc","l":"refund_items","m1":"1","m2":"0..*","role1":"order_item","role2":"refund_items","nav":"none"},{"i":26,"a":"Account","b":"Attendee","k":"assoc","l":"attendee_profile","m1":"0..1","m2":"0..1","role1":"account","role2":"attendee_profile","nav":"none"},{"i":27,"a":"OrderItem","b":"Ticket","k":"assoc","l":"tickets","m1":"1","m2":"0..*","role1":"order_item","role2":"tickets","nav":"none"},{"i":28,"a":"Attendee","b":"Ticket","k":"assoc","l":"tickets","m1":"0..1","m2":"0..*","role1":"holder","role2":"tickets","nav":"none"},{"i":29,"a":"RefundItem","b":"Ticket","k":"assoc","l":"voided_tickets","m1":"0..1","m2":"0..*","role1":"refund_item","role2":"voided_tickets","nav":"none"},{"i":30,"a":"Ticket","b":"TicketTransfer","k":"comp","l":"transfer_history","m1":"1","m2":"0..*","role1":"ticket","role2":"transfer_history","nav":"none"},{"i":31,"a":"Account","b":"TicketTransfer","k":"assoc","l":"initiated_transfers","m1":"1","m2":"0..*","role1":"initiator","role2":"initiated_transfers","nav":"none"},{"i":32,"a":"Attendee","b":"TicketTransfer","k":"assoc","l":"outgoing_transfers","m1":"0..1","m2":"0..*","role1":"from_attendee","role2":"outgoing_transfers","nav":"none"},{"i":33,"a":"Attendee","b":"TicketTransfer","k":"assoc","l":"incoming_transfers","m1":"0..1","m2":"0..*","role1":"to_attendee","role2":"incoming_transfers","nav":"none"},{"i":34,"a":"Ticket","b":"CheckIn","k":"comp","l":"admission","m1":"1","m2":"0..1","role1":"ticket","role2":"admission","nav":"none"},{"i":35,"a":"Account","b":"CheckIn","k":"assoc","l":"check_ins","m1":"1","m2":"0..*","role1":"staff_account","role2":"check_ins","nav":"none"},{"i":36,"a":"EventOccurrence","b":"WaitlistEntry","k":"comp","l":"waitlist","m1":"1","m2":"0..*","role1":"occurrence","role2":"waitlist","nav":"none"},{"i":37,"a":"Attendee","b":"WaitlistEntry","k":"assoc","l":"waitlist_entries","m1":"1","m2":"0..*","role1":"attendee","role2":"waitlist_entries","nav":"none"},{"i":38,"a":"TicketType","b":"WaitlistEntry","k":"assoc","l":"waitlist_entries","m1":"0..1","m2":"0..*","role1":"requested_ticket_type","role2":"waitlist_entries","nav":"none"},{"i":39,"a":"TicketReservation","b":"WaitlistEntry","k":"assoc","l":"waitlist_entry","m1":"0..1","m2":"0..1","role1":"reservation","role2":"waitlist_entry","nav":"none"},{"i":40,"a":"Event","b":"Announcement","k":"comp","l":"announcements","m1":"1","m2":"0..*","role1":"event","role2":"announcements","nav":"none"},{"i":41,"a":"Announcement","b":"AnnouncementDelivery","k":"comp","l":"deliveries","m1":"1","m2":"0..*","role1":"announcement","role2":"deliveries","nav":"none"},{"i":42,"a":"Attendee","b":"AnnouncementDelivery","k":"assoc","l":"announcement_deliveries","m1":"1","m2":"0..*","role1":"recipient","role2":"announcement_deliveries","nav":"none"}]};
+const LAYOUT={"version":"events-example-1","nodes":{"Account":{"w":300,"h":100},"Organizer":{"w":300,"h":100},"OrganizerMember":{"w":300,"h":118},"Category":{"w":300,"h":98},"Event":{"w":300,"h":118},"EventCategory":{"w":300,"h":80},"EventOccurrence":{"w":300,"h":118},"Venue":{"w":300,"h":82},"VenueSpace":{"w":300,"h":100},"Session":{"w":300,"h":118},"Speaker":{"w":300,"h":82},"SessionSpeaker":{"w":300,"h":100},"TicketType":{"w":300,"h":100},"TicketReservation":{"w":300,"h":118},"DiscountCode":{"w":300,"h":118},"Order":{"w":300,"h":136},"OrderItem":{"w":300,"h":118},"Payment":{"w":300,"h":118},"Refund":{"w":300,"h":118},"RefundItem":{"w":300,"h":118},"Attendee":{"w":300,"h":100},"Ticket":{"w":300,"h":154},"TicketTransfer":{"w":300,"h":154},"CheckIn":{"w":300,"h":118},"WaitlistEntry":{"w":300,"h":154},"Announcement":{"w":300,"h":100},"AnnouncementDelivery":{"w":300,"h":118}},"ro":{"grid":10,"pad":18,"cross":260,"bend":26,"near":5,"overlap":700,"port":90,"outside":40,"ring":40},"routes":{"e9":[{"x":1725,"y":189},{"x":1725,"y":303}],"e11":[{"x":2155,"y":180},{"x":2155,"y":312}],"e6":[{"x":1680,"y":115},{"x":1580,"y":115}],"e8":[{"x":1680,"y":325},{"x":1580,"y":325}],"e10":[{"x":2080,"y":335},{"x":1980,"y":335}],"e19":[{"x":380,"y":555},{"x":480,"y":555}],"e21":[{"x":1280,"y":565},{"x":1180,"y":565}],"e23":[{"x":380,"y":805},{"x":480,"y":805}],"e29":[{"x":1180,"y":805},{"x":1280,"y":805}],"e41":[{"x":480,"y":1125},{"x":380,"y":1125}],"e2":[{"x":780,"y":155},{"x":845,"y":155},{"x":845,"y":325},{"x":880,"y":325}],"e7":[{"x":1705,"y":189},{"x":1705,"y":265},{"x":1555,"y":265},{"x":1555,"y":303}],"e32":[{"x":2080,"y":615},{"x":2015,"y":615},{"x":2015,"y":785},{"x":1980,"y":785}],"e33":[{"x":2080,"y":595},{"x":2005,"y":595},{"x":2005,"y":675},{"x":1955,"y":675},{"x":1955,"y":767}],"e1":[{"x":355,"y":89},{"x":355,"y":45},{"x":905,"y":45},{"x":905,"y":80}],"e25":[{"x":925,"y":653},{"x":925,"y":785}],"e27":[{"x":1180,"y":635},{"x":1245,"y":635},{"x":1245,"y":785},{"x":1280,"y":785}],"e12":[{"x":1315,"y":544},{"x":1315,"y":421}],"e0":[{"x":880,"y":105},{"x":780,"y":105}],"e3":[{"x":1280,"y":325},{"x":1180,"y":325}],"e4":[{"x":780,"y":355},{"x":880,"y":355}],"e5":[{"x":380,"y":385},{"x":480,"y":385}],"e14":[{"x":1580,"y":565},{"x":1680,"y":565}],"e20":[{"x":880,"y":555},{"x":780,"y":555}],"e24":[{"x":880,"y":805},{"x":780,"y":805}],"e30":[{"x":1680,"y":785},{"x":1580,"y":785}],"e17":[{"x":780,"y":165},{"x":815,"y":165},{"x":815,"y":475},{"x":745,"y":475},{"x":745,"y":526}],"e37":[{"x":2080,"y":625},{"x":2045,"y":625},{"x":2045,"y":1045},{"x":2080,"y":1045}],"e22":[{"x":505,"y":662},{"x":505,"y":755},{"x":355,"y":755},{"x":355,"y":785}],"e34":[{"x":2105,"y":903},{"x":2105,"y":945},{"x":1615,"y":945},{"x":1615,"y":905},{"x":1580,"y":905}],"e15":[{"x":480,"y":165},{"x":415,"y":165},{"x":415,"y":505},{"x":355,"y":505},{"x":355,"y":535}],"e18":[{"x":380,"y":145},{"x":445,"y":145},{"x":445,"y":545},{"x":480,"y":545}],"e39":[{"x":1980,"y":555},{"x":2055,"y":555},{"x":2055,"y":525},{"x":2415,"y":525},{"x":2415,"y":1045},{"x":2380,"y":1045}],"e16":[{"x":880,"y":405},{"x":835,"y":405},{"x":835,"y":695},{"x":355,"y":695},{"x":355,"y":653}],"e28":[{"x":2105,"y":544},{"x":2105,"y":505},{"x":1615,"y":505},{"x":1615,"y":735},{"x":1555,"y":735},{"x":1555,"y":767}],"e13":[{"x":1680,"y":555},{"x":1635,"y":555},{"x":1635,"y":515},{"x":925,"y":515},{"x":925,"y":495},{"x":755,"y":495},{"x":755,"y":526}],"e38":[{"x":1580,"y":625},{"x":1645,"y":625},{"x":1645,"y":1055},{"x":2080,"y":1055}],"e36":[{"x":2355,"y":1026},{"x":2355,"y":925},{"x":2405,"y":925},{"x":2405,"y":455},{"x":1555,"y":455},{"x":1555,"y":421}],"e40":[{"x":355,"y":1053},{"x":355,"y":925},{"x":845,"y":925},{"x":845,"y":515},{"x":905,"y":515},{"x":905,"y":421}],"e42":[{"x":2105,"y":644},{"x":2105,"y":765},{"x":2025,"y":765},{"x":2025,"y":1075},{"x":780,"y":1075}],"e31":[{"x":80,"y":165},{"x":55,"y":165},{"x":55,"y":965},{"x":1705,"y":965},{"x":1705,"y":921}],"e26":[{"x":380,"y":105},{"x":455,"y":105},{"x":455,"y":65},{"x":845,"y":65},{"x":845,"y":145},{"x":855,"y":145},{"x":855,"y":225},{"x":1245,"y":225},{"x":1245,"y":485},{"x":2125,"y":485},{"x":2125,"y":544}],"e35":[{"x":80,"y":155},{"x":45,"y":155},{"x":45,"y":1185},{"x":2035,"y":1185},{"x":2035,"y":1005},{"x":2125,"y":1005},{"x":2125,"y":903}]},"C":6,"R":5,"cell":[0,1,2,6,8,7,9,3,4,10,5,11,15,16,12,13,14,18,19,20,17,21,22,23,29,24,25],"gx":100,"gy":105};
     </script>
     <script id="wire-preview-geometry">
       /* Keep connection trunks steady while a card follows the pointer. */
@@ -2918,16 +2926,27 @@ const ModelEditor = (() => {
       );
       m.ENUMS[command.name] = values;
       m.ENUMNOTES[command.name] = String(command.note || '').trim();
-    } else if (command.type === 'new-model') {
+    } else if (command.type === 'new-model' || command.type === 'clear-model') {
+      const empty = command.type === 'clear-model';
       c.model = {
-        title: 'Domain model',
+        title: empty ? 'Untitled model' : 'Domain model',
         CTX: [{ id: 'model', name: 'Domain model', desc: '' }],
-        ENT: [{ id: 'NewClass', ctx: 'model', desc: '', f: [] }],
+        ENT: empty ? [] : [{ id: 'NewClass', ctx: 'model', desc: '', f: [] }],
         RELS: [],
         ENUMS: {},
         ENUMNOTES: {},
         TYPES: [],
-        PRIMS: clone(m.PRIMS),
+        PRIMS: empty
+          ? [
+              ['UUID', 'Unique identifier.'],
+              ['String', 'Text.'],
+              ['Integer', 'Whole number.'],
+              ['Decimal', 'Exact decimal number.'],
+              ['Boolean', 'True or false.'],
+              ['DateTime', 'Timestamp.'],
+              ['Date', 'Calendar date.'],
+            ]
+          : clone(m.PRIMS),
       };
       c.layout = {
         version: 'editor',
@@ -2935,14 +2954,15 @@ const ModelEditor = (() => {
         R: 2,
         gx: 100,
         gy: 80,
-        cell: [0],
-        nodes: { NewClass: { w: 280, h: 44 } },
+        cell: empty ? [] : [0],
+        nodes: empty ? {} : { NewClass: { w: 280, h: 44 } },
+        cardWidth: 280,
         routes: {},
-        ro: clone(l.ro),
+        ro: empty ? {} : clone(l.ro),
       };
       c.view = {
         hidden: [],
-        selected: 'NewClass',
+        selected: empty ? null : 'NewClass',
         search: '',
         camera: { fit: true },
         attributes: 'all',
@@ -3127,6 +3147,8 @@ const ModelExport = (() => {
         inheritance:
           'attributes contains own and included value-type fields. inheritedAttributes resolves superclass fields, excluding overridden names. declaredIn identifies the original class or value type; inheritedFrom is the immediate superclass. inheritanceConflicts lists ambiguous names from multiple parents.',
         keys: 'primaryKey lists the attributes of the composite identifier. isUnique identifies a single-attribute unique key; uniqueConstraints and constraints preserve model rules as text.',
+        import:
+          'Import accepts this format and generates a new layout. Edit declared attributes and type definitions; expanded and inherited fields are derived. Keep superclass/interface lists and relationship direction metadata consistent with relationship endpoints.',
       },
       domainAreas: m.CTX.map((c) => ({
         id: c.id,
@@ -3333,6 +3355,330 @@ const ModelExport = (() => {
     };
   }
   return { readable, json, brief, document };
+})();
+    </script>
+    <script id="model-import-core">
+      /* Model JSON -> validated editor snapshot. No DOM, storage, or network access. */
+const ModelImport = (() => {
+  const record = (v) => v !== null && typeof v === 'object' && !Array.isArray(v);
+  function check(ok, message) {
+    if (!ok) throw new Error(message);
+  }
+  function list(value, label, fallback = []) {
+    if (value === undefined) return fallback;
+    check(Array.isArray(value), label + ' must be an array.');
+    return value;
+  }
+  function text(value, fallback = '') {
+    if (value === undefined || value === null) return fallback;
+    check(typeof value === 'string', 'Names, types, and descriptions must be text.');
+    return value;
+  }
+  function multiplicity(value, fallback) {
+    if (value === undefined) return fallback;
+    if (value === null) return '';
+    if (typeof value === 'string') return value === '' ? '' : ModelEditor.multiplicity(value);
+    check(record(value), 'Multiplicity must be UML notation or an object with numeric bounds.');
+    let notation;
+    if (value.notation !== undefined) notation = ModelEditor.multiplicity(value.notation);
+    else {
+      check(
+        Number.isInteger(value.lowerBound) &&
+          value.lowerBound >= 0 &&
+          (value.upperBound === null ||
+            (Number.isInteger(value.upperBound) && value.upperBound >= value.lowerBound)),
+        'Multiplicity bounds must be nonnegative integers; null upperBound means unbounded.'
+      );
+      notation = ModelEditor.multiplicity(
+        value.lowerBound + '..' + (value.upperBound === null ? '*' : value.upperBound)
+      );
+    }
+    const [lo, hi] = notation.split('..'),
+      upper = hi === '*' ? null : Number(hi ?? lo);
+    check(
+      (value.lowerBound === undefined || value.lowerBound === Number(lo)) &&
+        (value.upperBound === undefined || value.upperBound === upper),
+      'Multiplicity notation conflicts with its numeric bounds.'
+    );
+    return notation;
+  }
+  function attributes(value, primaryKey = []) {
+    return list(value, 'Attributes').map((a) => {
+      check(record(a), 'Each attribute must be an object.');
+      for (const key of ['isIdentifier', 'isUnique'])
+        check(a[key] === undefined || typeof a[key] === 'boolean', key + ' must be true or false.');
+      return {
+        n: text(a.name),
+        t: text(a.type),
+        m: multiplicity(a.multiplicity, '1'),
+        k: [
+          ...(a.isIdentifier || primaryKey.includes(a.name) ? ['PK'] : []),
+          ...(a.isUnique ? ['UK'] : []),
+          ...list(a.references, 'Attribute references').map((id) => 'FK:' + text(id)),
+        ].join(' '),
+        note: text(a.description),
+      };
+    });
+  }
+  function arrange(model) {
+    check(
+      Array.isArray(model.CTX) && model.CTX.length > 0 && model.CTX.length <= 64,
+      'A model needs between 1 and 64 domain areas.'
+    );
+    check(
+      Array.isArray(model.ENT) && model.ENT.length <= 256,
+      'A model can have up to 256 classes.'
+    );
+    check(
+      model.CTX.every(record) &&
+        model.ENT.every(
+          (e) =>
+            record(e) &&
+            Array.isArray(e.f) &&
+            e.f.length <= 256 &&
+            e.f.every((f) => record(f) && typeof f.k === 'string')
+        ),
+      'Invalid model classes or attributes.'
+    );
+    const C = Math.max(1, Math.min(8, Math.ceil(Math.sqrt(model.ENT.length * 1.6)))),
+      order = model.CTX.flatMap((area) =>
+        model.ENT.filter((e) => e.ctx === area.id).map((e) => e.id)
+      ),
+      attributes = model.ENT.length <= 8 ? 'all' : 'keys';
+    return {
+      v: 1,
+      model,
+      layout: {
+        version: 'imported-model',
+        C,
+        R: Math.max(1, Math.ceil(model.ENT.length / C)),
+        gx: 100,
+        gy: 100,
+        cardWidth: 320,
+        cell: model.ENT.map((e) => order.indexOf(e.id)),
+        nodes: Object.fromEntries(
+          model.ENT.map((e) => [e.id, { w: 320, h: ModelEditor.height(e, attributes) }])
+        ),
+        routes: {},
+        ro: { grid: model.ENT.length > 64 ? 20 : 10 },
+      },
+      view: {
+        hidden: [],
+        selected: null,
+        search: '',
+        camera: { fit: true },
+        attributes,
+        labels: false,
+      },
+    };
+  }
+  function read(value) {
+    check(record(value), 'Import a JSON object describing a model, not example records.');
+    check(
+      new TextEncoder().encode(JSON.stringify(value)).length <= DesignURL.limits.maxBytes,
+      'The JSON is too large (maximum 2 MB).'
+    );
+    if (value.model && value.layout) return DesignURL.validate(value);
+    if (value.ENT || value.model?.ENT) return DesignURL.validate(arrange(value.model || value));
+    check(
+      value.format === undefined || value.format === 'uml-data-model',
+      'Unsupported model JSON format.'
+    );
+    check(
+      value.formatVersion === undefined || value.formatVersion === '1.0.0',
+      'Unsupported Model JSON version.'
+    );
+    check(
+      Array.isArray(value.classes),
+      'Choose Model JSON with a classes array, or a Design backup with model and layout.'
+    );
+    check(value.classes.length <= 256, 'A model can have up to 256 classes.');
+    const areas = list(value.domainAreas, 'Domain areas', [
+      { id: 'model', name: 'Domain model', description: '' },
+    ]);
+    const model = {
+      title: text(value.name, 'Imported model'),
+      CTX: areas.map((a) => {
+        check(record(a), 'Each domain area must be an object.');
+        return {
+          id: a.id,
+          name: a.name,
+          desc: text(a.description),
+          ...(a.color !== undefined ? { color: a.color } : {}),
+        };
+      }),
+      ENT: [],
+      RELS: [],
+      ENUMS: {},
+      ENUMNOTES: {},
+      TYPES: [],
+      PRIMS: [],
+    };
+    for (const c of value.classes) {
+      check(record(c), 'Each class must be an object.');
+      const kinds = { class: undefined, abstractClass: 'abstract', interface: 'interface' },
+        kind = c.kind === undefined ? 'class' : c.kind;
+      check(Object.hasOwn(kinds, kind), 'Unknown class kind: ' + kind);
+      const included = list(c.includedValueTypes, 'Included value types'),
+        fields = list(c.attributes, 'Class attributes');
+      check(
+        fields.every(
+          (a) =>
+            record(a) &&
+            (a.source === undefined || a.source === 'declared' || included.includes(a.source))
+        ),
+        'Attribute origins must be declared or name an included value type.'
+      );
+      const entity = {
+        id: c.id,
+        ctx: c.domainAreaId === undefined && areas.length === 1 ? areas[0].id : c.domainAreaId,
+        desc: text(c.description),
+        f: attributes(
+          fields.filter((a) => a.source === undefined || a.source === 'declared'),
+          list(c.primaryKey, 'Primary key')
+        ),
+        uk: list(c.uniqueConstraints, 'Unique constraints'),
+        checks: list(c.constraints, 'Constraints'),
+        ...(kinds[kind] ? { st: kinds[kind] } : {}),
+        ...(included.length ? { includes: included } : {}),
+      };
+      model.ENT.push(entity);
+    }
+    const enumerations = list(value.enumerations, 'Enumerations');
+    const enumerationNames = new Set();
+    for (const type of enumerations) {
+      check(
+        record(type) && typeof type.name === 'string' && !enumerationNames.has(type.name),
+        'Invalid or duplicate enumeration.'
+      );
+      enumerationNames.add(type.name);
+    }
+    model.ENUMS = Object.fromEntries(
+      enumerations.map((t) => [t.name, list(t.values, 'Enumeration values')])
+    );
+    model.ENUMNOTES = Object.fromEntries(enumerations.map((t) => [t.name, text(t.description)]));
+    model.TYPES = list(value.valueTypes, 'Value types').map((t) => {
+      check(record(t), 'Each value type must be an object.');
+      return { n: t.name, d: text(t.description), f: attributes(t.attributes) };
+    });
+    const defaults = ['UUID', 'String', 'Integer', 'Decimal', 'Boolean', 'DateTime', 'Date'].map(
+      (name) => ({ name, description: '' })
+    );
+    model.PRIMS = list(value.primitiveTypes, 'Primitive types', defaults).map((t) => {
+      check(record(t), 'Each primitive type must be an object.');
+      return [t.name, text(t.description)];
+    });
+    const kinds = {
+        association: 'assoc',
+        aggregation: 'agg',
+        composition: 'comp',
+        generalization: 'gen',
+        realization: 'real',
+        dependency: 'dep',
+      },
+      navigation = { unspecified: 'none', toFrom: 'a', fromTo: 'b', both: 'both' },
+      used = new Set(),
+      relationships = list(value.relationships, 'Relationships');
+    check(relationships.length <= 2048, 'A model can have up to 2048 relationships.');
+    for (const r of relationships) {
+      check(
+        record(r) && Object.hasOwn(kinds, r.kind) && record(r.from) && record(r.to),
+        'Each relationship needs a supported kind and from/to classId endpoints.'
+      );
+      let i = 0;
+      if (r.id !== undefined) {
+        check(
+          typeof r.id === 'string' && /^e\d+$/.test(r.id),
+          'Relationship IDs must use e followed by a number, such as e0.'
+        );
+        i = Number(r.id.slice(1));
+      } else while (used.has(i) || relationships.some((other) => other.id === 'e' + i)) i++;
+      check(!used.has(i), 'Duplicate relationship ID.');
+      used.add(i);
+      const kind = kinds[r.kind],
+        association = ['assoc', 'agg', 'comp'].includes(kind);
+      if (r.navigability !== undefined)
+        check(Object.hasOwn(navigation, r.navigability), 'Invalid relationship navigability.');
+      for (const [key, expected] of [
+        ['wholeClassId', r.from.classId],
+        ['partClassId', r.to.classId],
+        ['subclassId', r.from.classId],
+        ['superclassId', r.to.classId],
+        ['implementingClassId', r.from.classId],
+        ['interfaceId', r.to.classId],
+      ])
+        check(
+          r[key] === undefined || r[key] === expected,
+          key + ' conflicts with the from/to endpoints.'
+        );
+      model.RELS.push({
+        i,
+        a: r.from.classId,
+        b: r.to.classId,
+        k: kind,
+        l: text(r.name),
+        m1: association ? multiplicity(r.from.multiplicity, '1') : '',
+        m2: association ? multiplicity(r.to.multiplicity, '0..*') : '',
+        role1: text(r.from.role),
+        role2: text(r.to.role),
+        nav: r.navigability === undefined ? 'none' : navigation[r.navigability],
+      });
+    }
+    function inherit(from, to, kind) {
+      if (model.RELS.some((r) => r.a === from && r.b === to && r.k === kind)) return;
+      let i = 0;
+      while (used.has(i)) i++;
+      used.add(i);
+      model.RELS.push({ i, a: from, b: to, k: kind, l: '', m1: '', m2: '', nav: 'none' });
+    }
+    for (const c of value.classes) {
+      for (const [key, kind] of [
+        ['superclasses', 'gen'],
+        ['interfaces', 'real'],
+      ]) {
+        const explicit = model.RELS.filter((r) => r.a === c.id && r.k === kind).map((r) => r.b);
+        const declared = list(c[key], 'Class ' + key);
+        if (c[key] !== undefined && explicit.length)
+          check(
+            new Set(declared).size === explicit.length &&
+              explicit.every((id) => declared.includes(id)),
+            'Class ' + key + ' conflicts with its relationship rows. Update both definitions.'
+          );
+      }
+      for (const parent of list(c.superclasses, 'Superclasses')) inherit(c.id, parent, 'gen');
+      for (const type of list(c.interfaces, 'Interfaces')) inherit(c.id, type, 'real');
+    }
+    const config = DesignURL.validate(arrange(model)),
+      graph = ModelExport.readable(config);
+    for (const c of value.classes) {
+      const resolved = graph.classes.find((e) => e.id === c.id),
+        names = new Set(
+          [...resolved.attributes, ...resolved.inheritedAttributes].map((a) => a.name)
+        );
+      check(
+        list(c.primaryKey, 'Primary key').every(
+          (name) => typeof name === 'string' && names.has(name)
+        ),
+        'A primaryKey names an attribute that does not exist.'
+      );
+    }
+    return config;
+  }
+  function parse(source) {
+    check(typeof source === 'string' && source.trim(), 'Choose a JSON file or paste model JSON.');
+    check(
+      new TextEncoder().encode(source).length <= DesignURL.limits.maxBytes,
+      'The JSON is too large (maximum 2 MB).'
+    );
+    let value;
+    try {
+      value = JSON.parse(source.replace(/^\uFEFF/, ''));
+    } catch {
+      throw new Error('This is not valid JSON. Check for missing quotes, commas, or brackets.');
+    }
+    return read(value);
+  }
+  return { parse, read };
 })();
     </script>
     <script>
@@ -3617,7 +3963,7 @@ window.addEventListener('popstate', navigationChanged);
   /* ---------- model export ---------- */
 const exportFormats = {
   readable: {
-    help: 'Explicit classes, types, keys, and relationships. Inherited attributes include their origin.',
+    help: 'Explicit classes, types, keys, and relationships. Edit this JSON with an AI or another tool, then open Import to display it.',
     copy: 'Copy JSON',
   },
   brief: {
@@ -3625,7 +3971,7 @@ const exportFormats = {
     copy: 'Copy brief',
   },
   design: {
-    help: 'An exact backup of the model, layout, and view. Restore it with View → Import design.',
+    help: 'An exact backup of the model, layout, and view. Restore it with Import.',
     copy: 'Copy JSON',
   },
 };
@@ -4132,7 +4478,7 @@ function fit(animate) {
   if (!b) return;
   const vw = stage.clientWidth - (!panel.hidden && stage.clientWidth > 820 ? panel.offsetWidth : 0),
     vh = stage.clientHeight,
-    top = 70,
+    top = Math.max(70, $('#edit-tools').getBoundingClientRect().bottom + 16),
     bot = 64;
   const z = Math.min(
     1.4,
@@ -4725,7 +5071,13 @@ let panelMode = 'details',
   dragSnapshot = null;
 let editorBaseline = null,
   editorPickerBaseline = [];
-const formFingerprint = (form) => JSON.stringify([...new FormData(form)]);
+const formFingerprint = (form) =>
+  JSON.stringify(
+    [...new FormData(form)].map(([name, value]) => [
+      name,
+      value instanceof File ? [value.name, value.size, value.lastModified] : value,
+    ])
+  );
 function trackEditor() {
   const form = panel.querySelector('form');
   editorBaseline = form ? formFingerprint(form) : null;
@@ -4885,6 +5237,7 @@ function updateHistory() {
   $('#redo').disabled = !redoStack.length;
 }
 function restoreConfig(config) {
+  if (!urlBlocked) $('#notice').hidden = true;
   cancelCardDrag();
   pointers.clear();
   gesture = null;
@@ -5127,7 +5480,7 @@ function relationshipKindChanged() {
     <label class="ed-checkbox"><input name="view-labels" type="checkbox"${S.labels ? ' checked' : ''}>Show relationship names and multiplicities</label>
     <fieldset class="ed-area-options"><legend>Visible domain areas</legend><div>${CTX.map((area) => `<label><input type="checkbox" name="view-area" value="${esc(area.id)}"${S.off.has(area.id) ? '' : ' checked'}>${esc(area.name)}</label>`).join('')}</div></fieldset>
     ${errorHTML}<div class="ed-save"><button class="share-btn" type="submit">Save view</button><button class="ed-secondary" type="button" data-cancel-edit>Cancel</button></div>
-    <h3>Data model</h3><div class="ed-actions"><button type="button" class="ed-secondary" data-edit-area>Domain areas</button><button type="button" class="ed-secondary" data-edit-enum>Enumerations</button></div><button type="button" class="ed-secondary" data-import-design>Import design</button><button type="button" class="ed-text-btn ed-delete" data-new-model>Start a new model…</button></form>`;
+    <h3>Data model</h3><div class="ed-actions"><button type="button" class="ed-secondary" data-edit-area>Domain areas</button><button type="button" class="ed-secondary" data-edit-enum>Enumerations</button><button type="button" class="ed-secondary" data-import-design>Import JSON</button></div><div class="ed-actions ed-reset-actions"><button type="button" class="ed-secondary" data-new-model>Start a new model…</button><button type="button" class="ed-secondary danger" data-clear-model>Delete everything…</button></div><div id="reset-confirmation" aria-live="polite"></div></form>`;
   trackEditor();
 }
 function showAreaEditor(id = '') {
@@ -5172,12 +5525,36 @@ function showEnumEditor(name = '') {
     ${errorHTML}<div class="ed-save"><button class="share-btn" type="submit">Save enumeration</button><button class="ed-secondary" type="button" data-open-view>Back</button></div></form>`;
   trackEditor();
 }
+let importPreview = null,
+  importReadRevision = 0;
+const importCount = (n, singular, plural = singular + 's') =>
+  n + ' ' + (n === 1 ? singular : plural);
+function invalidateImportPreview() {
+  importReadRevision++;
+  importPreview = null;
+  $('#import-preview')?.replaceChildren();
+  const button = $('#import-form [type="submit"]');
+  if (button) button.disabled = false;
+  const error = $('#editor-error');
+  if (error) error.hidden = true;
+}
+function syncImportSource() {
+  invalidateImportPreview();
+  const paste = $('[name="import-source"]').value === 'paste';
+  $('#import-file-label').hidden = paste;
+  $('[name="design-file"]').disabled = paste;
+  $('[name="design-file"]').required = !paste;
+  $('#import-json-label').hidden = !paste;
+  $('[name="import-json"]').disabled = !paste;
+  $('[name="import-json"]').required = paste;
+}
 function showImportEditor() {
   if (!canLeaveEditor(showImportEditor)) return;
   cancelConnection();
   panelMode = 'import';
-  drawer('Import design').innerHTML =
-    `<form id="import-form"><p class="ed-help">Restore a Design backup JSON export, including its model, layout, and view. This replaces the current design. Undo restores it.</p><label class="ed-label">Design backup JSON<input type="file" name="design-file" accept=".json,application/json" required></label>${errorHTML}<div class="ed-save"><button class="share-btn" type="submit">Import design</button><button class="ed-secondary" type="button" data-open-view>Back</button></div></form>`;
+  drawer('Import model').innerHTML =
+    `<form id="import-form"><p class="ed-help">Import Model JSON describing classes and relationships, or a Design backup. Model JSON gets a fresh layout; backups keep their saved view. For AI edits, start with Export → Model JSON. Files stay in your browser. Maximum 2 MB.</p><label class="ed-label">Source<select name="import-source"><option value="file">Upload JSON file</option><option value="paste">Paste JSON</option></select></label><label id="import-file-label" class="ed-label">JSON file<input type="file" name="design-file" accept=".json,application/json" required></label><label id="import-json-label" class="ed-label" hidden>Model JSON<textarea name="import-json" rows="10" maxlength="2097152" spellcheck="false" placeholder='{"format":"uml-data-model","formatVersion":"1.0.0","name":"My model","classes":[]}' disabled></textarea></label>${errorHTML}<div class="ed-save"><button class="ed-secondary" type="submit">Preview model</button><button class="ed-secondary" type="button" data-open-view>Back</button></div><div id="import-preview" aria-live="polite"></div></form>`;
+  invalidateImportPreview();
   trackEditor();
 }
   function cancelConnection() {
@@ -5337,31 +5714,34 @@ panel.addEventListener('submit', async (ev) => {
     );
   else if (form.id === 'import-form') {
     const button = form.querySelector('[type="submit"]');
+    invalidateImportPreview();
+    const stamp = importReadRevision;
     button.disabled = true;
     try {
-      const file = form.querySelector('[name="design-file"]').files[0];
-      if (!file || file.size > DesignURL.limits.maxBytes)
-        throw new Error('Choose a JSON design file up to 2 MB.');
-      let config;
-      try {
-        config = JSON.parse(await file.text());
-      } catch {
-        throw new Error('This file is not valid JSON.');
+      let source;
+      if (get('import-source') === 'paste') source = get('import-json');
+      else {
+        const file = form.querySelector('[name="design-file"]').files[0];
+        if (!file || file.size > DesignURL.limits.maxBytes)
+          throw new Error('Choose a JSON file up to 2 MB.');
+        source = await file.text();
       }
-      if (!form.isConnected) return;
-      if (config?.format === 'uml-data-model')
-        throw new Error(
-          'Choose a Design backup JSON export. Model JSON exports are for AI and other tools.'
-        );
-      commit({ type: 'import-design', config });
+      if (!form.isConnected || stamp !== importReadRevision) return;
+      importPreview = ModelImport.parse(source);
+      const m = importPreview.model;
+      $('#import-preview').innerHTML =
+        `<div class="ed-confirm"><h3>${esc(m.title || 'Domain Model')}</h3><p>${importCount(m.ENT.length, 'class', 'classes')} · ${importCount(m.RELS.length, 'relationship')} · ${importCount(m.CTX.length, 'domain area')}<br>${importCount(Object.keys(m.ENUMS).length, 'enumeration')} · ${importCount(m.TYPES.length, 'value type')}</p><p>Import replaces the current design. Undo restores it.</p><button class="share-btn" type="button" data-apply-import>Import model</button></div>`;
+      $('[data-apply-import]').focus();
     } catch (error) {
-      if (form.isConnected) editorError(error);
+      if (form.isConnected && stamp === importReadRevision) editorError(error);
     } finally {
-      if (form.isConnected) button.disabled = false;
+      if (form.isConnected && stamp === importReadRevision) button.disabled = false;
     }
   }
 });
 panel.addEventListener('change', (ev) => {
+  if (ev.target.name === 'import-source') syncImportSource();
+  else if (ev.target.closest('#import-form')) invalidateImportPreview();
   if (ev.target.name === 'relationship-kind') relationshipKindChanged();
   if (ev.target.id === 'enum-picker') showEnumEditor(ev.target.value);
   if (ev.target.id === 'area-picker') showAreaEditor(ev.target.value);
@@ -5373,10 +5753,12 @@ panel.addEventListener('change', (ev) => {
   }
 });
 panel.addEventListener('input', (ev) => {
+  if (ev.target.closest('#import-form')) invalidateImportPreview();
   const choice = ev.target.closest('[data-choice]');
   if (choice) syncChoice(choice);
 });
-  function cancelEdit() {
+  $('#import-model').onclick = showImportEditor;
+function cancelEdit() {
   if (!canLeaveEditor(cancelEdit)) return;
   panelMode = 'details';
   if (S.sel) showPanel(S.sel);
@@ -5406,6 +5788,14 @@ panel.addEventListener('click', (ev) => {
   if (target.hasAttribute('data-edit-enum')) showEnumEditor();
   if (target.hasAttribute('data-edit-area')) showAreaEditor();
   if (target.hasAttribute('data-import-design')) showImportEditor();
+  if (target.hasAttribute('data-apply-import') && importPreview)
+    commit({ type: 'import-design', config: importPreview }, () => {
+      importPreview = null;
+      notice(
+        `Imported ${importCount(ENT.length, 'class', 'classes')} and ${importCount(RELS.length, 'relationship')}. Undo restores the previous design.`
+      );
+      $('#import-model').focus();
+    });
   if (target.hasAttribute('data-delete-area'))
     commit(
       {
@@ -5434,15 +5824,34 @@ panel.addEventListener('click', (ev) => {
   if (target.hasAttribute('data-cancel-delete')) $('#delete-confirmation').replaceChildren();
   if (target.hasAttribute('data-confirm-delete'))
     commit({ type: 'delete-class', id: target.dataset.confirmDelete, removeReferences: true });
-  if (target.hasAttribute('data-new-model')) {
+  if (target.hasAttribute('data-new-model') || target.hasAttribute('data-clear-model')) {
+    const empty = target.hasAttribute('data-clear-model');
     const show = () => {
-      target.outerHTML =
-        '<div class="ed-confirm"><p>Start with one empty class? You can undo this to return to the current model.</p><button class="ed-secondary" type="button" data-confirm-new>Start new model</button></div>';
+      $('#reset-confirmation').innerHTML =
+        `<div class="ed-confirm"><p>${empty ? 'Delete all classes, attributes, connections, domain areas, enumerations, and value types? This leaves an empty canvas with one default area and standard primitive types.' : 'Start with one empty class?'} Undo restores the complete design. Downloaded exports and shared links are kept.</p><button class="ed-secondary${empty ? ' danger' : ''}" type="button" ${empty ? 'data-confirm-clear' : 'data-confirm-new'}>${empty ? 'Delete everything' : 'Start new model'}</button><button class="ed-secondary" type="button" data-cancel-reset>Cancel</button></div>`;
+      $('#reset-confirmation').scrollIntoView({ block: 'nearest' });
+      $('[data-cancel-reset]').focus();
     };
-    if (canLeaveEditor(show)) show();
+    if (
+      canLeaveEditor(() => {
+        showViewEditor();
+        show();
+      })
+    )
+      show();
+  }
+  if (target.hasAttribute('data-cancel-reset')) {
+    const empty = !!$('[data-confirm-clear]');
+    $('#reset-confirmation').replaceChildren();
+    $(empty ? '[data-clear-model]' : '[data-new-model]').focus();
   }
   if (target.hasAttribute('data-confirm-new'))
     commit({ type: 'new-model' }, () => showClassEditor(S.sel));
+  if (target.hasAttribute('data-confirm-clear'))
+    commit({ type: 'clear-model' }, () => {
+      notice('Everything deleted. Undo restores the complete design.');
+      $('#add-class').focus();
+    });
 });
 document.addEventListener('keydown', (ev) => {
   if (shareDialog.open || exportDialog.open || discardDialog.open) return;
