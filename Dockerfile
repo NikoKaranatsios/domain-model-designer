@@ -11,6 +11,7 @@ RUN setcap -r /usr/bin/caddy
 COPY deploy/Caddyfile /etc/caddy/Caddyfile
 COPY --from=verify /app/index.html /srv/index.html
 COPY --from=verify /app/model.html /srv/model.html
+# COPY inherits checkout modes; normalize before switching to the non-root user.
 RUN chmod 0644 /etc/caddy/Caddyfile /srv/index.html /srv/model.html
 ENV XDG_DATA_HOME=/tmp/caddy-data
 USER 1000:1000
