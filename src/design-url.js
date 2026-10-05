@@ -197,9 +197,8 @@ const DesignURL = (() => {
           r.m2,
           true
         ), 'Invalid relationship multiplicity. Use a UML multiplicity.');
-      if (['gen', 'real', 'comp'].includes(r.k))
-        require(r.a !==
-          r.b, 'Inheritance, realization, and composition cannot connect a class to itself.');
+      if (['gen', 'real'].includes(r.k))
+        require(r.a !== r.b, 'Inheritance and realization cannot connect a class to itself.');
       if (r.k === 'comp') {
         const parts = r.m1.split('..'),
           upper = parts.at(-1);
@@ -208,14 +207,31 @@ const DesignURL = (() => {
           +upper <= 1, 'A part can have at most one composite owner.');
       }
       if (r.k === 'real')
-        require(m.ENT.find((e) => e.id === r.b).st ===
-          'interface', 'Realization must point to an interface.');
+        require(m.ENT.find((e) => e.id === r.a).st !== 'interface' &&
+          m.ENT.find((e) => e.id === r.b).st ===
+            'interface', 'Realization must point to an interface.');
+      if (r.k === 'gen') {
+        require((m.ENT.find((e) => e.id === r.a).st === 'interface') ===
+          (m.ENT.find((e) => e.id === r.b).st ===
+            'interface'), 'Generalization must connect classes to classes or interfaces to interfaces.');
+        require(!m.RELS.some(
+          (other) => other !== r && other.k === 'gen' && other.a === r.a && other.b === r.b
+        ), 'Duplicate generalization.');
+      }
+      if (!['assoc', 'agg', 'comp'].includes(r.k))
+        require(r.m1 === '' &&
+          r.m2 === '' &&
+          !r.role1 &&
+          !r.role2, 'Only associations have endpoint multiplicities and roles.');
     }
     const parents = new Map(
       m.ENT.map((e) => [e.id, m.RELS.filter((r) => r.k === 'gen' && r.a === e.id).map((r) => r.b)])
     );
     for (const e of m.ENT)
       if (e.ext) {
+        require((e.st === 'interface') ===
+          (m.ENT.find((parent) => parent.id === e.ext).st ===
+            'interface'), 'Generalization must connect classes to classes or interfaces to interfaces.');
         require(!parents.get(e.id).length ||
           parents
             .get(e.id)
@@ -236,15 +252,8 @@ const DesignURL = (() => {
       for (const id of adjacency.keys()) visit(id);
     }
     acyclic(parents, 'Inheritance');
-    acyclic(
-      new Map(
-        m.ENT.map((e) => [
-          e.id,
-          m.RELS.filter((r) => r.k === 'comp' && r.a === e.id).map((r) => r.b),
-        ])
-      ),
-      'Composition'
-    );
+    // Composition is acyclic between objects, not necessarily between class types.
+    // A Folder may contain Folders; a class diagram cannot validate object links.
     require(text(l.version) && integer(l.C, 1, 32) && integer(l.R, 1, 32), 'Invalid layout grid.');
     require(finite(l.gx, 24, 1000) &&
       finite(l.gy, 24, 1000) &&

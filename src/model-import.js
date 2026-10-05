@@ -42,11 +42,34 @@ const ModelImport = (() => {
     );
     return notation;
   }
-  function attributes(value, primaryKey = []) {
+  function attributes(value, primaryKey = [], explicitKey = false) {
     return list(value, 'Attributes').map((a) => {
       check(record(a), 'Each attribute must be an object.');
+      for (const property of [
+        'isOrdered',
+        'isCollectionUnique',
+        'isReadOnly',
+        'isDerived',
+        'isStatic',
+        'defaultValue',
+        'visibility',
+        'aggregation',
+        'redefines',
+        'subsettedProperties',
+      ])
+        check(
+          a[property] === undefined,
+          'Attribute property ' +
+            property +
+            ' is not supported by this Model JSON format; it cannot be silently discarded.'
+        );
       for (const key of ['isIdentifier', 'isUnique'])
         check(a[key] === undefined || typeof a[key] === 'boolean', key + ' must be true or false.');
+      check(
+        !(a.isIdentifier === false && primaryKey.includes(a.name)) &&
+          !(explicitKey && a.isIdentifier === true && !primaryKey.includes(a.name)),
+        'primaryKey conflicts with an attribute isIdentifier flag.'
+      );
       return {
         n: text(a.name),
         t: text(a.type),
@@ -97,7 +120,7 @@ const ModelImport = (() => {
         cardWidth: 320,
         cell: model.ENT.map((e) => order.indexOf(e.id)),
         nodes: Object.fromEntries(
-          model.ENT.map((e) => [e.id, { w: 320, h: ModelEditor.height(e, attributes) }])
+          model.ENT.map((e) => [e.id, { w: 320, h: ModelEditor.height(e, attributes, model) }])
         ),
         routes: {},
         ro: { grid: model.ENT.length > 64 ? 20 : 10 },
@@ -118,8 +141,8 @@ const ModelImport = (() => {
       new TextEncoder().encode(JSON.stringify(value)).length <= DesignURL.limits.maxBytes,
       'The JSON is too large (maximum 2 MB).'
     );
-    if (value.model && value.layout) return DesignURL.validate(value);
-    if (value.ENT || value.model?.ENT) return DesignURL.validate(arrange(value.model || value));
+    if (value.model && value.layout) return ModelEditor.normalize(value);
+    if (value.ENT || value.model?.ENT) return ModelEditor.normalize(arrange(value.model || value));
     check(
       value.format === undefined || value.format === 'uml-data-model',
       'Unsupported model JSON format.'
@@ -175,7 +198,8 @@ const ModelImport = (() => {
         desc: text(c.description),
         f: attributes(
           fields.filter((a) => a.source === undefined || a.source === 'declared'),
-          list(c.primaryKey, 'Primary key')
+          list(c.primaryKey, 'Primary key'),
+          c.primaryKey !== undefined
         ),
         uk: list(c.uniqueConstraints, 'Unique constraints'),
         checks: list(c.constraints, 'Constraints'),
@@ -225,6 +249,20 @@ const ModelImport = (() => {
         record(r) && Object.hasOwn(kinds, r.kind) && record(r.from) && record(r.to),
         'Each relationship needs a supported kind and from/to classId endpoints.'
       );
+      for (const end of [r.from, r.to])
+        for (const property of [
+          'qualifiers',
+          'isOrdered',
+          'isUnique',
+          'isNavigable',
+          'visibility',
+          'redefines',
+          'subsettedProperties',
+        ])
+          check(
+            end[property] === undefined,
+            'Relationship-end property ' + property + ' is not supported by this Model JSON format.'
+          );
       let i = 0;
       if (r.id !== undefined) {
         check(
@@ -237,6 +275,16 @@ const ModelImport = (() => {
       used.add(i);
       const kind = kinds[r.kind],
         association = ['assoc', 'agg', 'comp'].includes(kind);
+      if (!association)
+        check(
+          [r.from.multiplicity, r.to.multiplicity].every(
+            (m) => m === undefined || m === null || m === ''
+          ) &&
+            !r.from.role &&
+            !r.to.role &&
+            (r.navigability === undefined || r.navigability === 'unspecified'),
+          'Only associations have endpoint multiplicities, roles, and navigation.'
+        );
       if (r.navigability !== undefined)
         check(Object.hasOwn(navigation, r.navigability), 'Invalid relationship navigability.');
       for (const [key, expected] of [
@@ -257,8 +305,8 @@ const ModelImport = (() => {
         b: r.to.classId,
         k: kind,
         l: text(r.name),
-        m1: association ? multiplicity(r.from.multiplicity, '1') : '',
-        m2: association ? multiplicity(r.to.multiplicity, '0..*') : '',
+        m1: association ? multiplicity(r.from.multiplicity, '') : '',
+        m2: association ? multiplicity(r.to.multiplicity, '') : '',
         role1: text(r.from.role),
         role2: text(r.to.role),
         nav: r.navigability === undefined ? 'none' : navigation[r.navigability],
@@ -296,9 +344,11 @@ const ModelImport = (() => {
           [...resolved.attributes, ...resolved.inheritedAttributes].map((a) => a.name)
         );
       check(
-        list(c.primaryKey, 'Primary key').every(
-          (name) => typeof name === 'string' && names.has(name)
-        ),
+        new Set(list(c.primaryKey, 'Primary key')).size ===
+          list(c.primaryKey, 'Primary key').length &&
+          list(c.primaryKey, 'Primary key').every(
+            (name) => typeof name === 'string' && names.has(name)
+          ),
         'A primaryKey names an attribute that does not exist.'
       );
     }

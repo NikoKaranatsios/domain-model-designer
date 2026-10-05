@@ -13,6 +13,9 @@ build tool, server application, or external JavaScript dependencies.
 | `design-url.js`                                              | Model validation, limits, compression and shared links                       |
 | `model-editor.js`                                            | Validated editing commands and reference cleanup                             |
 | `model-export.js`                                            | Compiled model JSON, AI Markdown, and design backups                         |
+| `model-analysis.js`                                          | Pure graph review: types, inheritance, references and explicit conventions   |
+| `uml-notation.js`                                            | Marker direction, model-to-route ends and saved-path attachment checks       |
+| `uml-labels.js`                                              | Spatial placement of annotations outside cards and other labels              |
 | `model-import.js`                                            | JSON parsing, graph reconstruction, and automatic layout                     |
 | `orthogonal-router.js`, `wire-preview.js`                    | Connection routing and stable drag previews                                  |
 | `app.js`                                                     | Ordered UI assembly and its private asynchronous scope                       |
@@ -32,3 +35,5 @@ remain independent of the DOM.
 Check generated files with `node scripts/build.cjs --check`, and run
 `node --test tests/*.test.cjs` before committing source and generated output.
 `.prettierrc.json` defines the source formatting conventions.
+
+`node scripts/layout-example.cjs` rebuilds the fictional example's routes after model edits, preserving its manual grid placement. It checks that every route attaches to the expected classes and avoids card interiors.

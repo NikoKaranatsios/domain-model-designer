@@ -53,7 +53,7 @@ test('source changes require rebuilding and script-shaped model descriptions rem
     execFileSync(process.execPath, [join(directory, 'scripts/security-policy.cjs')]);
     const html = readFileSync(join(directory, 'model.html'), 'utf8');
     assert.equal(defaults(html).model.ENT[0].desc, description);
-    assert.equal([...html.matchAll(/<script\b[^>]*>[\s\S]*?<\/script>/g)].length, 8);
+    assert.equal([...html.matchAll(/<script\b[^>]*>[\s\S]*?<\/script>/g)].length, 11);
   } finally {
     rmSync(directory, { recursive: true, force: true });
   }

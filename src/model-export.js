@@ -33,7 +33,7 @@ const ModelExport = (() => {
     };
   }
   function readable(config) {
-    const { model: m } = DesignURL.validate(config);
+    const { model: m } = ModelEditor.normalize(config);
     const classes = m.ENT.map((e) => {
       const attributes = e.f.map((f) => attribute(f, 'declared', e.id));
       const seen = new Set(e.f.map((f) => f.n));
@@ -155,7 +155,7 @@ const ModelExport = (() => {
         ].filter((type) => !definedTypes.has(type))
       ),
     ].sort();
-    return {
+    const graph = {
       format: 'uml-data-model',
       formatVersion: '1.0.0',
       name: m.title || 'Domain Model',
@@ -194,6 +194,8 @@ const ModelExport = (() => {
       })),
       primitiveTypes: m.PRIMS.map(([name, description]) => ({ name, description })),
     };
+    graph.validation = ModelAnalysis.review(graph, m);
+    return graph;
   }
   function json(config, format = 'readable') {
     if (!['readable', 'design'].includes(format)) throw new Error('Choose an export format.');
@@ -239,6 +241,17 @@ const ModelExport = (() => {
           a.id +
           '`)' +
           (a.description ? ' — ' + inline(a.description) : '')
+      );
+    lines.push('', '## Model checks', '', g.validation.scope, '');
+    if (!g.validation.issues.length)
+      lines.push('No issues found by the supported schema checks.', '');
+    for (const issue of g.validation.issues)
+      lines.push(
+        '- ' +
+          issue.severity +
+          (issue.classId ? ' in ' + issue.classId : '') +
+          ': ' +
+          inline(issue.message)
       );
     function fields(attributes) {
       if (!attributes.length) {

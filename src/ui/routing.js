@@ -10,8 +10,8 @@ const shown = (l) => !S.off.has(ENTBY[l.src].ctx) && !S.off.has(ENTBY[l.tgt].ctx
 const isDefault = () =>
   GR.C === BASE.C && GR.R === BASE.R && ENT.every((e, i) => GR.cell[e.id] === BASE.cell[i]);
 function routeAll() {
-  if (isDefault() && ROUTED.every((l) => BASE.routes[l.id])) {
-    routes = Object.assign({}, BASE.routes);
+  if (isDefault() && ROUTED.every((l) => UMLNotation.routeFits(l, BASE.routes[l.id], nodes))) {
+    routes = Object.fromEntries(ROUTED.map((l) => [l.id, BASE.routes[l.id]]));
     return null;
   }
   const R = new OrthoRouter.Router(nodes, RO);

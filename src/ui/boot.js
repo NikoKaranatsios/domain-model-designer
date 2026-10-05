@@ -12,6 +12,14 @@ routeAll();
 ENT.forEach((e) => cardEl[e.id].classList.toggle('off', S.off.has(e.ctx)));
 $('#q').value = S.q;
 drawWires();
+updateModelCheck();
+// Wrapped toolbars must leave room for share, zoom and mobile drawers.
+function sizeControls() {
+  const bottom = $('#edit-tools').getBoundingClientRect().bottom;
+  document.documentElement.style.setProperty('--aux-top', Math.ceil(bottom + 10) + 'px');
+}
+new ResizeObserver(sizeControls).observe($('#edit-tools'));
+sizeControls();
 if (S.sel) showPanel(S.sel);
 if (S.auto) fit(false);
 else {

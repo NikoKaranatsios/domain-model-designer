@@ -18,7 +18,7 @@ const context = vm.createContext({
   btoa,
   atob,
 });
-for (const name of ['DM', 'DesignURL', 'ModelEditor', 'ModelExport'])
+for (const name of ['DM', 'DesignURL', 'ModelEditor', 'ModelAnalysis', 'ModelExport'])
   vm.runInContext(
     scripts.find((s) => new RegExp('const\\s+' + name + '\\s*=').test(s)),
     context

@@ -559,7 +559,7 @@ body:has(#panel:not([hidden])) #zoom {
   }
   #panel {
     top: auto;
-    height: min(78dvh, calc(100dvh - 180px - env(safe-area-inset-top, 0px)));
+    height: min(78dvh, calc(100dvh - var(--aux-top) - 60px));
     width: 100vw;
     border-left: 0;
     border-top: 1px solid var(--line);
@@ -607,4 +607,7 @@ body:has(#panel:not([hidden])) #zoom {
   * {
     transition: none !important;
   }
+}
+.tool-btn.has-issues {
+  color: var(--danger);
 }

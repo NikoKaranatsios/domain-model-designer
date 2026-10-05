@@ -15,7 +15,7 @@
       href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+PHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNyIgZmlsbD0iI2ZmZiIvPjxnIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzJCNUM2MSIgc3Ryb2tlLXdpZHRoPSIxLjYiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxyZWN0IHg9IjQiIHk9IjUiIHdpZHRoPSIxMCIgaGVpZ2h0PSI5IiByeD0iMiIvPjxyZWN0IHg9IjE4IiB5PSIxOCIgd2lkdGg9IjEwIiBoZWlnaHQ9IjkiIHJ4PSIyIi8+PHBhdGggZD0iTTQgOWgxMG00IDEzaDEwTTkgMTR2OWg5Ii8+PC9nPjwvc3ZnPg=="
     />
     <meta name="application-name" content="Domain Model Designer" />
-    <meta name="application-version" content="1.1.0" />
+    <meta name="application-version" content="1.2.0" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -64,6 +64,9 @@
         >Connect
       </button>
       <button id="view-settings" type="button" class="tool-btn">View</button>
+      <button id="check-model" type="button" class="tool-btn" aria-label="Check model">
+        Check
+      </button>
       <button id="import-model" type="button" class="tool-btn" aria-label="Import model">
         <svg viewBox="0 0 16 16" aria-hidden="true">
           <path d="M8 10V2m-3 3 3-3 3 3M3 10v4h10v-4" /></svg
@@ -251,6 +254,15 @@
     </script>
     <script id="model-editor-core">
       /* @source model-editor.js */
+    </script>
+    <script id="model-analysis-core">
+      /* @source model-analysis.js */
+    </script>
+    <script id="uml-notation">
+      /* @source uml-notation.js */
+    </script>
+    <script id="uml-labels">
+      /* @source uml-labels.js */
     </script>
     <script id="model-export-core">
       /* @source model-export.js */

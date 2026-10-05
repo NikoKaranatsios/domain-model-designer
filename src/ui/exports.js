@@ -26,6 +26,7 @@ function refreshExport() {
     exportDocument = ModelExport.document(exportSnapshot, format);
     exportPreview.value = exportDocument.contents;
     const summary = exportDocument.summary;
+    const report = modelReport(exportSnapshot);
     $('#export-summary').innerHTML =
       `<div class="export-model-name">${esc(exportSnapshot.model.title || 'Domain Model')}</div><div class="export-stats">${[
         ['classes', summary.classes],
@@ -35,7 +36,7 @@ function refreshExport() {
         .map(([label, n]) => `<div><strong>${n}</strong><span>${label}</span></div>`)
         .join(
           ''
-        )}</div><p>${summary.domainAreas} domain areas · ${summary.enumerations} enumerations · ${summary.valueTypes} value types</p>`;
+        )}</div><p>${summary.domainAreas} domain areas · ${summary.enumerations} enumerations · ${summary.valueTypes} value types</p><p>${esc(reportSummary(report))} JSON and AI brief include the model-check findings.</p>`;
     const size = new TextEncoder().encode(exportDocument.contents).length;
     $('#export-file-info').textContent =
       exportDocument.filename +

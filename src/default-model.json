@@ -134,7 +134,10 @@
           "note": ""
         }
       ],
-      "checks": ["At least one active OrganizerMember has the owner role."]
+      "checks": [
+        "At least one active OrganizerMember has the owner role.",
+        "An active owner membership refers to an active account. Removing or suspending the last active owner is prohibited."
+      ]
     },
     {
       "id": "OrganizerMember",
@@ -175,9 +178,28 @@
           "m": "1",
           "k": "",
           "note": ""
+        },
+        {
+          "n": "status",
+          "t": "MembershipStatus",
+          "k": "",
+          "m": "1",
+          "note": ""
+        },
+        {
+          "n": "removed_at",
+          "t": "DateTime",
+          "k": "",
+          "m": "0..1",
+          "note": ""
         }
       ],
-      "uk": ["(organizer_id, account_id)"]
+      "uk": [
+        "(organizer_id, account_id)"
+      ],
+      "checks": [
+        "Removed memberships have removed_at; active and suspended memberships do not. Rejoining reactivates the existing membership."
+      ]
     },
     {
       "id": "Category",
@@ -356,7 +378,9 @@
       "checks": [
         "ends_at > starts_at; capacity >= 0.",
         "At least one of venue_space_id and online_url is present; both may be set for a hybrid event.",
-        "For a physical occurrence, capacity <= its venue space capacity."
+        "For a physical occurrence, capacity <= its venue space capacity.",
+        "time_zone is an IANA time-zone identifier. Timestamps are absolute UTC instants; ambiguous or nonexistent local input times are resolved before storage.",
+        "Overlapping scheduled physical occurrences cannot book the same venue space; cancelled occurrences do not reserve a space."
       ]
     },
     {
@@ -383,7 +407,7 @@
           "t": "PostalAddress",
           "m": "1",
           "k": "",
-          "note": ""
+          "note": "A structured address; postal codes are optional because some countries do not use them."
         },
         {
           "n": "accessibility_notes",
@@ -428,8 +452,12 @@
           "note": ""
         }
       ],
-      "uk": ["(venue_id, name)"],
-      "checks": ["capacity > 0."]
+      "uk": [
+        "(venue_id, name)"
+      ],
+      "checks": [
+        "capacity > 0."
+      ]
     },
     {
       "id": "Session",
@@ -488,7 +516,8 @@
       ],
       "checks": [
         "starts_at < ends_at; the session is within its occurrence time range.",
-        "When venue_space_id is set, it belongs to the occurrence venue."
+        "When venue_space_id is set, it belongs to the occurrence venue.",
+        "A physical session uses a space in the occurrence venue; an online-only occurrence has no physical session space. Sessions sharing a space cannot overlap."
       ]
     },
     {
@@ -560,7 +589,9 @@
           "note": ""
         }
       ],
-      "checks": ["display_order >= 0."]
+      "checks": [
+        "display_order >= 0."
+      ]
     },
     {
       "id": "TicketType",
@@ -631,17 +662,20 @@
           "note": ""
         }
       ],
-      "uk": ["(occurrence_id, name)"],
+      "uk": [
+        "(occurrence_id, name)"
+      ],
       "checks": [
         "capacity >= 0; max_per_order > 0.",
         "sales_start_at < sales_end_at <= occurrence.starts_at.",
-        "Issued non-voided tickets plus active, unexpired reservations do not exceed ticket-type capacity or occurrence capacity."
+        "Issued non-voided tickets plus active, unexpired reservations do not exceed ticket-type capacity or occurrence capacity.",
+        "Sales require a published event and a scheduled occurrence; no reservation is created outside the sales window. Capacity changes cannot reduce limits below existing admissions and live holds."
       ]
     },
     {
       "id": "TicketReservation",
       "ctx": "ticketing",
-      "desc": "A temporary hold on a ticket quantity during checkout. Conversion releases the hold as the matching tickets are issued; an expired hold does not consume capacity.",
+      "desc": "A temporary quantity hold for one order item. The item identifies the order, ticket type and occurrence. Repeated checkout attempts retain separate reservation history; at most one hold is active per item.",
       "f": [
         {
           "n": "reservation_id",
@@ -651,17 +685,10 @@
           "note": ""
         },
         {
-          "n": "order_id",
+          "n": "order_item_id",
           "t": "UUID",
+          "k": "FK:OrderItem",
           "m": "1",
-          "k": "FK:Order",
-          "note": ""
-        },
-        {
-          "n": "ticket_type_id",
-          "t": "UUID",
-          "m": "1",
-          "k": "FK:TicketType",
           "note": ""
         },
         {
@@ -693,11 +720,14 @@
           "note": ""
         }
       ],
-      "uk": ["(order_id, ticket_type_id)"],
+      "uk": [
+        "(order_item_id) while status is active"
+      ],
       "checks": [
-        "quantity > 0 and quantity <= ticket_type.max_per_order.",
-        "An active reservation counts only while expires_at is in the future.",
-        "A converted reservation matches the quantity of its order item and is replaced by issued tickets."
+        "quantity > 0; expires_at > created_at.",
+        "An active or converted reservation matches its order item quantity and does not exceed ticket_type.max_per_order.",
+        "An active reservation consumes capacity only while unexpired and its order is pending. A confirmed order has no active reservations.",
+        "Conversion and ticket issuance are atomic: the hold is released as exactly quantity tickets are issued. Expiry, release and conversion retain the reservation record."
       ]
     },
     {
@@ -776,11 +806,14 @@
           "note": ""
         }
       ],
-      "uk": ["(organizer_id, code)"],
+      "uk": [
+        "(organizer_id, code)"
+      ],
       "checks": [
         "valid_from < valid_until; value > 0; max_redemptions is absent or > 0.",
         "Percentage discounts have value <= 100 and no currency; fixed-amount discounts require a currency.",
-        "A restricted event belongs to the same organiser; a code applies only to eligible orders."
+        "A restricted event belongs to the same organiser; a code applies only to eligible orders.",
+        "Percentage and fixed discounts are rounded deterministically to currency minor units and cannot make an eligible item total negative. A redemption hold is a pending eligible order with active, unexpired ticket reservations; these holds and confirmed orders count toward max_redemptions."
       ]
     },
     {
@@ -855,8 +888,9 @@
       "checks": [
         "All order items belong to this organiser and use the order currency.",
         "total.amount equals the sum of order-item totals.",
-        "A confirmed order has at least one item; successful payments cover its total. Free orders need no payment.",
-        "A discount is redeemed once per confirmed order; confirmed redemptions do not exceed its limit."
+        "A confirmed order has at least one item. A paid order has exactly one successful applied payment equal to its total; free orders have no applied payment. Split payments are outside this example.",
+        "A discount is redeemed once per confirmed order; confirmed redemptions do not exceed its limit.",
+        "Pending orders may have no items. Confirmed orders have confirmed_at and immutable item quantities and price snapshots; cancellation does not delete financial history."
       ]
     },
     {
@@ -921,12 +955,15 @@
           "note": ""
         }
       ],
-      "uk": ["(order_id, ticket_type_id)"],
+      "uk": [
+        "(order_id, ticket_type_id)"
+      ],
       "checks": [
         "quantity > 0 and quantity <= ticket_type.max_per_order.",
         "All money values use the order currency; discount <= quantity * unit_price.",
         "total.amount = quantity * unit_price.amount - discount.amount + tax.amount.",
-        "A confirmed order item issues exactly quantity tickets; voided tickets remain in its history."
+        "A confirmed order item issues exactly quantity tickets; voided tickets remain in its history.",
+        "For a confirmed order, the issued tickets paid_amount values sum exactly to total.amount; nonrefundable or fee-only products are outside this model."
       ]
     },
     {
@@ -996,12 +1033,38 @@
           "m": "0..1",
           "k": "",
           "note": ""
+        },
+        {
+          "n": "provider_status",
+          "t": "String",
+          "m": "0..1",
+          "k": "",
+          "note": "Original provider status, retained separately from the normalised domain state."
+        },
+        {
+          "n": "failure_reason",
+          "t": "String",
+          "m": "0..1",
+          "k": "",
+          "note": "Provider failure or reconciliation reason; no payment secrets."
+        },
+        {
+          "n": "is_applied",
+          "t": "Boolean",
+          "m": "1",
+          "k": "",
+          "note": "True only for the single successful capture used to confirm this order. It remains true after ticket-return refunds; late or duplicate captures stay unapplied."
         }
       ],
-      "uk": ["(provider, provider_reference) when provider_reference is present"],
+      "uk": [
+        "(provider, provider_reference) when provider_reference is present"
+      ],
       "checks": [
         "amount.amount > 0 and uses the order currency.",
-        "The sum of successful payments does not exceed the order total; paid_at is present for succeeded payments."
+        "paid_at is present for succeeded payments. Captures exceeding the unpaid order balance are retained and receive unapplied_payment refunds; provider facts are never discarded.",
+        "Payment success, order confirmation, reservation conversion and ticket issuance are idempotent and atomic; a late success after expiry requires available capacity or an explicit compensating refund.",
+        "Unapplied-payment refunds compensate unapplied captures without issuing tickets; ticket-return refunds preserve the original applied payment and purchase history.",
+        "is_applied is true only for a succeeded capture equal to the order total that confirmed the order; at most one payment is applied per order. Other successful captures remain unapplied and are compensated in full."
       ]
     },
     {
@@ -1022,6 +1085,13 @@
           "m": "1",
           "k": "FK:Payment",
           "note": ""
+        },
+        {
+          "n": "kind",
+          "t": "RefundKind",
+          "m": "1",
+          "k": "",
+          "note": "A ticket return or compensation for an unexpected payment capture."
         },
         {
           "n": "provider_reference",
@@ -1071,12 +1141,31 @@
           "m": "0..1",
           "k": "",
           "note": ""
+        },
+        {
+          "n": "provider_status",
+          "t": "String",
+          "m": "0..1",
+          "k": "",
+          "note": "Original provider status, retained separately from the normalised domain state."
+        },
+        {
+          "n": "failure_reason",
+          "t": "String",
+          "m": "0..1",
+          "k": "",
+          "note": "Provider failure or reconciliation reason; no payment secrets."
         }
       ],
       "checks": [
         "The payment succeeded; the refund uses its currency and has a positive amount.",
-        "amount.amount equals the sum of refund-item amounts.",
-        "Succeeded plus pending refunds do not exceed the payment amount; succeeded refunds have refunded_at."
+        "A ticket_return has at least one RefundItem and amount equals their amount sum. A unapplied_payment has no RefundItems and returns an unapplied capture from a cancelled, expired or excess-paid checkout.",
+        "Requested plus pending plus succeeded refunds do not exceed the payment amount; succeeded refunds have refunded_at.",
+        "Refund submission, exclusive ticket allocation, success or failure, and capacity release are applied transactionally and idempotently.",
+        "A ticket_return references the order applied payment. An unapplied_payment refund references a payment with is_applied false; the full capture is compensated without ticket allocations."
+      ],
+      "uk": [
+        "(payment.provider, provider_reference) when provider_reference is present"
       ]
     },
     {
@@ -1120,11 +1209,43 @@
           "note": ""
         }
       ],
-      "uk": ["(refund_id, order_item_id)"],
+      "uk": [
+        "(refund_id, order_item_id)"
+      ],
       "checks": [
         "quantity > 0; amount.amount > 0; the order item belongs to the refunded payment order.",
-        "Pending and succeeded refunded quantities and amounts do not exceed the original order item.",
-        "A succeeded refund voids exactly quantity tickets linked to this refund item."
+        "quantity equals the number of RefundTicket allocations; amount equals their tickets paid_amount sum in the order currency.",
+        "Requested, pending and succeeded allocations never refund a ticket twice and do not exceed the original order-item total.",
+        "This example refunds complete unused tickets. Arbitrary goodwill or fee-only credits require a separate credit model."
+      ]
+    },
+    {
+      "id": "RefundTicket",
+      "ctx": "sales",
+      "desc": "An immutable allocation of one refund item to one specific ticket. Failed refund attempts retain their selected tickets; later attempts use new allocations. This example refunds complete unused tickets, allowing a partial refund of an order.",
+      "f": [
+        {
+          "n": "refund_item_id",
+          "t": "UUID",
+          "k": "PK FK:RefundItem",
+          "m": "1",
+          "note": ""
+        },
+        {
+          "n": "ticket_id",
+          "t": "UUID",
+          "k": "PK FK:Ticket",
+          "m": "1",
+          "note": ""
+        }
+      ],
+      "uk": [
+        "(ticket_id) across requested, pending and succeeded refunds"
+      ],
+      "checks": [
+        "The ticket belongs to the refund item order item, has a positive paid_amount, and has no CheckIn.",
+        "A ticket has at most one requested, pending or succeeded refund allocation. Failed or cancelled allocations remain historical and do not prevent a new attempt.",
+        "A succeeded allocation refunds exactly the ticket paid_amount in the same currency and voids the ticket."
       ]
     },
     {
@@ -1196,13 +1317,6 @@
           "note": ""
         },
         {
-          "n": "refund_item_id",
-          "t": "UUID",
-          "m": "0..1",
-          "k": "FK:RefundItem",
-          "note": ""
-        },
-        {
           "n": "admission_code",
           "t": "String",
           "m": "1",
@@ -1222,12 +1336,22 @@
           "m": "1",
           "k": "",
           "note": ""
+        },
+        {
+          "n": "paid_amount",
+          "t": "Money",
+          "k": "",
+          "m": "1",
+          "note": "Immutable per-ticket allocation of the order-item total, including discount and tax."
         }
       ],
       "checks": [
-        "The order is confirmed; its order item identifies the occurrence and ticket type.",
-        "checked_in requires a CheckIn; voided tickets cannot be admitted or transferred.",
-        "A refund_item_id points to a succeeded refund for the same order item and requires status voided."
+        "The order was confirmed when the ticket was issued; its order item identifies the occurrence and ticket type.",
+        "paid_amount uses the order currency; the issued tickets of one order item sum exactly to its total, using a deterministic minor-unit allocation.",
+        "checked_in is equivalent to having a CheckIn record. A checked-in ticket cannot be refunded or voided in this example.",
+        "A ticket with a requested or pending refund allocation has status refund_pending and cannot be admitted or transferred. Failed or cancelled allocations release this hold.",
+        "A succeeded refund allocation requires status voided. Other cancellations may also void unused tickets; all ticket records are retained.",
+        "A failed or cancelled refund attempt releases refund_pending holds on otherwise valid tickets. A ticket already voided after an earlier refund outcome remains voided; financial retry does not silently restore admission."
       ]
     },
     {
@@ -1307,8 +1431,10 @@
         }
       ],
       "checks": [
-        "At most one pending transfer per ticket; the ticket is valid and has no CheckIn.",
-        "An accepted transfer has to_attendee_id and accepted_at, and assigns the ticket to that attendee."
+        "At most one pending transfer per ticket; the ticket is valid, has no CheckIn, and has no active refund allocation.",
+        "The initiating account was authorised by the buyer or current holder when the transfer was created. Sending a transfer requires a sign-in account; receiving one does not.",
+        "expires_at > created_at; acceptance occurs before expiry. An accepted transfer has to_attendee_id and accepted_at and atomically assigns the ticket to that attendee.",
+        "from_attendee_id is a snapshot of the holder at creation. A pending transfer can succeed only if the holder is unchanged; sender and recipient must differ."
       ]
     },
     {
@@ -1353,8 +1479,9 @@
         }
       ],
       "checks": [
-        "The ticket is assigned to an attendee and is not voided.",
-        "The staff account belongs to the occurrence organiser team."
+        "The ticket is assigned to an attendee, is valid immediately before admission, and has no active refund allocation.",
+        "The staff account was an active member of the occurrence organiser team at checked_in_at. Later membership removal does not invalidate this history.",
+        "Creating CheckIn and changing the ticket to checked_in are one atomic operation; the unique ticket reference makes admission idempotent."
       ]
     },
     {
@@ -1433,11 +1560,14 @@
           "note": ""
         }
       ],
-      "uk": ["(occurrence_id, attendee_id) while status is waiting or offered"],
+      "uk": [
+        "(occurrence_id, attendee_id) while status is waiting or offered"
+      ],
       "checks": [
         "quantity > 0; a selected ticket type belongs to the same occurrence.",
         "An offered entry has offered_at < offer_expires_at; any linked reservation matches the occurrence and quantity.",
-        "A converted entry points to a converted reservation."
+        "A converted entry points to a converted reservation.",
+        "A linked reservation identifies an order item for the same occurrence and selected ticket type, and quantity matches. An offer is converted only after that order is confirmed."
       ]
     },
     {
@@ -1495,7 +1625,9 @@
           "note": ""
         }
       ],
-      "checks": ["A published announcement has published_at."]
+      "checks": [
+        "A published announcement has published_at."
+      ]
     },
     {
       "id": "AnnouncementDelivery",
@@ -1559,25 +1691,104 @@
           "note": ""
         }
       ],
-      "uk": ["(announcement_id, attendee_id)"],
-      "checks": ["The announcement is published; attempt_count >= 0; sent deliveries have sent_at."]
+      "uk": [
+        "(announcement_id, attendee_id)"
+      ],
+      "checks": [
+        "The announcement is published; attempt_count >= 0; sent deliveries have sent_at.",
+        "The attendee has a ticket for an occurrence of the announcement event. Retries update this delivery record; sent_at is present exactly when status is sent."
+      ]
     }
   ],
   "ENUMS": {
-    "AccountStatus": ["active", "suspended", "closed"],
-    "OrganizerRole": ["owner", "manager", "staff"],
-    "EventStatus": ["draft", "published", "cancelled", "archived"],
-    "OccurrenceStatus": ["scheduled", "cancelled", "completed"],
-    "ReservationStatus": ["active", "converted", "released", "expired"],
-    "DiscountKind": ["percentage", "fixed_amount"],
-    "OrderStatus": ["pending", "confirmed", "cancelled", "expired"],
-    "PaymentStatus": ["pending", "succeeded", "failed", "cancelled"],
-    "RefundStatus": ["requested", "pending", "succeeded", "failed"],
-    "TicketStatus": ["valid", "checked_in", "voided"],
-    "TransferStatus": ["pending", "accepted", "declined", "expired", "cancelled"],
-    "WaitlistStatus": ["waiting", "offered", "converted", "cancelled", "expired"],
-    "AnnouncementStatus": ["draft", "published"],
-    "DeliveryStatus": ["queued", "sent", "failed"]
+    "AccountStatus": [
+      "active",
+      "suspended",
+      "closed"
+    ],
+    "OrganizerRole": [
+      "owner",
+      "manager",
+      "staff"
+    ],
+    "EventStatus": [
+      "draft",
+      "published",
+      "cancelled",
+      "archived"
+    ],
+    "OccurrenceStatus": [
+      "scheduled",
+      "cancelled",
+      "completed"
+    ],
+    "ReservationStatus": [
+      "active",
+      "converted",
+      "released",
+      "expired"
+    ],
+    "DiscountKind": [
+      "percentage",
+      "fixed_amount"
+    ],
+    "OrderStatus": [
+      "pending",
+      "confirmed",
+      "cancelled",
+      "expired"
+    ],
+    "PaymentStatus": [
+      "pending",
+      "succeeded",
+      "failed",
+      "cancelled"
+    ],
+    "RefundStatus": [
+      "requested",
+      "pending",
+      "succeeded",
+      "failed",
+      "cancelled"
+    ],
+    "TicketStatus": [
+      "valid",
+      "refund_pending",
+      "checked_in",
+      "voided"
+    ],
+    "TransferStatus": [
+      "pending",
+      "accepted",
+      "declined",
+      "expired",
+      "cancelled"
+    ],
+    "WaitlistStatus": [
+      "waiting",
+      "offered",
+      "converted",
+      "cancelled",
+      "expired"
+    ],
+    "AnnouncementStatus": [
+      "draft",
+      "published"
+    ],
+    "DeliveryStatus": [
+      "queued",
+      "sent",
+      "failed"
+    ],
+    "MembershipStatus": [
+      "active",
+      "suspended",
+      "removed"
+    ],
+    "RefundKind": [
+      "ticket_return",
+      "unapplied_payment"
+    ]
   },
   "ENUMNOTES": {
     "AccountStatus": "Whether an account can use the service.",
@@ -1593,7 +1804,9 @@
     "TransferStatus": "Progress of an invitation to reassign a ticket.",
     "WaitlistStatus": "Progress from waiting for availability through an offer to purchase.",
     "AnnouncementStatus": "Whether an event message is ready for recipients.",
-    "DeliveryStatus": "Outcome of sending one announcement email."
+    "DeliveryStatus": "Outcome of sending one announcement email.",
+    "MembershipStatus": "Current membership state; removal retains the team relationship and its history.",
+    "RefundKind": "Ticket returns allocate specific unused tickets; payment reversals return unapplied captures without pretending tickets were issued."
   },
   "TYPES": [
     {
@@ -1611,10 +1824,10 @@
           "t": "String",
           "m": "1",
           "k": "",
-          "note": "Three-letter currency code, for example EUR or USD."
+          "note": "Supported uppercase ISO 4217 currency code; supported currencies and minor units are configured by the implementing service."
         }
       ],
-      "d": "An exact amount paired with a three-letter currency code. Amounts are nonnegative and use the currency fractional precision; values in different currencies cannot be added."
+      "d": "A nonnegative exact decimal amount paired with an ISO 4217 currency code. Monetary settlement values use the currency minor-unit precision and an explicit deterministic rounding policy. Different currencies cannot be added."
     },
     {
       "n": "PostalAddress",
@@ -1636,7 +1849,7 @@
         {
           "n": "postal_code",
           "t": "String",
-          "m": "1",
+          "m": "0..1",
           "k": "",
           "note": ""
         },
@@ -1652,20 +1865,41 @@
           "t": "String",
           "m": "1",
           "k": "",
-          "note": "Two-letter country code."
+          "note": "Uppercase ISO 3166-1 alpha-2 country code."
         }
       ],
       "d": "A physical address stored as one value object on a venue."
     }
   ],
   "PRIMS": [
-    ["UUID", "Unique identifier."],
-    ["String", "Text."],
-    ["Integer", "Whole number."],
-    ["Decimal", "Exact decimal number."],
-    ["Boolean", "True or false."],
-    ["DateTime", "An absolute timestamp stored in UTC."],
-    ["Date", "Calendar date."]
+    [
+      "UUID",
+      "Unique identifier."
+    ],
+    [
+      "String",
+      "Text."
+    ],
+    [
+      "Integer",
+      "Whole number."
+    ],
+    [
+      "Decimal",
+      "Exact decimal number."
+    ],
+    [
+      "Boolean",
+      "True or false."
+    ],
+    [
+      "DateTime",
+      "An absolute timestamp stored in UTC."
+    ],
+    [
+      "Date",
+      "Calendar date."
+    ]
   ],
   "RELS": [
     {
@@ -1675,7 +1909,7 @@
       "k": "comp",
       "l": "team_members",
       "m1": "1",
-      "m2": "0..*",
+      "m2": "1..*",
       "role1": "organizer",
       "role2": "team_members",
       "nav": "none"
@@ -1826,25 +2060,13 @@
     },
     {
       "i": 13,
-      "a": "Order",
+      "a": "OrderItem",
       "b": "TicketReservation",
       "k": "comp",
       "l": "reservations",
       "m1": "1",
       "m2": "0..*",
-      "role1": "order",
-      "role2": "reservations",
-      "nav": "none"
-    },
-    {
-      "i": 14,
-      "a": "TicketType",
-      "b": "TicketReservation",
-      "k": "assoc",
-      "l": "reservations",
-      "m1": "1",
-      "m2": "0..*",
-      "role1": "ticket_type",
+      "role1": "order_item",
       "role2": "reservations",
       "nav": "none"
     },
@@ -1915,7 +2137,7 @@
       "k": "comp",
       "l": "items",
       "m1": "1",
-      "m2": "1..*",
+      "m2": "0..*",
       "role1": "order",
       "role2": "items",
       "nav": "none"
@@ -1963,7 +2185,7 @@
       "k": "comp",
       "l": "items",
       "m1": "1",
-      "m2": "1..*",
+      "m2": "0..*",
       "role1": "refund",
       "role2": "items",
       "nav": "none"
@@ -2014,18 +2236,6 @@
       "m2": "0..*",
       "role1": "holder",
       "role2": "tickets",
-      "nav": "none"
-    },
-    {
-      "i": 29,
-      "a": "RefundItem",
-      "b": "Ticket",
-      "k": "assoc",
-      "l": "voided_tickets",
-      "m1": "0..1",
-      "m2": "0..*",
-      "role1": "refund_item",
-      "role2": "voided_tickets",
       "nav": "none"
     },
     {
@@ -2182,6 +2392,30 @@
       "m2": "0..*",
       "role1": "recipient",
       "role2": "announcement_deliveries",
+      "nav": "none"
+    },
+    {
+      "i": 43,
+      "a": "RefundItem",
+      "b": "RefundTicket",
+      "k": "comp",
+      "l": "",
+      "m1": "1",
+      "m2": "1..*",
+      "role1": "refund_item",
+      "role2": "ticket_allocations",
+      "nav": "none"
+    },
+    {
+      "i": 44,
+      "a": "Ticket",
+      "b": "RefundTicket",
+      "k": "assoc",
+      "l": "",
+      "m1": "1",
+      "m2": "0..*",
+      "role1": "ticket",
+      "role2": "refund_history",
       "nav": "none"
     }
   ]

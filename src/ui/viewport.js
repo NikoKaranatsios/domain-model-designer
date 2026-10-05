@@ -26,7 +26,13 @@ function fit(animate) {
   if (!b) return;
   const vw = stage.clientWidth - (!panel.hidden && stage.clientWidth > 820 ? panel.offsetWidth : 0),
     vh = stage.clientHeight,
-    top = Math.max(70, $('#edit-tools').getBoundingClientRect().bottom + 16),
+    top = Math.max(
+      70,
+      $('#edit-tools').getBoundingClientRect().bottom + 16,
+      stage.clientWidth > 820 && !panel.hidden
+        ? $('#share-controls').getBoundingClientRect().bottom + 16
+        : 0
+    ),
     bot = 64;
   const z = Math.min(
     1.4,

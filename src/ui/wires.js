@@ -10,17 +10,10 @@ const DEFS = `<defs>${[
   <marker id="ma${s}" class="${c}" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="12" markerHeight="12" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path class="mk-open" d="M2 2L11 6L2 10"/></marker>
   <marker id="mt${s}" class="${c}" viewBox="0 0 14 14" refX="13" refY="7" markerWidth="15" markerHeight="15" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path class="mk-hollow" d="M1.5 1.5L13 7L1.5 12.5Z"/></marker>
   <marker id="md${s}" class="${c}" viewBox="0 0 18 10" refX="17" refY="5" markerWidth="18" markerHeight="10" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path class="mk-fill" d="M1 5L9 1L17 5L9 9Z"/></marker>
-  <marker id="mg${s}" class="${c}" viewBox="0 0 18 10" refX="17" refY="5" markerWidth="18" markerHeight="10" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path class="mk-hollow" d="M1 5L9 1L17 5L9 9Z"/></marker>`
+  <marker id="mg${s}" class="${c}" viewBox="0 0 18 10" refX="17" refY="5" markerWidth="18" markerHeight="10" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path class="mk-hollow" d="M1 5L9 1L17 5L9 9Z"/></marker>
+  ${['md', 'mg'].map((id) => `<marker id="${id}-nav${s}" class="${c}" viewBox="0 0 32 14" refX="31" refY="7" markerWidth="32" markerHeight="14" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path class="${id === 'md' ? 'mk-fill' : 'mk-hollow'}" d="M1 7L9 3L17 7L9 11Z"/><path class="mk-open" d="M17 7H31M22 3L31 7L22 11"/></marker>`).join('')}`
   )
   .join('')}</defs>`;
-const mk = (k, s) =>
-  k === 'gen' || k === 'real'
-    ? `mt${s}`
-    : k === 'comp'
-      ? `md${s}`
-      : k === 'agg'
-        ? `mg${s}`
-        : `ma${s}`;
 function hopsFor(allIds) {
   const segs = {};
   allIds.forEach((id) => {

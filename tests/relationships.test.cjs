@@ -10,10 +10,12 @@ const indexes = source.slice(
   source.indexOf('function rebuildIndexes()'),
   source.indexOf('\nrebuildIndexes();')
 );
+const notation = readFileSync(resolve(__dirname, '../src/uml-notation.js'), 'utf8');
 function lines(model) {
   return JSON.parse(
     vm.runInNewContext(
       `
+    ${notation}
     const { CTX, ENT, RELS } = model;
     let CTXBY, ENTBY, LINES, ROUTED, LOOPS;
     ${indexes}
