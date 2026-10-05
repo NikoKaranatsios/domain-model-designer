@@ -8,9 +8,10 @@ RUN node scripts/build.cjs --check && node --test tests/*.test.cjs && node scrip
 
 FROM caddy:2-alpine
 RUN setcap -r /usr/bin/caddy
-COPY --chmod=0644 deploy/Caddyfile /etc/caddy/Caddyfile
-COPY --from=verify --chmod=0644 /app/index.html /srv/index.html
-COPY --from=verify --chmod=0644 /app/model.html /srv/model.html
+COPY deploy/Caddyfile /etc/caddy/Caddyfile
+COPY --from=verify /app/index.html /srv/index.html
+COPY --from=verify /app/model.html /srv/model.html
+RUN chmod 0644 /etc/caddy/Caddyfile /srv/index.html /srv/model.html
 ENV XDG_DATA_HOME=/tmp/caddy-data
 USER 1000:1000
 EXPOSE 8080
