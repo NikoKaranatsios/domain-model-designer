@@ -73,7 +73,13 @@ panel.addEventListener('click', (ev) => {
       $('#reset-confirmation').scrollIntoView({ block: 'nearest' });
       $('[data-cancel-reset]').focus();
     };
-    if (canLeaveEditor(show)) show();
+    if (
+      canLeaveEditor(() => {
+        showViewEditor();
+        show();
+      })
+    )
+      show();
   }
   if (target.hasAttribute('data-cancel-reset')) {
     const empty = !!$('[data-confirm-clear]');

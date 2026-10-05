@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf8" />
     <meta name="referrer" content="no-referrer" />
-    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-tx41shXR1K93W7tuSUE2SUWoGPp3U1l0ZDeWIiPLh3A=' 'sha256-rX5aBgXcI2joJd6sKiK9Ti4wgEslywX9JPtbfK1kuko=' 'sha256-5vnJVrU7waR+SZtwE1mVkf0dfKWaDkb1jveU7jbtNIs=' 'sha256-K3GZBSC5s80HlfMSjEVwjaPGbUfLcEqJ2dYz7sAZ7oY=' 'sha256-cSIIlxcvePkjrfJSXTh1n/mK29uvgAw1FdO/3HOSAcg=' 'sha256-3TJMzhrz61GgnKc8iZEm+omXCQxA2UjuXba+V8xtsyI=' 'sha256-nyLAUeb7DAY6PK1y6lKeuxzGppvPKoYfMW38QnQtDnw=' 'sha256-sp5PbR7Bv8W8IUbTWxjH6j4iGFhblRn8QiCOvPUpV/M='; script-src-attr 'none'; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src data:; connect-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-tx41shXR1K93W7tuSUE2SUWoGPp3U1l0ZDeWIiPLh3A=' 'sha256-rX5aBgXcI2joJd6sKiK9Ti4wgEslywX9JPtbfK1kuko=' 'sha256-5vnJVrU7waR+SZtwE1mVkf0dfKWaDkb1jveU7jbtNIs=' 'sha256-K3GZBSC5s80HlfMSjEVwjaPGbUfLcEqJ2dYz7sAZ7oY=' 'sha256-cSIIlxcvePkjrfJSXTh1n/mK29uvgAw1FdO/3HOSAcg=' 'sha256-3TJMzhrz61GgnKc8iZEm+omXCQxA2UjuXba+V8xtsyI=' 'sha256-nyLAUeb7DAY6PK1y6lKeuxzGppvPKoYfMW38QnQtDnw=' 'sha256-iuZNJB7fhHbqbX9K1YmM05OphbPoDoZf315aGlCHOJk='; script-src-attr 'none'; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src data:; connect-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'" />
     <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
     <style>
       :root {
@@ -5832,7 +5832,13 @@ panel.addEventListener('click', (ev) => {
       $('#reset-confirmation').scrollIntoView({ block: 'nearest' });
       $('[data-cancel-reset]').focus();
     };
-    if (canLeaveEditor(show)) show();
+    if (
+      canLeaveEditor(() => {
+        showViewEditor();
+        show();
+      })
+    )
+      show();
   }
   if (target.hasAttribute('data-cancel-reset')) {
     const empty = !!$('[data-confirm-clear]');
