@@ -12,3 +12,7 @@ services:
       - /tmp:size=16m,mode=1777
     expose:
       - '8080'
+
+networks:
+  default:
+    internal: true

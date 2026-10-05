@@ -7,19 +7,24 @@ return 404; `/health` reports the web server's health.
 
 The container runs as UID 1000 on port 8080 with a read-only filesystem, dropped
 capabilities, bounded memory, and temporary Caddy state. It publishes no host
-ports. HTML revalidates on every visit, and response headers protect referrers,
+ports. Its default network is internal; the hosting override connects the
+designer to the HTTPS edge. HTML revalidates on every visit, and response headers protect referrers,
 content types, and embedding.
 
 Romagnolo's `codex-ops` control plane manages product `domain-model-designer`,
-Compose file `compose.yaml`, service `designer`, and public hostname
-`model-designer.romagnolo.eu`. The control plane calls the public deployment
-environment `staging`; the container joins `codex_edge` and the shared Caddy
-handles HTTPS.
+Compose file `compose.yaml` and service `designer`. Its protected development
+hostname is `model-designer-dev.romagnolo.eu`, called `staging` by the MCP.
+`model-designer.romagnolo.eu` is the public production hostname. The container
+joins `codex_edge`, and the shared Caddy handles HTTPS and development access.
+Preserve the registered authentication policy. Public rollout requires explicit
+product enablement, a merged default-branch release, and production support in
+the control plane; a successful development deployment does not update the
+public site.
 
 The MCP service is available over SSH as `/usr/local/bin/codex-ops-mcp` and over
 authenticated HTTP at `https://mcp.romagnolo.eu/mcp`. Begin with
 `portfolio_snapshot`. For updates, sync the product, create an issue-backed task,
-record the implementation plan, apply the authorized changes, commit them, run
+record and approve the implementation plan, apply the authorized changes, commit them, run
 registered checks, and publish its draft PR. Use `deployment_plan` and
 `deployment_apply` for the exact verified commit.
 
