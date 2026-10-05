@@ -29,5 +29,7 @@ installed as `/etc/nginx/sites-available/domain-model-designer-redirect`.
 Preserve the route when releasing new versions; update its challenge upstream
 if Caddy's private network address changes. The managed deployment records the exact shipped commit.
 
-For a rollback, deploy an earlier verified commit through a new task and the
-same control-plane workflow. Do not replace unrelated routes or containers.
+For a rollback, deploy only a verified product-only release through a new task
+and the same control-plane workflow. Check its default model and container
+contents before publishing; private design exports belong outside the source
+tree. Do not replace unrelated routes or containers.
