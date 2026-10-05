@@ -380,7 +380,8 @@
         "At least one of venue_space_id and online_url is present; both may be set for a hybrid event.",
         "For a physical occurrence, capacity <= its venue space capacity.",
         "time_zone is an IANA time-zone identifier. Timestamps are absolute UTC instants; ambiguous or nonexistent local input times are resolved before storage.",
-        "Overlapping scheduled physical occurrences cannot book the same venue space; cancelled occurrences do not reserve a space."
+        "Overlapping scheduled physical occurrences cannot book the same venue space; cancelled occurrences do not reserve a space.",
+        "A scheduled occurrence reserves its main venue space exclusively for its full time range. Sessions of other occurrences cannot use that space during the booking; sessions of this occurrence may use its own booked space."
       ]
     },
     {
@@ -517,7 +518,8 @@
       "checks": [
         "starts_at < ends_at; the session is within its occurrence time range.",
         "When venue_space_id is set, it belongs to the occurrence venue.",
-        "A physical session uses a space in the occurrence venue; an online-only occurrence has no physical session space. Sessions sharing a space cannot overlap."
+        "A physical session uses a space in the occurrence venue; an online-only occurrence has no physical session space. Sessions sharing a space cannot overlap.",
+        "Room availability is checked against other sessions and other scheduled occurrences exclusive venue-space bookings in one transaction. A session may overlap its own occurrence booking, but no booking for another occurrence."
       ]
     },
     {
@@ -1481,7 +1483,8 @@
       "checks": [
         "The ticket is assigned to an attendee, is valid immediately before admission, and has no active refund allocation.",
         "The staff account was an active member of the occurrence organiser team at checked_in_at. Later membership removal does not invalidate this history.",
-        "Creating CheckIn and changing the ticket to checked_in are one atomic operation; the unique ticket reference makes admission idempotent."
+        "Creating CheckIn and changing the ticket to checked_in are one atomic operation; the unique ticket reference makes admission idempotent.",
+        "The staff account was active at admission time; membership role and status are checked transactionally with admission. Later account suspension preserves the admission record."
       ]
     },
     {
