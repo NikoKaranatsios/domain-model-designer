@@ -6,8 +6,8 @@ const { test } = require('node:test');
 
 const html = readFileSync(resolve(__dirname, '../FCP Domain Model.html'), 'utf8');
 const scripts = [...html.matchAll(/<script[^>]*>([\s\S]*?)<\/script>/g)].map(match => match[1]);
-const defaults = JSON.parse(vm.runInNewContext(`${scripts.find(s => s.includes('const DM='))}\nJSON.stringify({model:DM,layout:LAYOUT})`));
-const preview = vm.runInNewContext(`${scripts.find(s => s.includes('const WirePreview='))}\nWirePreview`);
+const defaults = JSON.parse(vm.runInNewContext(`${scripts.find(s => /const\s+DM\s*=/.test(s))}\nJSON.stringify({model:DM,layout:LAYOUT})`));
+const preview = vm.runInNewContext(`${scripts.find(s => /const\s+WirePreview\s*=/.test(s))}\nWirePreview`);
 const clone = value => JSON.parse(JSON.stringify(value));
 const origin = { x: 0, y: 0 };
 const moved = (dx, dy) => ({ x: dx, y: dy });
@@ -66,7 +66,7 @@ test('redrawing drag frames retains SVG markers and paths and leaves unrelated c
     document: { createElementNS: (ns, tag) => new SVGElement(tag) }, shown: () => true,
     getPts: id => routes[id], pathD: points => JSON.stringify(points), applyHighlight: () => {},
   };
-  const renderer = html.slice(html.indexOf('const wireEls={}'), html.indexOf('/* ---------- highlight ---------- */'));
+  const renderer = html.slice(html.search(/const\s+wireEls\s*=\s*\{\}/), html.indexOf('/* ---------- highlight ---------- */'));
   const { drawWires, wireEls } = vm.runInNewContext(`${renderer}\n({drawWires,wireEls})`, environment);
   drawWires();
   const defs = wiresEl.firstChild, initialCreated = created;

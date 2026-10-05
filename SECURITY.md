@@ -6,7 +6,7 @@ Imported files and decoded URLs pass the same runtime schema before replacing th
 
 Model text is escaped in HTML and SVG, and exports preserve it as data. Object-member names cannot be mistaken for enumeration notes. Hash-based Content Security Policy permits the committed scripts and blocks inline event attributes, unexpected scripts, frames, and application network requests. The optional Google Fonts stylesheet and fonts are permitted. The referrer policy is `no-referrer`, including for legacy query-based links. [MDN documents these CSP controls](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CSP).
 
-After changing inline JavaScript, run `node scripts/security-policy.cjs --write`; the test suite rejects stale script hashes. The distributed HTML already contains the policy, so end users need no build step.
+After editing `src/`, run `node scripts/build.cjs`; it refreshes script hashes automatically and escapes script-closing text in the default model. Checks reject stale generated HTML and script hashes. The distributed HTML already contains the policy, so end users need no build step.
 
 For hosting, set `X-Content-Type-Options: nosniff` and `Referrer-Policy: no-referrer`. If embedding is unnecessary, also serve `Content-Security-Policy: frame-ancestors 'none'` as an HTTP response header. That directive cannot be enforced by the HTML meta policy. [MDN explains CSP delivery and embedding protection](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CSP).
 

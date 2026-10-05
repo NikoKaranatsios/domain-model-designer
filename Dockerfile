@@ -3,7 +3,8 @@ WORKDIR /app
 COPY ["index.html", "FCP Domain Model.html", "./"]
 COPY scripts ./scripts
 COPY tests ./tests
-RUN node --test tests/*.test.cjs && node scripts/security-policy.cjs
+COPY src ./src
+RUN node scripts/build.cjs --check && node --test tests/*.test.cjs && node scripts/security-policy.cjs
 
 FROM caddy:2-alpine
 RUN setcap -r /usr/bin/caddy

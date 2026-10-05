@@ -1,0 +1,3957 @@
+{
+  "CTX": [
+    {
+      "id": "iam",
+      "name": "Identity & access",
+      "desc": "Who can act in the system and which client data they may see. Staff and client identities are kept separate."
+    },
+    {
+      "id": "client",
+      "name": "Client relationship",
+      "desc": "The household is the client relationship: the unit for advice, portal access, onboarding and reporting."
+    },
+    {
+      "id": "party",
+      "name": "Party graph",
+      "desc": "People and legal entities, their details, and the typed relationships between them."
+    },
+    {
+      "id": "docs",
+      "name": "Documents",
+      "desc": "Stored files, what they relate to, and documents still outstanding."
+    },
+    {
+      "id": "comp",
+      "name": "Onboarding & compliance",
+      "desc": "Onboarding cases, KYC, screening, suitability and the human decisions behind them."
+    },
+    {
+      "id": "wealth",
+      "name": "Accounts & instruments",
+      "desc": "Accounts at custodians, mandates, instruments, prices, FX rates and custodian-reported positions."
+    },
+    {
+      "id": "ledger",
+      "name": "Ledger & tax lots",
+      "desc": "Every transaction on every account, the tax lots they open, and the realised gain on each sale."
+    },
+    {
+      "id": "evid",
+      "name": "Audit, content & lineage",
+      "desc": "The audit trail, approved content shown to clients, and the origin of imported data."
+    }
+  ],
+  "ENT": [
+    {
+      "id": "Principal",
+      "ctx": "iam",
+      "st": "abstract",
+      "uk": ["(kind, external_subject)"],
+      "desc": "Any actor that can perform an action: a staff member, a client login or a system service. Every audit event and review decision references one.",
+      "f": [
+        {
+          "n": "principal_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "PK",
+          "note": ""
+        },
+        {
+          "n": "kind",
+          "t": "PrincipalKind",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "external_subject",
+          "t": "String",
+          "m": "1",
+          "k": "",
+          "note": "Subject identifier from the identity provider"
+        },
+        {
+          "n": "display_name",
+          "t": "String",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "status",
+          "t": "PrincipalStatus",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "created_at",
+          "t": "DateTime",
+          "m": "1",
+          "k": "",
+          "note": ""
+        }
+      ]
+    },
+    {
+      "id": "StaffUser",
+      "ctx": "iam",
+      "ext": "Principal",
+      "desc": "An employee identity, authenticated through corporate single sign-on with multi-factor authentication.",
+      "f": [
+        {
+          "n": "principal_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "PK FK:Principal",
+          "note": ""
+        },
+        {
+          "n": "roles",
+          "t": "StaffRole",
+          "m": "1..*",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "zone_clearance",
+          "t": "Zone",
+          "m": "1..*",
+          "k": "",
+          "note": "Security zones this user may access"
+        }
+      ]
+    },
+    {
+      "id": "ClientUser",
+      "ctx": "iam",
+      "ext": "Principal",
+      "desc": "A client portal login, issued by an identity provider separate from staff identities.",
+      "f": [
+        {
+          "n": "principal_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "PK FK:Principal",
+          "note": ""
+        },
+        {
+          "n": "person_id",
+          "t": "UUID",
+          "m": "0..1",
+          "k": "FK:Person",
+          "note": "The person this login belongs to; empty for a delegate not yet recorded as a person"
+        }
+      ]
+    },
+    {
+      "id": "AccessGrant",
+      "ctx": "iam",
+      "desc": "Gives a client login access to a household, optionally limited to some of its accounts.",
+      "f": [
+        {
+          "n": "grant_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "PK",
+          "note": ""
+        },
+        {
+          "n": "principal_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "FK:ClientUser",
+          "note": ""
+        },
+        {
+          "n": "household_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "FK:Household",
+          "note": ""
+        },
+        {
+          "n": "grant_role",
+          "t": "GrantRole",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "scope_account_ids",
+          "t": "UUID",
+          "m": "*",
+          "k": "",
+          "note": "Empty list means all accounts of the household"
+        },
+        {
+          "n": "valid_from",
+          "t": "Date",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "valid_to",
+          "t": "Date",
+          "m": "0..1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "granted_by",
+          "t": "UUID",
+          "m": "1",
+          "k": "FK:Principal",
+          "note": ""
+        }
+      ]
+    },
+    {
+      "id": "ActingAsSession",
+      "ctx": "iam",
+      "desc": "A period in which a staff member works inside one household’s data, with a stated reason. Every action in it is audited against the session.",
+      "f": [
+        {
+          "n": "session_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "PK",
+          "note": ""
+        },
+        {
+          "n": "staff_principal_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "FK:StaffUser",
+          "note": ""
+        },
+        {
+          "n": "household_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "FK:Household",
+          "note": ""
+        },
+        {
+          "n": "reason",
+          "t": "String",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "started_at",
+          "t": "DateTime",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "ended_at",
+          "t": "DateTime",
+          "m": "0..1",
+          "k": "",
+          "note": ""
+        }
+      ]
+    },
+    {
+      "id": "AdvisorAssignment",
+      "ctx": "iam",
+      "desc": "An advisor responsible for a household, with history.",
+      "f": [
+        {
+          "n": "assignment_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "PK",
+          "note": ""
+        },
+        {
+          "n": "household_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "FK:Household",
+          "note": ""
+        },
+        {
+          "n": "staff_principal_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "FK:StaffUser",
+          "note": ""
+        },
+        {
+          "n": "assignment_role",
+          "t": "AssignmentRole",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "valid_from",
+          "t": "Date",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "valid_to",
+          "t": "Date",
+          "m": "0..1",
+          "k": "",
+          "note": ""
+        }
+      ]
+    },
+    {
+      "id": "Household",
+      "ctx": "client",
+      "lin": 1,
+      "desc": "The client relationship: the unit for advisor assignment, portal access, onboarding and reporting. A household is not a legal party and cannot own accounts.",
+      "f": [
+        {
+          "n": "household_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "PK",
+          "note": ""
+        },
+        {
+          "n": "display_name",
+          "t": "String",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "status",
+          "t": "HouseholdStatus",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "base_currency",
+          "t": "Currency",
+          "m": "1",
+          "k": "",
+          "note": "Reporting currency for household totals"
+        }
+      ]
+    },
+    {
+      "id": "HouseholdMember",
+      "ctx": "client",
+      "desc": "Places a person or legal entity in a household for a period.",
+      "f": [
+        {
+          "n": "household_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "PK FK:Household",
+          "note": ""
+        },
+        {
+          "n": "party_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "PK FK:Party",
+          "note": ""
+        },
+        {
+          "n": "valid_from",
+          "t": "Date",
+          "m": "1",
+          "k": "PK",
+          "note": ""
+        },
+        {
+          "n": "member_role",
+          "t": "MemberRole",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "valid_to",
+          "t": "Date",
+          "m": "0..1",
+          "k": "",
+          "note": ""
+        }
+      ]
+    },
+    {
+      "id": "Party",
+      "ctx": "party",
+      "st": "abstract",
+      "lin": 1,
+      "desc": "Common supertype of people and legal entities. Each person or legal entity has exactly one party record with the same identifier.",
+      "f": [
+        {
+          "n": "party_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "PK",
+          "note": ""
+        },
+        {
+          "n": "party_kind",
+          "t": "PartyKind",
+          "m": "1",
+          "k": "",
+          "note": ""
+        }
+      ]
+    },
+    {
+      "id": "Person",
+      "ctx": "party",
+      "ext": "Party",
+      "desc": "A natural person: client, beneficial owner, controlling person, signatory or delegate.",
+      "f": [
+        {
+          "n": "party_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "PK FK:Party",
+          "note": ""
+        },
+        {
+          "n": "given_names",
+          "t": "String",
+          "m": "0..1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "family_name",
+          "t": "String",
+          "m": "0..1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "full_name",
+          "t": "String",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "date_of_birth",
+          "t": "Date",
+          "m": "0..1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "nationalities",
+          "t": "Country",
+          "m": "*",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "domicile_country",
+          "t": "Country",
+          "m": "0..1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "is_deceased",
+          "t": "Boolean",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "deceased_at",
+          "t": "Date",
+          "m": "0..1",
+          "k": "",
+          "note": ""
+        }
+      ]
+    },
+    {
+      "id": "LegalEntity",
+      "ctx": "party",
+      "ext": "Party",
+      "desc": "A trust, foundation, company, partnership or association.",
+      "f": [
+        {
+          "n": "party_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "PK FK:Party",
+          "note": ""
+        },
+        {
+          "n": "legal_name",
+          "t": "String",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "entity_type",
+          "t": "EntityType",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "legal_form",
+          "t": "String",
+          "m": "0..1",
+          "k": "",
+          "note": "Jurisdiction-specific form, e.g. AG, GmbH, Anstalt, LLC"
+        },
+        {
+          "n": "jurisdiction",
+          "t": "Country",
+          "m": "1",
+          "k": "",
+          "note": "Country code, optionally with subdivision, e.g. CH-ZG"
+        },
+        {
+          "n": "registration_number",
+          "t": "String",
+          "m": "0..1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "lei",
+          "t": "String",
+          "m": "0..1",
+          "k": "UK",
+          "note": "Legal Entity Identifier (20 characters)"
+        },
+        {
+          "n": "status",
+          "t": "EntityStatus",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "incorporated_at",
+          "t": "Date",
+          "m": "0..1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "dissolved_at",
+          "t": "Date",
+          "m": "0..1",
+          "k": "",
+          "note": ""
+        }
+      ]
+    },
+    {
+      "id": "Relationship",
+      "ctx": "party",
+      "lin": 1,
+      "desc": "A typed, directed relationship between two parties, such as ownership, control or a family tie.",
+      "uk": ["(from_party_id, to_party_id, relationship_type, valid_from)"],
+      "checks": [
+        "from_party_id ≠ to_party_id",
+        "valid_to ≥ valid_from",
+        "ownership_percent between 0 and 100, set only for beneficial_owner and shareholder"
+      ],
+      "f": [
+        {
+          "n": "relationship_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "PK",
+          "note": ""
+        },
+        {
+          "n": "from_party_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "FK:Party",
+          "note": "The holder of the role, e.g. the beneficial owner"
+        },
+        {
+          "n": "to_party_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "FK:Party",
+          "note": "The party the role applies to, e.g. the owned company"
+        },
+        {
+          "n": "relationship_type",
+          "t": "RelationshipType",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "ownership_percent",
+          "t": "Decimal",
+          "m": "0..1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "valid_from",
+          "t": "Date",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "valid_to",
+          "t": "Date",
+          "m": "0..1",
+          "k": "",
+          "note": ""
+        }
+      ]
+    },
+    {
+      "id": "Address",
+      "ctx": "party",
+      "lin": 1,
+      "desc": "A postal address of a party, valid for a period.",
+      "f": [
+        {
+          "n": "address_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "PK",
+          "note": ""
+        },
+        {
+          "n": "party_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "FK:Party",
+          "note": ""
+        },
+        {
+          "n": "address_type",
+          "t": "AddressType",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "lines",
+          "t": "String",
+          "m": "1..4",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "locality",
+          "t": "String",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "postal_code",
+          "t": "String",
+          "m": "0..1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "region",
+          "t": "String",
+          "m": "0..1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "country",
+          "t": "Country",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "valid_from",
+          "t": "Date",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "valid_to",
+          "t": "Date",
+          "m": "0..1",
+          "k": "",
+          "note": ""
+        }
+      ]
+    },
+    {
+      "id": "TaxResidence",
+      "ctx": "party",
+      "desc": "A country where a party is resident for tax purposes, with its tax identification number. Used for CRS and FATCA reporting.",
+      "f": [
+        {
+          "n": "party_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "PK FK:Party",
+          "note": ""
+        },
+        {
+          "n": "country",
+          "t": "Country",
+          "m": "1",
+          "k": "PK",
+          "note": ""
+        },
+        {
+          "n": "valid_from",
+          "t": "Date",
+          "m": "1",
+          "k": "PK",
+          "note": ""
+        },
+        {
+          "n": "tin",
+          "t": "String",
+          "m": "0..1",
+          "k": "",
+          "note": "Tax identification number"
+        },
+        {
+          "n": "tin_unavailable_reason",
+          "t": "String",
+          "m": "0..1",
+          "k": "",
+          "note": "Required when tin is empty"
+        },
+        {
+          "n": "valid_to",
+          "t": "Date",
+          "m": "0..1",
+          "k": "",
+          "note": ""
+        }
+      ]
+    },
+    {
+      "id": "ContactPoint",
+      "ctx": "party",
+      "desc": "An email address or phone number of a party.",
+      "f": [
+        {
+          "n": "contact_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "PK",
+          "note": ""
+        },
+        {
+          "n": "party_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "FK:Party",
+          "note": ""
+        },
+        {
+          "n": "channel",
+          "t": "Channel",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "value",
+          "t": "String",
+          "m": "1",
+          "k": "",
+          "note": "Phone numbers in E.164 format"
+        },
+        {
+          "n": "is_primary",
+          "t": "Boolean",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "verified_at",
+          "t": "DateTime",
+          "m": "0..1",
+          "k": "",
+          "note": ""
+        }
+      ]
+    },
+    {
+      "id": "PartyIdentifier",
+      "ctx": "party",
+      "desc": "A passport, national identity card or registry number. Only the masked value is stored; the full value is in the evidence document.",
+      "f": [
+        {
+          "n": "identifier_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "PK",
+          "note": ""
+        },
+        {
+          "n": "party_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "FK:Party",
+          "note": ""
+        },
+        {
+          "n": "id_type",
+          "t": "String",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "issuing_country",
+          "t": "Country",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "value_masked",
+          "t": "String",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "evidence_document_id",
+          "t": "UUID",
+          "m": "0..1",
+          "k": "FK:Document",
+          "note": ""
+        },
+        {
+          "n": "expires_at",
+          "t": "Date",
+          "m": "0..1",
+          "k": "",
+          "note": ""
+        }
+      ]
+    },
+    {
+      "id": "Subject",
+      "ctx": "docs",
+      "st": "interface",
+      "desc": "A reference to any record a document, decision or audit event can concern, stored as a (subject_type, subject_id) pair. Not a table. Implemented by Party, Household, Account, OnboardingCase and LedgerTransaction.",
+      "f": [
+        {
+          "n": "subject_type",
+          "t": "SubjectType",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "subject_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "",
+          "note": ""
+        }
+      ]
+    },
+    {
+      "id": "Document",
+      "ctx": "docs",
+      "lin": 1,
+      "desc": "Metadata for a stored file. The file itself is held in object storage under object_key.",
+      "f": [
+        {
+          "n": "document_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "PK",
+          "note": ""
+        },
+        {
+          "n": "title",
+          "t": "String",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "document_category",
+          "t": "DocumentCategory",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "object_key",
+          "t": "String",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "content_hash",
+          "t": "String",
+          "m": "1",
+          "k": "",
+          "note": "SHA-256 of the stored file"
+        },
+        {
+          "n": "mime_type",
+          "t": "String",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "size_bytes",
+          "t": "Integer",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "classification",
+          "t": "Classification",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "issued_at",
+          "t": "Date",
+          "m": "0..1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "expires_at",
+          "t": "Date",
+          "m": "0..1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "uploaded_by_principal_id",
+          "t": "UUID",
+          "m": "0..1",
+          "k": "FK:Principal",
+          "note": ""
+        }
+      ]
+    },
+    {
+      "id": "DocumentLink",
+      "ctx": "docs",
+      "desc": "Attaches a document to the record it concerns.",
+      "f": [
+        {
+          "n": "document_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "PK FK:Document",
+          "note": ""
+        },
+        {
+          "n": "subject_type",
+          "t": "SubjectType",
+          "m": "1",
+          "k": "PK",
+          "note": ""
+        },
+        {
+          "n": "subject_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "PK",
+          "note": ""
+        },
+        {
+          "n": "link_role",
+          "t": "LinkRole",
+          "m": "1",
+          "k": "PK",
+          "note": ""
+        }
+      ]
+    },
+    {
+      "id": "DocumentRequirement",
+      "ctx": "docs",
+      "desc": "A document that must be provided for a record, and its status.",
+      "f": [
+        {
+          "n": "requirement_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "PK",
+          "note": ""
+        },
+        {
+          "n": "subject_type",
+          "t": "SubjectType",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "subject_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "requirement_code",
+          "t": "String",
+          "m": "1",
+          "k": "",
+          "note": "e.g. proof_of_address"
+        },
+        {
+          "n": "status",
+          "t": "RequirementStatus",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "satisfied_by_document_id",
+          "t": "UUID",
+          "m": "0..1",
+          "k": "FK:Document",
+          "note": ""
+        },
+        {
+          "n": "due_at",
+          "t": "Date",
+          "m": "0..1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "waived_by_decision_id",
+          "t": "UUID",
+          "m": "0..1",
+          "k": "FK:ReviewDecision",
+          "note": ""
+        }
+      ]
+    },
+    {
+      "id": "OnboardingCase",
+      "ctx": "comp",
+      "desc": "One onboarding, account addition, profile update or KYC refresh for a household.",
+      "f": [
+        {
+          "n": "case_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "PK",
+          "note": ""
+        },
+        {
+          "n": "household_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "FK:Household",
+          "note": ""
+        },
+        {
+          "n": "track",
+          "t": "Track",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "status",
+          "t": "CaseStatus",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "current_stage",
+          "t": "String",
+          "m": "1",
+          "k": "",
+          "note": "Named stage of the onboarding flow"
+        },
+        {
+          "n": "assigned_advisor_id",
+          "t": "UUID",
+          "m": "0..1",
+          "k": "FK:StaffUser",
+          "note": ""
+        },
+        {
+          "n": "assigned_compliance_id",
+          "t": "UUID",
+          "m": "0..1",
+          "k": "FK:StaffUser",
+          "note": ""
+        },
+        {
+          "n": "started_at",
+          "t": "DateTime",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "last_active_at",
+          "t": "DateTime",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "completed_at",
+          "t": "DateTime",
+          "m": "0..1",
+          "k": "",
+          "note": ""
+        }
+      ]
+    },
+    {
+      "id": "CaseGate",
+      "ctx": "comp",
+      "desc": "A mandatory check within a case. A case can complete only when every gate is satisfied, or overridden by a review decision.",
+      "f": [
+        {
+          "n": "gate_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "PK",
+          "note": ""
+        },
+        {
+          "n": "case_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "FK:OnboardingCase",
+          "note": ""
+        },
+        {
+          "n": "gate_code",
+          "t": "GateCode",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "subject_party_id",
+          "t": "UUID",
+          "m": "0..1",
+          "k": "FK:Party",
+          "note": "The party the gate applies to, if specific"
+        },
+        {
+          "n": "status",
+          "t": "GateStatus",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "satisfied_at",
+          "t": "DateTime",
+          "m": "0..1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "decision_id",
+          "t": "UUID",
+          "m": "0..1",
+          "k": "FK:ReviewDecision",
+          "note": "Required when status is overridden"
+        }
+      ]
+    },
+    {
+      "id": "KycProfile",
+      "ctx": "comp",
+      "desc": "The current KYC status and risk rating of a party.",
+      "f": [
+        {
+          "n": "party_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "PK FK:Party",
+          "note": ""
+        },
+        {
+          "n": "status",
+          "t": "KycStatus",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "risk_rating",
+          "t": "RiskRating",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "pep_status",
+          "t": "PepStatus",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "source_of_wealth_summary",
+          "t": "String",
+          "m": "0..1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "last_reviewed_at",
+          "t": "DateTime",
+          "m": "0..1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "next_review_due",
+          "t": "Date",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "approved_by_decision_id",
+          "t": "UUID",
+          "m": "0..1",
+          "k": "FK:ReviewDecision",
+          "note": ""
+        }
+      ]
+    },
+    {
+      "id": "ScreeningRun",
+      "ctx": "comp",
+      "desc": "One PEP, sanctions or adverse-media check of one party against a provider’s lists.",
+      "f": [
+        {
+          "n": "screening_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "PK",
+          "note": ""
+        },
+        {
+          "n": "subject_party_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "FK:Party",
+          "note": ""
+        },
+        {
+          "n": "screening_type",
+          "t": "ScreeningType",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "provider",
+          "t": "String",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "provider_reference",
+          "t": "String",
+          "m": "0..1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "list_version",
+          "t": "String",
+          "m": "1",
+          "k": "",
+          "note": "Version of the lists checked"
+        },
+        {
+          "n": "screened_at",
+          "t": "DateTime",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "result",
+          "t": "ScreeningResult",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "raw_payload_key",
+          "t": "String",
+          "m": "1",
+          "k": "",
+          "note": "Object-storage key of the provider’s full response"
+        },
+        {
+          "n": "case_id",
+          "t": "UUID",
+          "m": "0..1",
+          "k": "FK:OnboardingCase",
+          "note": "Empty for periodic re-screening"
+        }
+      ]
+    },
+    {
+      "id": "ScreeningHit",
+      "ctx": "comp",
+      "desc": "A potential match returned by a screening run, and how it was resolved.",
+      "f": [
+        {
+          "n": "hit_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "PK",
+          "note": ""
+        },
+        {
+          "n": "screening_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "FK:ScreeningRun",
+          "note": ""
+        },
+        {
+          "n": "matched_name",
+          "t": "String",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "list_name",
+          "t": "String",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "score",
+          "t": "Decimal",
+          "m": "0..1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "disposition",
+          "t": "Disposition",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "decision_id",
+          "t": "UUID",
+          "m": "0..1",
+          "k": "FK:ReviewDecision",
+          "note": "Required once disposition is not pending"
+        }
+      ]
+    },
+    {
+      "id": "SuitabilityProfile",
+      "ctx": "comp",
+      "desc": "The investor profile and FinSA client classification for a household, or for one of its accounts.",
+      "f": [
+        {
+          "n": "profile_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "PK",
+          "note": ""
+        },
+        {
+          "n": "household_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "FK:Household",
+          "note": ""
+        },
+        {
+          "n": "account_id",
+          "t": "UUID",
+          "m": "0..1",
+          "k": "FK:Account",
+          "note": "Set when the profile applies to one account only"
+        },
+        {
+          "n": "client_classification",
+          "t": "FinsaClass",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "investment_objective",
+          "t": "String",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "risk_capacity",
+          "t": "String",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "risk_tolerance",
+          "t": "String",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "horizon",
+          "t": "String",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "knowledge_experience",
+          "t": "String",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "completed_at",
+          "t": "DateTime",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "valid_until",
+          "t": "Date",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "decision_id",
+          "t": "UUID",
+          "m": "0..1",
+          "k": "FK:ReviewDecision",
+          "note": ""
+        }
+      ]
+    },
+    {
+      "id": "ReviewDecision",
+      "ctx": "comp",
+      "desc": "A decision made by a staff member: an approval, rejection, escalation, override or disposition. Only staff can make one, and a rationale is required.",
+      "f": [
+        {
+          "n": "decision_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "PK",
+          "note": ""
+        },
+        {
+          "n": "subject_type",
+          "t": "SubjectType",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "subject_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "decision_type",
+          "t": "DecisionType",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "outcome",
+          "t": "Outcome",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "rationale",
+          "t": "String",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "decided_by",
+          "t": "UUID",
+          "m": "1",
+          "k": "FK:StaffUser",
+          "note": ""
+        },
+        {
+          "n": "decided_at",
+          "t": "DateTime",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "supersedes_decision_id",
+          "t": "UUID",
+          "m": "0..1",
+          "k": "FK:ReviewDecision",
+          "note": ""
+        }
+      ]
+    },
+    {
+      "id": "Custodian",
+      "ctx": "wealth",
+      "desc": "A bank or custodian holding client accounts.",
+      "f": [
+        {
+          "n": "custodian_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "PK",
+          "note": ""
+        },
+        {
+          "n": "name",
+          "t": "String",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "bic",
+          "t": "String",
+          "m": "0..1",
+          "k": "UK",
+          "note": ""
+        },
+        {
+          "n": "country",
+          "t": "Country",
+          "m": "1",
+          "k": "",
+          "note": ""
+        }
+      ]
+    },
+    {
+      "id": "Account",
+      "ctx": "wealth",
+      "lin": 1,
+      "desc": "A cash, custody or portfolio account held by a party at a custodian. Ledger transactions are booked to an account.",
+      "uk": ["(custodian_id, custodian_account_ref)"],
+      "f": [
+        {
+          "n": "account_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "PK",
+          "note": ""
+        },
+        {
+          "n": "owner_party_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "FK:Party",
+          "note": ""
+        },
+        {
+          "n": "custodian_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "FK:Custodian",
+          "note": ""
+        },
+        {
+          "n": "custodian_account_ref",
+          "t": "String",
+          "m": "1",
+          "k": "",
+          "note": "Account number or IBAN at the custodian; shown masked"
+        },
+        {
+          "n": "account_type",
+          "t": "AccountType",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "reference_currency",
+          "t": "Currency",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "accounting_method",
+          "t": "TaxLotMethod",
+          "m": "1",
+          "k": "",
+          "note": "Default tax lot method for sales from this account"
+        },
+        {
+          "n": "tax_jurisdiction",
+          "t": "Country",
+          "m": "0..1",
+          "k": "",
+          "note": "Jurisdiction whose rules set the long-term holding period"
+        },
+        {
+          "n": "status",
+          "t": "AccountStatus",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "opened_at",
+          "t": "Date",
+          "m": "0..1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "closed_at",
+          "t": "Date",
+          "m": "0..1",
+          "k": "",
+          "note": ""
+        }
+      ]
+    },
+    {
+      "id": "AccountParty",
+      "ctx": "wealth",
+      "desc": "A party other than the owner with rights on an account, such as a signatory or holder of a power of attorney.",
+      "f": [
+        {
+          "n": "account_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "PK FK:Account",
+          "note": ""
+        },
+        {
+          "n": "party_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "PK FK:Party",
+          "note": ""
+        },
+        {
+          "n": "role",
+          "t": "AccountRole",
+          "m": "1",
+          "k": "PK",
+          "note": ""
+        },
+        {
+          "n": "valid_from",
+          "t": "Date",
+          "m": "1",
+          "k": "PK",
+          "note": ""
+        },
+        {
+          "n": "valid_to",
+          "t": "Date",
+          "m": "0..1",
+          "k": "",
+          "note": ""
+        }
+      ]
+    },
+    {
+      "id": "Mandate",
+      "ctx": "wealth",
+      "desc": "How an account is managed: execution only, advisory or discretionary.",
+      "f": [
+        {
+          "n": "mandate_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "PK",
+          "note": ""
+        },
+        {
+          "n": "account_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "FK:Account",
+          "note": ""
+        },
+        {
+          "n": "mandate_type",
+          "t": "MandateType",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "strategy_ref",
+          "t": "String",
+          "m": "0..1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "signed_document_id",
+          "t": "UUID",
+          "m": "0..1",
+          "k": "FK:Document",
+          "note": ""
+        },
+        {
+          "n": "valid_from",
+          "t": "Date",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "valid_to",
+          "t": "Date",
+          "m": "0..1",
+          "k": "",
+          "note": ""
+        }
+      ]
+    },
+    {
+      "id": "Instrument",
+      "ctx": "wealth",
+      "lin": 1,
+      "desc": "A security or other asset. One record per instrument, shared by all accounts.",
+      "f": [
+        {
+          "n": "instrument_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "PK",
+          "note": ""
+        },
+        {
+          "n": "instrument_type",
+          "t": "InstrumentType",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "name",
+          "t": "String",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "isin",
+          "t": "String",
+          "m": "0..1",
+          "k": "UK",
+          "note": ""
+        },
+        {
+          "n": "valor",
+          "t": "String",
+          "m": "0..1",
+          "k": "",
+          "note": "Swiss security number"
+        },
+        {
+          "n": "ticker",
+          "t": "String",
+          "m": "0..1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "currency",
+          "t": "Currency",
+          "m": "1",
+          "k": "",
+          "note": ""
+        }
+      ]
+    },
+    {
+      "id": "Position",
+      "ctx": "wealth",
+      "lin": 1,
+      "desc": "A position as reported by the custodian at a valuation time. Used to reconcile against the ledger.",
+      "uk": ["(account_id, instrument_id, valued_at)"],
+      "f": [
+        {
+          "n": "position_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "PK",
+          "note": ""
+        },
+        {
+          "n": "account_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "FK:Account",
+          "note": ""
+        },
+        {
+          "n": "instrument_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "FK:Instrument",
+          "note": ""
+        },
+        {
+          "n": "valued_at",
+          "t": "DateTime",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "quantity",
+          "t": "Decimal",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "market_value",
+          "t": "Money",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "cost_basis",
+          "t": "Money",
+          "m": "0..1",
+          "k": "",
+          "note": "As reported by the custodian"
+        },
+        {
+          "n": "accrued_interest",
+          "t": "Money",
+          "m": "0..1",
+          "k": "",
+          "note": ""
+        }
+      ]
+    },
+    {
+      "id": "Price",
+      "ctx": "wealth",
+      "desc": "A price of an instrument at a point in time, used to value holdings.",
+      "f": [
+        {
+          "n": "instrument_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "PK FK:Instrument",
+          "note": ""
+        },
+        {
+          "n": "as_of",
+          "t": "DateTime",
+          "m": "1",
+          "k": "PK",
+          "note": ""
+        },
+        {
+          "n": "source",
+          "t": "String",
+          "m": "1",
+          "k": "PK",
+          "note": ""
+        },
+        {
+          "n": "price",
+          "t": "Money",
+          "m": "1",
+          "k": "",
+          "note": ""
+        }
+      ]
+    },
+    {
+      "id": "FxRate",
+      "ctx": "wealth",
+      "desc": "An exchange rate at a point in time, used for account-currency cost and household totals.",
+      "f": [
+        {
+          "n": "base_currency",
+          "t": "Currency",
+          "m": "1",
+          "k": "PK",
+          "note": ""
+        },
+        {
+          "n": "quote_currency",
+          "t": "Currency",
+          "m": "1",
+          "k": "PK",
+          "note": ""
+        },
+        {
+          "n": "as_of",
+          "t": "DateTime",
+          "m": "1",
+          "k": "PK",
+          "note": ""
+        },
+        {
+          "n": "source",
+          "t": "String",
+          "m": "1",
+          "k": "PK",
+          "note": ""
+        },
+        {
+          "n": "rate",
+          "t": "Decimal",
+          "m": "1",
+          "k": "",
+          "note": "Units of quote currency per one unit of base currency"
+        }
+      ]
+    },
+    {
+      "id": "LedgerTransaction",
+      "ctx": "ledger",
+      "lin": 1,
+      "desc": "One economic event on an account: a trade, cash movement, income, fee, tax or corporate action. Never changed after booking.",
+      "uk": ["(account_id, external_ref) where external_ref is set"],
+      "f": [
+        {
+          "n": "transaction_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "PK",
+          "note": ""
+        },
+        {
+          "n": "account_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "FK:Account",
+          "note": ""
+        },
+        {
+          "n": "instrument_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "FK:Instrument",
+          "note": "Cash movements use the cash instrument of their currency"
+        },
+        {
+          "n": "transaction_type",
+          "t": "TransactionType",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "trade_date",
+          "t": "Date",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "settlement_date",
+          "t": "Date",
+          "m": "0..1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "quantity",
+          "t": "Decimal",
+          "m": "1",
+          "k": "",
+          "note": "Always positive; the direction follows from transaction_type"
+        },
+        {
+          "n": "price",
+          "t": "Money",
+          "m": "0..1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "gross_amount",
+          "t": "Money",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "fees",
+          "t": "Money",
+          "m": "0..1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "taxes_withheld",
+          "t": "Money",
+          "m": "0..1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "net_amount",
+          "t": "Money",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "fx_rate_to_account",
+          "t": "Decimal",
+          "m": "0..1",
+          "k": "",
+          "note": "Rate to the account reference currency"
+        },
+        {
+          "n": "status",
+          "t": "TxnStatus",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "lot_method_override",
+          "t": "TaxLotMethod",
+          "m": "0..1",
+          "k": "",
+          "note": "Replaces the account’s accounting_method for this sale"
+        },
+        {
+          "n": "reverses_transaction_id",
+          "t": "UUID",
+          "m": "0..1",
+          "k": "FK:LedgerTransaction",
+          "note": "Set on reversal transactions only"
+        },
+        {
+          "n": "corporate_action_id",
+          "t": "UUID",
+          "m": "0..1",
+          "k": "FK:CorporateAction",
+          "note": ""
+        },
+        {
+          "n": "external_ref",
+          "t": "String",
+          "m": "0..1",
+          "k": "",
+          "note": "Transaction reference at the custodian or source system"
+        }
+      ]
+    },
+    {
+      "id": "TaxLot",
+      "ctx": "ledger",
+      "desc": "Units of an instrument acquired in one transaction, with their acquisition date and cost. Opened by a buy or transfer in.",
+      "f": [
+        {
+          "n": "lot_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "PK",
+          "note": ""
+        },
+        {
+          "n": "account_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "FK:Account",
+          "note": ""
+        },
+        {
+          "n": "instrument_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "FK:Instrument",
+          "note": ""
+        },
+        {
+          "n": "opening_transaction_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "FK:LedgerTransaction",
+          "note": ""
+        },
+        {
+          "n": "acquired_on",
+          "t": "Date",
+          "m": "1",
+          "k": "",
+          "note": "Start of the holding period"
+        },
+        {
+          "n": "original_quantity",
+          "t": "Decimal",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "remaining_quantity",
+          "t": "Decimal",
+          "m": "1",
+          "k": "",
+          "note": "original_quantity less all disposals and adjustments"
+        },
+        {
+          "n": "unit_cost",
+          "t": "Money",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "cost_basis",
+          "t": "Money",
+          "m": "1",
+          "k": "",
+          "note": "In the instrument currency"
+        },
+        {
+          "n": "cost_basis_account",
+          "t": "Money",
+          "m": "1",
+          "k": "",
+          "note": "In the account reference currency"
+        },
+        {
+          "n": "status",
+          "t": "LotStatus",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "closed_on",
+          "t": "Date",
+          "m": "0..1",
+          "k": "",
+          "note": ""
+        }
+      ]
+    },
+    {
+      "id": "LotDisposal",
+      "ctx": "ledger",
+      "desc": "The units a sale took from one tax lot, and the gain realised on them. A sale drawing on several lots has one disposal per lot.",
+      "f": [
+        {
+          "n": "disposal_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "PK",
+          "note": ""
+        },
+        {
+          "n": "closing_transaction_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "FK:LedgerTransaction",
+          "note": ""
+        },
+        {
+          "n": "lot_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "FK:TaxLot",
+          "note": ""
+        },
+        {
+          "n": "quantity",
+          "t": "Decimal",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "proceeds",
+          "t": "Money",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "cost_released",
+          "t": "Money",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "realised_gain",
+          "t": "Money",
+          "m": "1",
+          "k": "",
+          "note": "proceeds less cost_released, in the instrument currency"
+        },
+        {
+          "n": "realised_gain_account",
+          "t": "Money",
+          "m": "1",
+          "k": "",
+          "note": "In the account reference currency, including FX effect"
+        },
+        {
+          "n": "holding_period",
+          "t": "HoldingPeriod",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "method_applied",
+          "t": "TaxLotMethod",
+          "m": "1",
+          "k": "",
+          "note": ""
+        }
+      ]
+    },
+    {
+      "id": "CorporateAction",
+      "ctx": "ledger",
+      "lin": 1,
+      "desc": "An event decided by an issuer that changes holdings, such as a split, merger or spin-off.",
+      "f": [
+        {
+          "n": "corporate_action_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "PK",
+          "note": ""
+        },
+        {
+          "n": "instrument_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "FK:Instrument",
+          "note": ""
+        },
+        {
+          "n": "action_type",
+          "t": "CorporateActionType",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "ex_date",
+          "t": "Date",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "pay_date",
+          "t": "Date",
+          "m": "0..1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "ratio",
+          "t": "Decimal",
+          "m": "0..1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "new_instrument_id",
+          "t": "UUID",
+          "m": "0..1",
+          "k": "FK:Instrument",
+          "note": "Resulting instrument for mergers and spin-offs"
+        }
+      ]
+    },
+    {
+      "id": "LotAdjustment",
+      "ctx": "ledger",
+      "desc": "A change to a tax lot’s units or cost caused by a corporate action.",
+      "f": [
+        {
+          "n": "adjustment_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "PK",
+          "note": ""
+        },
+        {
+          "n": "lot_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "FK:TaxLot",
+          "note": ""
+        },
+        {
+          "n": "corporate_action_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "FK:CorporateAction",
+          "note": ""
+        },
+        {
+          "n": "quantity_before",
+          "t": "Decimal",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "quantity_after",
+          "t": "Decimal",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "cost_before",
+          "t": "Money",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "cost_after",
+          "t": "Money",
+          "m": "1",
+          "k": "",
+          "note": ""
+        }
+      ]
+    },
+    {
+      "id": "ReconciliationBreak",
+      "ctx": "ledger",
+      "desc": "A difference between the quantity in our ledger and the quantity reported by the custodian, and its resolution.",
+      "f": [
+        {
+          "n": "break_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "PK",
+          "note": ""
+        },
+        {
+          "n": "account_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "FK:Account",
+          "note": ""
+        },
+        {
+          "n": "instrument_id",
+          "t": "UUID",
+          "m": "0..1",
+          "k": "FK:Instrument",
+          "note": ""
+        },
+        {
+          "n": "as_of",
+          "t": "Date",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "ledger_quantity",
+          "t": "Decimal",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "custodian_quantity",
+          "t": "Decimal",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "difference",
+          "t": "Decimal",
+          "m": "1",
+          "k": "",
+          "note": "custodian_quantity less ledger_quantity"
+        },
+        {
+          "n": "status",
+          "t": "BreakStatus",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "resolved_by_decision_id",
+          "t": "UUID",
+          "m": "0..1",
+          "k": "FK:ReviewDecision",
+          "note": ""
+        }
+      ]
+    },
+    {
+      "id": "AuditEvent",
+      "ctx": "evid",
+      "desc": "A record of a meaningful action: who did it, on what, when and in which zone. Never changed or deleted.",
+      "f": [
+        {
+          "n": "event_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "PK",
+          "note": ""
+        },
+        {
+          "n": "timestamp",
+          "t": "DateTime",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "event_type",
+          "t": "String",
+          "m": "1",
+          "k": "",
+          "note": "Namespaced name, e.g. access.client_record_viewed"
+        },
+        {
+          "n": "correlation_id",
+          "t": "String",
+          "m": "0..1",
+          "k": "",
+          "note": "Links events belonging to one workflow"
+        },
+        {
+          "n": "actor_principal_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "FK:Principal",
+          "note": ""
+        },
+        {
+          "n": "actor_kind",
+          "t": "PrincipalKind",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "acting_as_session_id",
+          "t": "UUID",
+          "m": "0..1",
+          "k": "FK:ActingAsSession",
+          "note": ""
+        },
+        {
+          "n": "household_id",
+          "t": "UUID",
+          "m": "0..1",
+          "k": "FK:Household",
+          "note": ""
+        },
+        {
+          "n": "subject_type",
+          "t": "SubjectType",
+          "m": "0..1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "subject_id",
+          "t": "UUID",
+          "m": "0..1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "case_id",
+          "t": "UUID",
+          "m": "0..1",
+          "k": "FK:OnboardingCase",
+          "note": ""
+        },
+        {
+          "n": "agent_source",
+          "t": "AgentSource",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "ip_address",
+          "t": "String",
+          "m": "0..1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "zone",
+          "t": "Zone",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "payload",
+          "t": "Json",
+          "m": "1",
+          "k": "",
+          "note": "Event-specific details, without unnecessary personal data"
+        }
+      ]
+    },
+    {
+      "id": "ContentItem",
+      "ctx": "evid",
+      "desc": "Approved legal or compliance text, such as a privacy notice or risk warning. Each version is immutable.",
+      "f": [
+        {
+          "n": "content_id",
+          "t": "String",
+          "m": "1",
+          "k": "PK",
+          "note": ""
+        },
+        {
+          "n": "version",
+          "t": "String",
+          "m": "1",
+          "k": "PK",
+          "note": ""
+        },
+        {
+          "n": "language",
+          "t": "String",
+          "m": "1",
+          "k": "PK",
+          "note": "BCP 47 language tag, e.g. de-CH"
+        },
+        {
+          "n": "kind",
+          "t": "ContentKind",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "title",
+          "t": "String",
+          "m": "0..1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "body",
+          "t": "String",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "content_hash",
+          "t": "String",
+          "m": "1",
+          "k": "",
+          "note": "SHA-256 of body"
+        },
+        {
+          "n": "status",
+          "t": "ContentStatus",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "approved_by",
+          "t": "UUID",
+          "m": "1",
+          "k": "FK:StaffUser",
+          "note": ""
+        },
+        {
+          "n": "approved_at",
+          "t": "DateTime",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "retired_at",
+          "t": "DateTime",
+          "m": "0..1",
+          "k": "",
+          "note": ""
+        }
+      ]
+    },
+    {
+      "id": "ContentPresentation",
+      "ctx": "evid",
+      "desc": "Evidence that a person was shown an exact version of approved content, and whether and how they acknowledged it.",
+      "f": [
+        {
+          "n": "record_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "PK",
+          "note": ""
+        },
+        {
+          "n": "content_id",
+          "t": "String",
+          "m": "1",
+          "k": "FK:ContentItem",
+          "note": ""
+        },
+        {
+          "n": "content_version",
+          "t": "String",
+          "m": "1",
+          "k": "FK:ContentItem",
+          "note": ""
+        },
+        {
+          "n": "language",
+          "t": "String",
+          "m": "1",
+          "k": "FK:ContentItem",
+          "note": ""
+        },
+        {
+          "n": "content_hash",
+          "t": "String",
+          "m": "1",
+          "k": "",
+          "note": "Must equal the hash of the version shown"
+        },
+        {
+          "n": "presented_to_principal_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "FK:Principal",
+          "note": ""
+        },
+        {
+          "n": "household_id",
+          "t": "UUID",
+          "m": "0..1",
+          "k": "FK:Household",
+          "note": ""
+        },
+        {
+          "n": "case_id",
+          "t": "UUID",
+          "m": "0..1",
+          "k": "FK:OnboardingCase",
+          "note": ""
+        },
+        {
+          "n": "presented_at",
+          "t": "DateTime",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "acknowledged_at",
+          "t": "DateTime",
+          "m": "0..1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "ack_method",
+          "t": "AckMethod",
+          "m": "0..1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "surface",
+          "t": "String",
+          "m": "0..1",
+          "k": "",
+          "note": "Screen or channel where it was shown"
+        }
+      ]
+    },
+    {
+      "id": "RawImportBatch",
+      "ctx": "evid",
+      "desc": "One import from a custodian or other source system. The untouched file or response is kept in object storage.",
+      "f": [
+        {
+          "n": "batch_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "PK",
+          "note": ""
+        },
+        {
+          "n": "source_system",
+          "t": "String",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "transport",
+          "t": "Transport",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "source_reference",
+          "t": "String",
+          "m": "0..1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "raw_object_key",
+          "t": "String",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "content_hash",
+          "t": "String",
+          "m": "1",
+          "k": "",
+          "note": "SHA-256 of the raw payload"
+        },
+        {
+          "n": "received_at",
+          "t": "DateTime",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "covers_as_of",
+          "t": "DateTime",
+          "m": "0..1",
+          "k": "",
+          "note": "Business time the data represents"
+        },
+        {
+          "n": "status",
+          "t": "BatchStatus",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "record_counts",
+          "t": "Json",
+          "m": "1",
+          "k": "",
+          "note": "Number of records per type in the batch"
+        }
+      ]
+    },
+    {
+      "id": "SourceRecordLink",
+      "ctx": "evid",
+      "desc": "Maps an identifier in a source system to the record it became, so repeated imports update rather than duplicate.",
+      "f": [
+        {
+          "n": "system",
+          "t": "String",
+          "m": "1",
+          "k": "PK",
+          "note": "e.g. expersoft, or a custodian"
+        },
+        {
+          "n": "id_type",
+          "t": "String",
+          "m": "1",
+          "k": "PK",
+          "note": ""
+        },
+        {
+          "n": "id_value",
+          "t": "String",
+          "m": "1",
+          "k": "PK",
+          "note": ""
+        },
+        {
+          "n": "canonical_type",
+          "t": "String",
+          "m": "1",
+          "k": "",
+          "note": "Entity name, e.g. Account"
+        },
+        {
+          "n": "canonical_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "first_seen_batch_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "FK:RawImportBatch",
+          "note": ""
+        },
+        {
+          "n": "last_seen_batch_id",
+          "t": "UUID",
+          "m": "1",
+          "k": "FK:RawImportBatch",
+          "note": ""
+        }
+      ]
+    }
+  ],
+  "ENUMS": {
+    "PrincipalKind": ["staff", "client", "service"],
+    "PrincipalStatus": ["active", "suspended", "deactivated"],
+    "StaffRole": ["advisor", "ops", "compliance", "treasury", "auditor", "engineer"],
+    "Zone": ["z1_corporate", "z2_client", "z3_transaction"],
+    "GrantRole": ["owner", "co_owner", "delegate", "read_only"],
+    "AssignmentRole": ["primary", "deputy", "specialist"],
+    "HouseholdStatus": ["prospect", "onboarding", "active", "offboarding", "archived"],
+    "MemberRole": ["principal", "spouse", "dependant", "entity", "other"],
+    "PartyKind": ["person", "legal_entity"],
+    "EntityType": ["trust", "foundation", "company", "partnership", "association", "other"],
+    "EntityStatus": ["active", "in_formation", "dissolved", "unknown"],
+    "RelationshipType": [
+      "beneficial_owner",
+      "controlling_person",
+      "shareholder",
+      "settlor",
+      "trustee",
+      "protector",
+      "beneficiary",
+      "director",
+      "signatory",
+      "power_of_attorney",
+      "delegate",
+      "spouse",
+      "child",
+      "parent",
+      "other"
+    ],
+    "AddressType": ["residential", "registered", "correspondence", "business"],
+    "Channel": ["email", "phone", "mobile"],
+    "AccountType": ["cash", "custody", "portfolio", "fiduciary_deposit", "loan", "other"],
+    "AccountStatus": ["open", "closed", "blocked", "unknown"],
+    "AccountRole": ["joint_owner", "signatory", "power_of_attorney", "beneficiary", "viewer"],
+    "MandateType": ["execution_only", "advisory", "discretionary"],
+    "InstrumentType": [
+      "cash",
+      "equity",
+      "bond",
+      "fund",
+      "etf",
+      "structured_product",
+      "derivative",
+      "private_equity",
+      "real_estate",
+      "commodity",
+      "crypto",
+      "other"
+    ],
+    "TaxLotMethod": [
+      "AverageCost",
+      "FirstInFirstOut",
+      "LastInFirstOut",
+      "HighestCostFirst",
+      "HighestCostFirstPortfolioCurrency",
+      "LowestCostFirst",
+      "LowestCostFirstPortfolioCurrency",
+      "IntraDayThenFirstInFirstOut",
+      "LongTermHighestCostFirst",
+      "LongTermHighestCostFirstPortfolioCurrency",
+      "MaximumLossMinimumGain",
+      "MaximumLossMinimumGainPortfolioCurrency",
+      "ProRateByUnits",
+      "ProRateByCost",
+      "ProRateByCostPortfolioCurrency"
+    ],
+    "TransactionType": [
+      "buy",
+      "sell",
+      "transfer_in",
+      "transfer_out",
+      "deposit",
+      "withdrawal",
+      "dividend",
+      "interest",
+      "fee",
+      "tax_withheld",
+      "fx_spot",
+      "corporate_action",
+      "reversal"
+    ],
+    "TxnStatus": ["pending", "settled", "cancelled"],
+    "LotStatus": ["open", "closed"],
+    "HoldingPeriod": ["short_term", "long_term"],
+    "CorporateActionType": [
+      "split",
+      "reverse_split",
+      "merger",
+      "spin_off",
+      "stock_dividend",
+      "cash_dividend",
+      "rights_issue",
+      "name_change"
+    ],
+    "BreakStatus": ["open", "investigating", "resolved", "accepted"],
+    "Track": ["full_onboarding", "add_accounts", "update_profile", "kyc_refresh"],
+    "CaseStatus": ["in_progress", "paused", "blocked", "awaiting_review", "completed", "abandoned"],
+    "GateCode": [
+      "identity_verified",
+      "screening_reviewed",
+      "disclosures_acknowledged",
+      "suitability_complete",
+      "compliance_signoff"
+    ],
+    "GateStatus": ["open", "satisfied", "overridden"],
+    "KycStatus": ["not_started", "in_progress", "verified", "expired", "flagged"],
+    "RiskRating": ["low", "medium", "high", "prohibited"],
+    "PepStatus": ["none", "domestic", "foreign", "international_org", "related"],
+    "ScreeningType": ["pep", "sanctions", "adverse_media"],
+    "ScreeningResult": ["clear", "potential_match", "match"],
+    "Disposition": ["pending", "false_positive", "true_match"],
+    "FinsaClass": ["retail", "professional", "institutional"],
+    "DecisionType": [
+      "screening_disposition",
+      "gate_override",
+      "kyc_approval",
+      "suitability_approval",
+      "compliance_signoff",
+      "document_waiver",
+      "break_resolution"
+    ],
+    "Outcome": ["approve", "reject", "escalate", "block"],
+    "DocumentCategory": [
+      "identity",
+      "corporate",
+      "tax",
+      "agreement",
+      "statement",
+      "valuation",
+      "correspondence",
+      "evidence",
+      "other"
+    ],
+    "Classification": [
+      "public",
+      "internal",
+      "confidential",
+      "restricted_client",
+      "restricted_transaction"
+    ],
+    "LinkRole": ["evidences", "belongs_to", "signed_by"],
+    "RequirementStatus": ["requested", "received", "accepted", "rejected", "waived", "expired"],
+    "SubjectType": ["party", "household", "account", "onboarding_case", "ledger_transaction"],
+    "ContentKind": [
+      "privacy_notice",
+      "security_disclosure",
+      "regulatory_explainer",
+      "risk_warning",
+      "cost_disclosure",
+      "other"
+    ],
+    "ContentStatus": ["approved", "retired"],
+    "AckMethod": ["click", "signature", "implicit"],
+    "AgentSource": [
+      "conversation",
+      "classification",
+      "kyc_aml",
+      "suitability",
+      "document",
+      "ops",
+      "audit",
+      "system"
+    ],
+    "Transport": ["api", "file_export", "sftp", "manual_upload"],
+    "BatchStatus": ["received", "normalized", "reconciled", "failed", "superseded"],
+    "DataSource": ["mirror", "manual_overlay", "derived"]
+  },
+  "ENUMNOTES": {
+    "TaxLotMethod": "Names follow LUSID. Variants ending in PortfolioCurrency rank lots by cost in the account currency. Cash is always held at average cost.",
+    "DataSource": "mirror: from a custodian or source system · manual_overlay: audited manual correction · derived: calculated from other records",
+    "HoldingPeriod": "long_term when held longer than the threshold of the account’s tax_jurisdiction"
+  },
+  "TYPES": [
+    {
+      "n": "Lineage",
+      "d": "Included in every entity marked “lineage”.",
+      "f": [
+        {
+          "n": "data_source",
+          "t": "DataSource",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "source_ids",
+          "t": "SourceId",
+          "m": "*",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "raw_batch_id",
+          "t": "UUID",
+          "m": "0..1",
+          "k": "FK:RawImportBatch",
+          "note": ""
+        },
+        {
+          "n": "as_of",
+          "t": "DateTime",
+          "m": "0..1",
+          "k": "",
+          "note": "Business time the data represents"
+        },
+        {
+          "n": "created_at",
+          "t": "DateTime",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "updated_at",
+          "t": "DateTime",
+          "m": "1",
+          "k": "",
+          "note": ""
+        }
+      ]
+    },
+    {
+      "n": "Money",
+      "d": "An exact amount with its currency.",
+      "f": [
+        {
+          "n": "amount",
+          "t": "Decimal",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "currency",
+          "t": "Currency",
+          "m": "1",
+          "k": "",
+          "note": ""
+        }
+      ]
+    },
+    {
+      "n": "SourceId",
+      "d": "An identifier in a source system.",
+      "f": [
+        {
+          "n": "system",
+          "t": "String",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "id_type",
+          "t": "String",
+          "m": "1",
+          "k": "",
+          "note": ""
+        },
+        {
+          "n": "id_value",
+          "t": "String",
+          "m": "1",
+          "k": "",
+          "note": ""
+        }
+      ]
+    }
+  ],
+  "PRIMS": [
+    ["UUID", "128-bit identifier generated by FCP"],
+    ["String", "UTF-8 text"],
+    ["Decimal", "Exact decimal number; never floating point"],
+    ["Integer", "Whole number"],
+    ["Boolean", "true or false"],
+    ["Date", "Calendar date, no time zone"],
+    ["DateTime", "Instant, stored in UTC"],
+    ["Currency", "ISO 4217 code, e.g. CHF"],
+    ["Country", "ISO 3166-1 alpha-2 code, e.g. CH"],
+    ["Json", "Structured object"]
+  ],
+  "RELS": [
+    {
+      "i": 0,
+      "a": "StaffUser",
+      "b": "Principal",
+      "k": "gen",
+      "l": "",
+      "m1": "",
+      "m2": ""
+    },
+    {
+      "i": 1,
+      "a": "ClientUser",
+      "b": "Principal",
+      "k": "gen",
+      "l": "",
+      "m1": "",
+      "m2": ""
+    },
+    {
+      "i": 2,
+      "a": "Person",
+      "b": "Party",
+      "k": "gen",
+      "l": "",
+      "m1": "",
+      "m2": ""
+    },
+    {
+      "i": 3,
+      "a": "LegalEntity",
+      "b": "Party",
+      "k": "gen",
+      "l": "",
+      "m1": "",
+      "m2": ""
+    },
+    {
+      "i": 4,
+      "a": "Party",
+      "b": "Subject",
+      "k": "real",
+      "l": "",
+      "m1": "",
+      "m2": ""
+    },
+    {
+      "i": 5,
+      "a": "Household",
+      "b": "Subject",
+      "k": "real",
+      "l": "",
+      "m1": "",
+      "m2": ""
+    },
+    {
+      "i": 6,
+      "a": "Account",
+      "b": "Subject",
+      "k": "real",
+      "l": "",
+      "m1": "",
+      "m2": ""
+    },
+    {
+      "i": 7,
+      "a": "OnboardingCase",
+      "b": "Subject",
+      "k": "real",
+      "l": "",
+      "m1": "",
+      "m2": ""
+    },
+    {
+      "i": 8,
+      "a": "LedgerTransaction",
+      "b": "Subject",
+      "k": "real",
+      "l": "",
+      "m1": "",
+      "m2": ""
+    },
+    {
+      "i": 9,
+      "a": "ClientUser",
+      "b": "Person",
+      "k": "assoc",
+      "l": "belongs to",
+      "m1": "0..*",
+      "m2": "0..1"
+    },
+    {
+      "i": 10,
+      "a": "AccessGrant",
+      "b": "ClientUser",
+      "k": "assoc",
+      "l": "held by",
+      "m1": "0..*",
+      "m2": "1"
+    },
+    {
+      "i": 11,
+      "a": "AccessGrant",
+      "b": "Household",
+      "k": "assoc",
+      "l": "grants access to",
+      "m1": "0..*",
+      "m2": "1"
+    },
+    {
+      "i": 12,
+      "a": "ActingAsSession",
+      "b": "StaffUser",
+      "k": "assoc",
+      "l": "opened by",
+      "m1": "0..*",
+      "m2": "1"
+    },
+    {
+      "i": 13,
+      "a": "ActingAsSession",
+      "b": "Household",
+      "k": "assoc",
+      "l": "scoped to",
+      "m1": "0..*",
+      "m2": "1"
+    },
+    {
+      "i": 14,
+      "a": "AdvisorAssignment",
+      "b": "StaffUser",
+      "k": "assoc",
+      "l": "advisor",
+      "m1": "0..*",
+      "m2": "1"
+    },
+    {
+      "i": 15,
+      "a": "AdvisorAssignment",
+      "b": "Household",
+      "k": "assoc",
+      "l": "for",
+      "m1": "0..*",
+      "m2": "1"
+    },
+    {
+      "i": 16,
+      "a": "Household",
+      "b": "HouseholdMember",
+      "k": "comp",
+      "l": "members",
+      "m1": "1",
+      "m2": "0..*"
+    },
+    {
+      "i": 17,
+      "a": "HouseholdMember",
+      "b": "Party",
+      "k": "assoc",
+      "l": "member",
+      "m1": "0..*",
+      "m2": "1"
+    },
+    {
+      "i": 18,
+      "a": "Relationship",
+      "b": "Party",
+      "k": "assoc",
+      "l": "from",
+      "m1": "0..*",
+      "m2": "1"
+    },
+    {
+      "i": 19,
+      "a": "Relationship",
+      "b": "Party",
+      "k": "assoc",
+      "l": "to",
+      "m1": "0..*",
+      "m2": "1"
+    },
+    {
+      "i": 20,
+      "a": "Party",
+      "b": "Address",
+      "k": "comp",
+      "l": "addresses",
+      "m1": "1",
+      "m2": "0..*"
+    },
+    {
+      "i": 21,
+      "a": "Party",
+      "b": "TaxResidence",
+      "k": "comp",
+      "l": "tax residences",
+      "m1": "1",
+      "m2": "0..*"
+    },
+    {
+      "i": 22,
+      "a": "Party",
+      "b": "ContactPoint",
+      "k": "comp",
+      "l": "contacts",
+      "m1": "1",
+      "m2": "0..*"
+    },
+    {
+      "i": 23,
+      "a": "Party",
+      "b": "PartyIdentifier",
+      "k": "comp",
+      "l": "identifiers",
+      "m1": "1",
+      "m2": "0..*"
+    },
+    {
+      "i": 24,
+      "a": "PartyIdentifier",
+      "b": "Document",
+      "k": "assoc",
+      "l": "evidence",
+      "m1": "0..*",
+      "m2": "0..1"
+    },
+    {
+      "i": 25,
+      "a": "Account",
+      "b": "Party",
+      "k": "assoc",
+      "l": "owner",
+      "m1": "0..*",
+      "m2": "1"
+    },
+    {
+      "i": 26,
+      "a": "Account",
+      "b": "Custodian",
+      "k": "assoc",
+      "l": "held at",
+      "m1": "0..*",
+      "m2": "1"
+    },
+    {
+      "i": 27,
+      "a": "Account",
+      "b": "AccountParty",
+      "k": "comp",
+      "l": "other parties",
+      "m1": "1",
+      "m2": "0..*"
+    },
+    {
+      "i": 28,
+      "a": "AccountParty",
+      "b": "Party",
+      "k": "assoc",
+      "l": "party",
+      "m1": "0..*",
+      "m2": "1"
+    },
+    {
+      "i": 29,
+      "a": "Account",
+      "b": "Mandate",
+      "k": "comp",
+      "l": "mandates",
+      "m1": "1",
+      "m2": "0..*"
+    },
+    {
+      "i": 30,
+      "a": "Mandate",
+      "b": "Document",
+      "k": "assoc",
+      "l": "signed copy",
+      "m1": "0..*",
+      "m2": "0..1"
+    },
+    {
+      "i": 31,
+      "a": "Account",
+      "b": "Position",
+      "k": "comp",
+      "l": "custodian positions",
+      "m1": "1",
+      "m2": "0..*"
+    },
+    {
+      "i": 32,
+      "a": "Position",
+      "b": "Instrument",
+      "k": "assoc",
+      "l": "of",
+      "m1": "0..*",
+      "m2": "1"
+    },
+    {
+      "i": 33,
+      "a": "Price",
+      "b": "Instrument",
+      "k": "assoc",
+      "l": "prices",
+      "m1": "0..*",
+      "m2": "1"
+    },
+    {
+      "i": 34,
+      "a": "Position",
+      "b": "FxRate",
+      "k": "dep",
+      "l": "converted with",
+      "m1": "",
+      "m2": ""
+    },
+    {
+      "i": 35,
+      "a": "Account",
+      "b": "LedgerTransaction",
+      "k": "comp",
+      "l": "ledger",
+      "m1": "1",
+      "m2": "0..*"
+    },
+    {
+      "i": 36,
+      "a": "LedgerTransaction",
+      "b": "Instrument",
+      "k": "assoc",
+      "l": "instrument",
+      "m1": "0..*",
+      "m2": "1"
+    },
+    {
+      "i": 37,
+      "a": "LedgerTransaction",
+      "b": "LedgerTransaction",
+      "k": "assoc",
+      "l": "reverses",
+      "m1": "0..1",
+      "m2": "0..1"
+    },
+    {
+      "i": 38,
+      "a": "LedgerTransaction",
+      "b": "CorporateAction",
+      "k": "assoc",
+      "l": "caused by",
+      "m1": "0..*",
+      "m2": "0..1"
+    },
+    {
+      "i": 39,
+      "a": "TaxLot",
+      "b": "LedgerTransaction",
+      "k": "assoc",
+      "l": "opened by",
+      "m1": "0..1",
+      "m2": "1"
+    },
+    {
+      "i": 40,
+      "a": "LotDisposal",
+      "b": "TaxLot",
+      "k": "assoc",
+      "l": "draws from",
+      "m1": "0..*",
+      "m2": "1"
+    },
+    {
+      "i": 41,
+      "a": "LotDisposal",
+      "b": "LedgerTransaction",
+      "k": "assoc",
+      "l": "closed by sale",
+      "m1": "0..*",
+      "m2": "1"
+    },
+    {
+      "i": 42,
+      "a": "LotAdjustment",
+      "b": "TaxLot",
+      "k": "assoc",
+      "l": "adjusts",
+      "m1": "0..*",
+      "m2": "1"
+    },
+    {
+      "i": 43,
+      "a": "LotAdjustment",
+      "b": "CorporateAction",
+      "k": "assoc",
+      "l": "because of",
+      "m1": "0..*",
+      "m2": "1"
+    },
+    {
+      "i": 44,
+      "a": "CorporateAction",
+      "b": "Instrument",
+      "k": "assoc",
+      "l": "on",
+      "m1": "0..*",
+      "m2": "1"
+    },
+    {
+      "i": 45,
+      "a": "ReconciliationBreak",
+      "b": "Account",
+      "k": "assoc",
+      "l": "on",
+      "m1": "0..*",
+      "m2": "1"
+    },
+    {
+      "i": 46,
+      "a": "ReconciliationBreak",
+      "b": "Position",
+      "k": "dep",
+      "l": "compares",
+      "m1": "",
+      "m2": ""
+    },
+    {
+      "i": 47,
+      "a": "ReconciliationBreak",
+      "b": "TaxLot",
+      "k": "dep",
+      "l": "compares open lots",
+      "m1": "",
+      "m2": ""
+    },
+    {
+      "i": 48,
+      "a": "ReconciliationBreak",
+      "b": "ReviewDecision",
+      "k": "assoc",
+      "l": "resolved by",
+      "m1": "0..*",
+      "m2": "0..1"
+    },
+    {
+      "i": 49,
+      "a": "OnboardingCase",
+      "b": "Household",
+      "k": "assoc",
+      "l": "for",
+      "m1": "0..*",
+      "m2": "1"
+    },
+    {
+      "i": 50,
+      "a": "OnboardingCase",
+      "b": "CaseGate",
+      "k": "comp",
+      "l": "gates",
+      "m1": "1",
+      "m2": "1..*"
+    },
+    {
+      "i": 51,
+      "a": "CaseGate",
+      "b": "ReviewDecision",
+      "k": "assoc",
+      "l": "closed by",
+      "m1": "0..*",
+      "m2": "0..1"
+    },
+    {
+      "i": 52,
+      "a": "KycProfile",
+      "b": "Party",
+      "k": "assoc",
+      "l": "for",
+      "m1": "0..1",
+      "m2": "1"
+    },
+    {
+      "i": 53,
+      "a": "KycProfile",
+      "b": "ReviewDecision",
+      "k": "assoc",
+      "l": "approved by",
+      "m1": "0..*",
+      "m2": "0..1"
+    },
+    {
+      "i": 54,
+      "a": "ScreeningRun",
+      "b": "Party",
+      "k": "assoc",
+      "l": "subject",
+      "m1": "0..*",
+      "m2": "1"
+    },
+    {
+      "i": 55,
+      "a": "ScreeningRun",
+      "b": "ScreeningHit",
+      "k": "comp",
+      "l": "hits",
+      "m1": "1",
+      "m2": "0..*"
+    },
+    {
+      "i": 56,
+      "a": "ScreeningRun",
+      "b": "OnboardingCase",
+      "k": "assoc",
+      "l": "run for",
+      "m1": "0..*",
+      "m2": "0..1"
+    },
+    {
+      "i": 57,
+      "a": "ScreeningHit",
+      "b": "ReviewDecision",
+      "k": "assoc",
+      "l": "disposed by",
+      "m1": "0..*",
+      "m2": "0..1"
+    },
+    {
+      "i": 58,
+      "a": "SuitabilityProfile",
+      "b": "Household",
+      "k": "assoc",
+      "l": "for",
+      "m1": "0..*",
+      "m2": "1"
+    },
+    {
+      "i": 59,
+      "a": "ReviewDecision",
+      "b": "StaffUser",
+      "k": "assoc",
+      "l": "decided by",
+      "m1": "0..*",
+      "m2": "1"
+    },
+    {
+      "i": 60,
+      "a": "ReviewDecision",
+      "b": "Subject",
+      "k": "dep",
+      "l": "about",
+      "m1": "",
+      "m2": ""
+    },
+    {
+      "i": 61,
+      "a": "Document",
+      "b": "DocumentLink",
+      "k": "comp",
+      "l": "links",
+      "m1": "1",
+      "m2": "0..*"
+    },
+    {
+      "i": 62,
+      "a": "DocumentLink",
+      "b": "Subject",
+      "k": "dep",
+      "l": "attached to",
+      "m1": "",
+      "m2": ""
+    },
+    {
+      "i": 63,
+      "a": "DocumentRequirement",
+      "b": "Subject",
+      "k": "dep",
+      "l": "owed by",
+      "m1": "",
+      "m2": ""
+    },
+    {
+      "i": 64,
+      "a": "DocumentRequirement",
+      "b": "Document",
+      "k": "assoc",
+      "l": "satisfied by",
+      "m1": "0..*",
+      "m2": "0..1"
+    },
+    {
+      "i": 65,
+      "a": "Document",
+      "b": "Principal",
+      "k": "assoc",
+      "l": "uploaded by",
+      "m1": "0..*",
+      "m2": "0..1"
+    },
+    {
+      "i": 66,
+      "a": "AuditEvent",
+      "b": "Principal",
+      "k": "assoc",
+      "l": "actor",
+      "m1": "0..*",
+      "m2": "1"
+    },
+    {
+      "i": 67,
+      "a": "AuditEvent",
+      "b": "ActingAsSession",
+      "k": "assoc",
+      "l": "during",
+      "m1": "0..*",
+      "m2": "0..1"
+    },
+    {
+      "i": 68,
+      "a": "AuditEvent",
+      "b": "Subject",
+      "k": "dep",
+      "l": "about",
+      "m1": "",
+      "m2": ""
+    },
+    {
+      "i": 69,
+      "a": "ContentPresentation",
+      "b": "ContentItem",
+      "k": "assoc",
+      "l": "shows",
+      "m1": "0..*",
+      "m2": "1"
+    },
+    {
+      "i": 70,
+      "a": "ContentPresentation",
+      "b": "Principal",
+      "k": "assoc",
+      "l": "presented to",
+      "m1": "0..*",
+      "m2": "1"
+    },
+    {
+      "i": 71,
+      "a": "SourceRecordLink",
+      "b": "RawImportBatch",
+      "k": "assoc",
+      "l": "seen in",
+      "m1": "0..*",
+      "m2": "1"
+    },
+    {
+      "i": 72,
+      "a": "SourceRecordLink",
+      "b": "Subject",
+      "k": "dep",
+      "l": "maps to",
+      "m1": "",
+      "m2": ""
+    },
+    {
+      "i": 73,
+      "a": "AccessGrant",
+      "b": "Principal",
+      "k": "assoc",
+      "l": "granted by",
+      "m1": "0..*",
+      "m2": "1"
+    },
+    {
+      "i": 74,
+      "a": "DocumentRequirement",
+      "b": "ReviewDecision",
+      "k": "assoc",
+      "l": "waived by",
+      "m1": "0..*",
+      "m2": "0..1"
+    },
+    {
+      "i": 75,
+      "a": "OnboardingCase",
+      "b": "StaffUser",
+      "k": "assoc",
+      "l": "advisor",
+      "m1": "0..*",
+      "m2": "0..1"
+    },
+    {
+      "i": 76,
+      "a": "OnboardingCase",
+      "b": "StaffUser",
+      "k": "assoc",
+      "l": "compliance officer",
+      "m1": "0..*",
+      "m2": "0..1"
+    },
+    {
+      "i": 77,
+      "a": "CaseGate",
+      "b": "Party",
+      "k": "assoc",
+      "l": "applies to",
+      "m1": "0..*",
+      "m2": "0..1"
+    },
+    {
+      "i": 78,
+      "a": "SuitabilityProfile",
+      "b": "Account",
+      "k": "assoc",
+      "l": "for account",
+      "m1": "0..*",
+      "m2": "0..1"
+    },
+    {
+      "i": 79,
+      "a": "SuitabilityProfile",
+      "b": "ReviewDecision",
+      "k": "assoc",
+      "l": "approved by",
+      "m1": "0..*",
+      "m2": "0..1"
+    },
+    {
+      "i": 80,
+      "a": "ReviewDecision",
+      "b": "ReviewDecision",
+      "k": "assoc",
+      "l": "supersedes",
+      "m1": "0..1",
+      "m2": "0..1"
+    },
+    {
+      "i": 81,
+      "a": "TaxLot",
+      "b": "Account",
+      "k": "assoc",
+      "l": "held in",
+      "m1": "0..*",
+      "m2": "1"
+    },
+    {
+      "i": 82,
+      "a": "TaxLot",
+      "b": "Instrument",
+      "k": "assoc",
+      "l": "of",
+      "m1": "0..*",
+      "m2": "1"
+    },
+    {
+      "i": 83,
+      "a": "ReconciliationBreak",
+      "b": "Instrument",
+      "k": "assoc",
+      "l": "for",
+      "m1": "0..*",
+      "m2": "0..1"
+    },
+    {
+      "i": 84,
+      "a": "AuditEvent",
+      "b": "Household",
+      "k": "assoc",
+      "l": "concerns",
+      "m1": "0..*",
+      "m2": "0..1"
+    },
+    {
+      "i": 85,
+      "a": "AuditEvent",
+      "b": "OnboardingCase",
+      "k": "assoc",
+      "l": "in case",
+      "m1": "0..*",
+      "m2": "0..1"
+    },
+    {
+      "i": 86,
+      "a": "ContentItem",
+      "b": "StaffUser",
+      "k": "assoc",
+      "l": "approved by",
+      "m1": "0..*",
+      "m2": "1"
+    },
+    {
+      "i": 87,
+      "a": "ContentPresentation",
+      "b": "Household",
+      "k": "assoc",
+      "l": "for",
+      "m1": "0..*",
+      "m2": "0..1"
+    },
+    {
+      "i": 88,
+      "a": "ContentPresentation",
+      "b": "OnboardingCase",
+      "k": "assoc",
+      "l": "in case",
+      "m1": "0..*",
+      "m2": "0..1"
+    }
+  ]
+}

@@ -38,7 +38,7 @@ for Romagnolo. See [deployment instructions](deploy/README.md).
 
 ## Implementation
 
-The single HTML contains the URL codec, validated model-editing commands (`ModelEditor`), readable exporter (`ModelExport`), orthogonal router, stable wire drag previews, and UI. A command works on an independent snapshot; class renames update endpoint, inheritance, foreign-key, and attribute-type references. Confirmed deletion removes connections and typed references, clears foreign-key tags, and cleans constraints on removed attributes. Inheritance/composition cycles and invalid multiplicities are rejected.
+Readable source lives in `src/`, with separate data, styles, codec, editing commands, exports, routing, and focused UI files. See the [source map](src/README.md). A dependency-free Node build generates the standalone HTML and its security hashes. A command works on an independent snapshot; class renames update endpoint, inheritance, foreign-key, and attribute-type references. Confirmed deletion removes connections and typed references, clears foreign-key tags, and cleans constraints on removed attributes. Inheritance/composition cycles and invalid multiplicities are rejected.
 
 Links contain JSON compressed with gzip and encoded as Base64url. Both `?model=...` and `#model=...` are accepted, with the fragment taking precedence; generated links use the fragment. Existing valid links remain compatible. Oversized designs use a Design backup instead of a share link. No backend or browser storage is needed.
 
@@ -51,14 +51,17 @@ Imports and shared links use the same runtime schema, with type, key, reference,
 Run the tests with Node.js 22 or newer:
 
 ```sh
+node scripts/build.cjs --check
 node --test tests/*.test.cjs
 node scripts/security-policy.cjs
 ```
 
-The committed HTML permits only its exact inline scripts. After changing a script, refresh the policy before previewing or testing:
+The committed HTML permits only its exact inline scripts. After editing `src/`, rebuild before previewing or testing:
 
 ```sh
-node scripts/security-policy.cjs --write
+node scripts/build.cjs
 ```
+
+The build refreshes script hashes automatically. Commit both the readable source and generated HTML; checks reject outdated output.
 
 Tests cover shared-link round trips and validation, hostile or oversized inputs, domain-area visibility and management, empty models, import/export, recursive and multiple inheritance, Markdown escaping, safe export filenames, reference cleanup, UML relationship constraints, interrupted pointer input, security-policy integrity, and preservation of connection geometry during card dragging.

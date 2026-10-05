@@ -5,8 +5,8 @@ const vm=require('node:vm');
 const {test}=require('node:test');
 
 const html=readFileSync(resolve(__dirname,'../FCP Domain Model.html'),'utf8');
-const section=(start,end)=>html.slice(html.indexOf(start),html.indexOf(end,html.indexOf(start)));
-const functions=section('function endPointer(ev){',"stage.addEventListener('pointerup'")+section('function cancelCardDrag(){','/* ---------- selection + detail panel ---------- */');
+const section=(start,end)=>{const a=html.search(start);assert.ok(a>=0,'missing function');const tail=html.slice(a),b=tail.search(end);assert.ok(b>0,'missing section boundary');return tail.slice(0,b);};
+const functions=section(/function endPointer\(ev\)\s*\{/,/stage\.addEventListener\(\s*['\"]pointerup['\"]\s*,/)+section(/function cancelCardDrag\(\)\s*\{/,/\/\* ---------- selection \+ detail panel ---------- \*\//);
 function state(){
   const context=vm.createContext();
   vm.runInContext(`

@@ -7,7 +7,7 @@ const { test } = require('node:test');
 const html = readFileSync(resolve(__dirname, '../FCP Domain Model.html'), 'utf8');
 const scripts = [...html.matchAll(/<script[^>]*>([\s\S]*?)<\/script>/g)].map(m => m[1]);
 const context = vm.createContext({URL, URLSearchParams, TextEncoder, TextDecoder, CompressionStream, DecompressionStream, Blob, Response, btoa, atob});
-for(const name of ['DM','DesignURL','ModelEditor','ModelExport']) vm.runInContext(scripts.find(s => s.includes('const '+name+'=')), context);
+for(const name of ['DM','DesignURL','ModelEditor','ModelExport']) vm.runInContext(scripts.find(s => new RegExp('const\\s+'+name+'\\s*=').test(s)), context);
 const config = JSON.parse(vm.runInContext('JSON.stringify({v:1,model:DM,layout:LAYOUT,view:{hidden:[],selected:null,search:"",camera:{fit:true}}})', context));
 const exporter = vm.runInContext('ModelExport', context);
 const editor = vm.runInContext('ModelEditor', context);

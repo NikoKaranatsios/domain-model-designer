@@ -1,0 +1,21 @@
+(async function () {
+  /* @source ui/state.js */
+  /* @source ui/sharing.js */
+  /* @source ui/exports.js */
+  /* @source ui/cards.js */
+  /* @source ui/zones.js */
+  /* @source ui/routing.js */
+  /* @source ui/wires.js */
+  /* @source ui/highlight.js */
+  /* @source ui/viewport.js */
+  /* @source ui/pointers.js */
+  /* @source ui/details.js */
+  /* @source ui/search.js */
+  /* @source ui/editor/history.js */
+  /* @source ui/editor/classes.js */
+  /* @source ui/editor/relationships.js */
+  /* @source ui/editor/settings.js */
+  /* @source ui/editor/connections.js */
+  /* @source ui/editor/events.js */
+  /* @source ui/boot.js */
+})();

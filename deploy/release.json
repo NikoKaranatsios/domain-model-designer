@@ -1,6 +1,5 @@
 {
   "version": "1.0.0-alpha",
-  "sourceCommit": "f3f791c55d46796e8f8db43a49dc64285c1fe6ba",
   "hostname": "model-designer.romagnolo.eu",
   "entryPoints": [
     "/",
@@ -11,13 +10,14 @@
   "runtimeFiles": [
     {
       "path": "index.html",
-      "bytes": 1419,
-      "sha256": "ced77300caaac0412bf912b01f7a823a358a79b25aface9697ce384b967cb985"
+      "bytes": 1501,
+      "sha256": "1e9880935c466ee9da76e32af3a278739ab13d3376ce8d9731df7f68da6906d7"
     },
     {
       "path": "FCP Domain Model.html",
-      "bytes": 204774,
-      "sha256": "5ad6d5c679285635cefa05ad2803bfae081e2cc69698c52e8959134bec5d1744"
+      "bytes": 236820,
+      "sha256": "e8a425a475f7d3470e1745ca8ce14b3dfb0bafc09de36565d32da3fd8105113e"
     }
-  ]
+  ],
+  "basedOnCommit": "488050154106d56d2174a62382b53ed64f9c1650"
 }
