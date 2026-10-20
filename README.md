@@ -54,6 +54,7 @@ Imports and shared links use the same runtime schema, with type, key, reference,
 Run the tests with Node.js 22 or newer:
 
 ```sh
+node scripts/check-public-content.cjs
 node scripts/build.cjs --check
 node --test tests/*.test.cjs
 node scripts/security-policy.cjs
