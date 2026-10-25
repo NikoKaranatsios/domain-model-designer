@@ -1,4 +1,11 @@
-FROM node:24-alpine AS verify
+FROM golang:1.27.3-alpine AS caddy-build
+ENV GOMAXPROCS=2
+RUN apk add --no-cache git
+WORKDIR /src
+RUN git clone --depth 1 --branch v2.11.7 https://github.com/caddyserver/caddy.git .
+RUN go get golang.org/x/net@v0.60.0 && CGO_ENABLED=0 go build -trimpath -o /tmp/caddy ./cmd/caddy
+
+FROM node:24.22.1-alpine AS verify
 WORKDIR /app
 COPY ["index.html", "model.html", "./"]
 COPY scripts ./scripts
@@ -6,8 +13,9 @@ COPY tests ./tests
 COPY src ./src
 RUN node scripts/build.cjs --check && node --test tests/*.test.cjs && node scripts/security-policy.cjs
 
-FROM caddy:2-alpine
-RUN setcap -r /usr/bin/caddy
+FROM caddy:2.11.7-alpine
+RUN apk upgrade --no-cache
+COPY --from=caddy-build /tmp/caddy /usr/bin/caddy
 COPY deploy/Caddyfile /etc/caddy/Caddyfile
 COPY --from=verify /app/index.html /srv/index.html
 COPY --from=verify /app/model.html /srv/model.html
