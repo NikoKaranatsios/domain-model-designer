@@ -2,7 +2,7 @@ FROM golang:1.27.3-alpine AS caddy-build
 ENV GOMAXPROCS=2
 RUN apk add --no-cache git
 WORKDIR /src
-RUN git clone --depth 1 --branch v2.11.7 https://github.com/caddyserver/caddy.git .
+RUN git clone --depth 1 --branch v2.11.7 https://github.com/caddyserver/caddy.git . && test "$(git rev-parse HEAD)" = "72dd0fb067f6d7826c7f79907670ba4a713bfe37"
 RUN go get golang.org/x/net@v0.60.0 && CGO_ENABLED=0 go build -trimpath -o /tmp/caddy ./cmd/caddy
 
 FROM node:24.22.1-alpine AS verify
